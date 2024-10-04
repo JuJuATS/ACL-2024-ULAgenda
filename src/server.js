@@ -49,15 +49,7 @@ app.get('/', (req, res) => {
 
 // Routes pour afficher le formulaire d'inscription
 app
-  .get('/signup', (req, res) => {
-    res.render('signup', {
-      errors: req.session.errors || {},
-      formData: req.session.formData || {}
-    });
-    // Nettoyage
-    req.session.errors = null;
-    req.session.formData = null;
-  })
+  .get('/signup', (req, res) => res.render('signup'))
   .post('/signup', routes.createAccount);
 
 
