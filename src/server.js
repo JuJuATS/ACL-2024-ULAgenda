@@ -1,7 +1,11 @@
 const express = require('express');
+const connectDB = require('./database/db');
 
 const app = express();
 const port = 3000;
+
+// Connection à la base de données
+connectDB();
 
 // Route de base
 app.get('/', (req, res) => {
