@@ -24,10 +24,10 @@
         <li><a href="#built-with">Technologies</a></li>
       </ul>
     </li>
-    <li><a href="#contributions">Contributing</a></li>
-    <li><a href="#licence">License</a></li>
-    <li><a href="#contacts">Contact</a></li>
-    <li><a href="#remerciements">Acknowledgments</a></li>
+    <li><a href="#contributions">Contributions</a></li>
+    <li><a href="#licence">Licence</a></li>
+    <li><a href="#contacts">Contacts</a></li>
+    <li><a href="#remerciements">Remerciements</a></li>
   </ol>
 </details>
 
