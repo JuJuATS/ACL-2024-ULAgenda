@@ -7,9 +7,18 @@ const createAccount = async (req, res) => {
     try {
         const existingUser = await User.findOne({ $or: [{ email: email }, { pseudo: pseudo }] });
         if (existingUser) {
-            req.flash('error', 'Un compte avec cet email ou pseudo existe déjà');
-            req.flash('formData', req.body);
-            return res.redirect('/signup');
+            const errors = {};
+            if (existingUser.email === email) {
+                errors.email = 'Un compte existe déjà avec cette adresse email';
+            }
+            if (existingUser.pseudo === pseudo) {
+                errors.pseudo = 'Ce pseudo est déjà utilisé';
+            }
+
+            return res.render('signup', {
+                errors,
+                formData: req.body,
+            });
         }
 
         const hashedPassword = await argon2.hash(password);
@@ -24,15 +33,15 @@ const createAccount = async (req, res) => {
 
         await newUser.save();
 
+        // Enregistrement de l'utilisateur en session
+        req.session.user = newUser;
+
         console.log(`Utilisateur créé: ${prenom} ${nom}, Email: ${email}, Pseudo: ${pseudo}`);
-        req.flash('success', 'Compte créé avec succès !');
+        req.session.messagesFlash = [{ type: 'success', content: 'Votre compte a bien été créé' }];
         res.redirect('/');
     } catch (error) {
-        console.error('Erreur lors de la création du compte:', error);
-        req.flash('error', 'Erreur lors de la création du compte');
-        // Stockage des données du formulaire dans la session en cas d'erreur
-        req.flash('formData', req.body);
-        res.redirect('/signup');
+        const messagesFlash = [{ type: 'error', content: 'Erreur lors de la création du compte' }];
+        res.render('signup', { messagesFlash, formData: req.body });
     }
 };
 

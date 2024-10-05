@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ULAgenda</title>
+</head>
+<body>
+    <% if (locals.messagesFlash && messagesFlash.length > 0) { %>
+        <div>
+            <% messagesFlash.forEach(function(message) { %>
+                <div><%= message.content %></div>
+            <% }); %>
+        </div>
+    <% } %>
+
+    <h1>Welcome To ULAgenda<% if (user && user.pseudo) { %>, <%= user.pseudo %><% } %></h1>
+</body>
+</html>

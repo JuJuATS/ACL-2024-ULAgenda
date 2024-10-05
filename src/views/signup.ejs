@@ -15,11 +15,15 @@
 <body>
     <h1>Inscription</h1>
 
-    <% if (messages.error) { %>
-      <div class="error-message"><%= messages.error %></div>
+    <% if (locals.messagesFlash) { %>
+        <div>
+            <% locals.messagesFlash.forEach(function(message) { %>
+                <div><%= message.content %></div>
+            <% }); %>
+        </div>
     <% } %>
 
-    <% const formData = messages.formData ? messages.formData[0] : {}; %>
+    <% const formData = locals.formData || {}; %>
 
     <form id="signupForm" action="/signup" method="post">
         <div>
@@ -35,17 +39,13 @@
         <div>
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" value="<%= formData.email || '' %>" required>
-            <% if (messages['email-error']) { %>
-                <span class="error-message"><%= messages['email-error'] %></span>
-            <% } %>
+            <span id="emailError" class="error-message"><%= locals.errors && locals.errors.email ? locals.errors.email : '' %></span>
         </div>
         
         <div>
             <label for="pseudo">Pseudo:</label>
             <input type="text" id="pseudo" name="pseudo" value="<%= formData.pseudo || '' %>" required>
-            <% if (messages['pseudo-error']) { %>
-                <span class="error-message"><%= messages['pseudo-error'] %></span>
-            <% } %>
+            <span id="pseudoError" class="error-message"><%= locals.errors && locals.errors.pseudo ? locals.errors.pseudo : '' %></span>
         </div>
         
         <div>
