@@ -35,7 +35,7 @@ const userSchema = new mangoose.Schema({
         type: Boolean,
         default: false,
     },
-});
+}, {timestamps: true});
 
 const User = mangoose.model('User', userSchema);
 

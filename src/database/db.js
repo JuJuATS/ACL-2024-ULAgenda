@@ -1,8 +1,9 @@
 const mangoose = require('mongoose');
+const userCleanupTask = require('../tasks/userCleanupTask'); // Permet de lancer le cron job pour supprimer les utilisateurs non vérifiés
 
 const connectDB = async () => {
   try {
-    await mangoose.connect('mongodb://localhost:27017/db_ulagenda');
+    await mangoose.connect(process.env.DB_URI);
 
     console.log('Connected to the database');
   } catch (error) {
