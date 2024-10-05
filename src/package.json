@@ -12,10 +12,10 @@
   "license": "ISC",
   "dependencies": {
     "argon2": "^0.41.1",
-    "connect-flash": "^0.1.1",
+    "connect-mongo": "^4.6.0",
     "ejs": "^3.1.10",
     "express": "^4.21.0",
-    "express-session": "^1.18.0",
+    "express-session": "^1.0.0",
     "mongoose": "^8.7.0"
   }
 }
