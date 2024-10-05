@@ -30,7 +30,11 @@ const userSchema = new mangoose.Schema({
     agendas: {
         type: [String],
         default: [],
-    }
+    },
+    isVerified: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const User = mangoose.model('User', userSchema);

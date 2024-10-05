@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MangoStore = require('connect-mongo');
@@ -35,7 +36,7 @@ const store  = MangoStore.create({
 });
 
 app.use(session({
-  secret: '8b6d27cea47cc8732f8e32b912c4e149a38f46ac68d95ac0886d84e9ae39400ec8c4745731c0e5fa100cd78be62050ae3ec258dc851a0e95d96b3a70e36c9c1c',
+  secret: process.env.SECRET,
   resave: true,
   rolling: true,
   saveUninitialized: false,
@@ -65,7 +66,12 @@ app.get('/', (req, res) => res.render('index'));
 // Routes pour afficher le formulaire d'inscription
 app
   .get('/signup', (req, res) => res.render('signup'))
-  .post('/signup', routes.createAccount);
+  .post('/signup', routes.signup.createAccount);
+
+app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veuillez vérifier votre email.'));
+
+// Route pour vérifier l'email
+app.get('/verify-email', routes.signup.verifyEmail);
 
 
 // Démarrage du serveur

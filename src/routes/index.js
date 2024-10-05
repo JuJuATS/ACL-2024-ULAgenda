@@ -1,5 +1,5 @@
-const createAccount = require('./createAccount');
+const signup = require('./signup');
 
 module.exports = {
-  createAccount,
+  signup,
 };
