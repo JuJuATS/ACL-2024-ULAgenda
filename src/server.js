@@ -8,6 +8,7 @@ const routes = require('./routes');
 
 const connectDB = require('./database/db');
 const User = require('./database/models/user');
+const { sign } = require('crypto');
 
 const app = express();
 const port = 3000;
@@ -73,6 +74,8 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 // Route pour vérifier l'email
 app.get('/verify-email', routes.signup.verifyEmail);
 
+// Route de connection
+app.get("/login",routes.signin.signin)
 
 // Démarrage du serveur
 app.listen(port, () => {
