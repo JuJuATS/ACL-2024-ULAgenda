@@ -10,7 +10,7 @@ const connectDB = require('./database/db');
 const User = require('./database/models/user');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 
 // Connection à la base de données
 connectDB();
@@ -28,7 +28,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Configuration des sessions
 const store  = MangoStore.create({
-  mongoUrl: 'mongodb://localhost:27017/db_ulagenda',
+  mongoUrl: process.env.DB_URL,
   ttl: 2 * 60 * 60, // Durée de validité de la session: 2 heures
   collectionName: 'sessions',
   autoRemove: 'interval',
@@ -61,7 +61,7 @@ app.use((req, res, next) => {
 
 
 // Route de base
-app.get('/', (req, res) => res.render('index'));
+app.get('/', (req, res) => res.render('index', {user: req.session.user}));
 
 // Routes pour afficher le formulaire d'inscription
 app
