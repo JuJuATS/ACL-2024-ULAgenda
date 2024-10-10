@@ -16,6 +16,10 @@ const createVerificationToken = (user) => {
 const createAccount = async (req, res) => {
     const { nom, prenom, email, pseudo, password } = req.body;
 
+    if (!nom || !prenom || !email || !pseudo || !password) {
+        return res.status(400).send('Tous les champs sont obligatoires');
+    }
+
     try {
         // Vérification si l'email ou le pseudo existent déjà
         const existingUser = await User.findOne({ $or: [{ email: email }, { pseudo: pseudo }] });
@@ -28,7 +32,7 @@ const createAccount = async (req, res) => {
                 errors.pseudo = 'Ce pseudo est déjà utilisé';
             }
 
-            return res.render('signup', {
+            return res.status(400).render('signup', {
                 errors,
                 formData: req.body,
             });
@@ -49,7 +53,8 @@ const createAccount = async (req, res) => {
         const verificationToken = createVerificationToken(newUser);
 
         // Envoi de l'email de vérification
-        await sendVerificationEmail(newUser, verificationToken);
+        if (process.env.NODE_ENV !== 'test')
+            await sendVerificationEmail(newUser, verificationToken);
 
         // Sauvegarde de l'utilisateur dans la base de données
         await newUser.save();
