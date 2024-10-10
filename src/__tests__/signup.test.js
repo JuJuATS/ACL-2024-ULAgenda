@@ -4,6 +4,15 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const app = require('../server');
 const User = require('../database/models/user');
 const argon2 = require('argon2');
+const createVerificationToken = require('../utils/createVerificationToken');
+const { sendVerificationEmail } = require('../utils/mailer');
+
+
+// Mock la fonction sendVerificationEmail
+jest.mock('../utils/mailer', () => ({
+  sendVerificationEmail: jest.fn(),
+}));
+
 
 let mongoServer;
 
@@ -51,6 +60,9 @@ describe('Tests de la route POST /signup', () => {
 
     // Véfifier que le compte n'est pas encore vérifié
     expect(userInDb.isVerified).toBe(false);
+
+    // Vérifier que l'email de vérification a été envoyé
+    expect(sendVerificationEmail).toHaveBeenCalledTimes(1);
   });
 
   // Cas 2: Échec de l'inscription si des champs manquent
@@ -150,5 +162,90 @@ describe('Tests de la route POST /signup', () => {
     // Vérifier que la réponse indique que le pseudo est déjà pris
     expect(response.statusCode).toBe(400);
     expect(response.text).toContain('Ce pseudo est déjà utilisé');
+  });
+});
+
+
+
+describe('Email Verification', () => {
+  let validUser;
+  let validToken;
+
+  beforeAll(async () => {
+    mongoServer = await MongoMemoryServer.create();
+    const mongoUri = mongoServer.getUri();
+
+    await mongoose.connect(mongoUri);
+  });
+
+  beforeEach(async () => {
+    validUser = new User({
+      firstname: 'John',
+      lastname: 'Doe',
+      email: 'john.doe@example.com',
+      pseudo: 'JohnDoe',
+      password: 'hashedPassword123',
+      isVerified: false,
+    });
+    await validUser.save();
+
+    // Créer un token JWT valide pour cet utilisateur
+    validToken = createVerificationToken(validUser);
+  });
+
+  afterEach(async () => {
+    await User.deleteMany({});
+  });
+
+  afterAll(async () => {
+    await mongoose.disconnect();
+    await mongoServer.stop();
+  });
+
+  // Test 1 : L'utilisateur est trouvé et le token est valide
+  it('devrait vérifier l’email de l’utilisateur avec un token valide', async () => {
+    const res = await request(app)
+      .get(`/verify-email?token=${validToken}`)
+      .expect(200);
+
+    expect(res.text).toBe('Votre email a été vérifié avec succès ! Vous pouvez maintenant vous connecter.');
+
+    // Vérifie que l'utilisateur est bien marqué comme vérifié
+    const updatedUser = await User.findById(validUser._id);
+    expect(updatedUser.isVerified).toBe(true);
+  });
+
+  // Test 2 : L'utilisateur est déjà vérifié
+  it('devrait retourner un message si l’email est déjà vérifié', async () => {
+    validUser.isVerified = true;
+    await validUser.save();
+
+    const res = await request(app)
+      .get(`/verify-email?token=${validToken}`)
+      .expect(200);
+
+    expect(res.text).toBe('Email déjà vérifié.');
+  });
+
+  // Test 3 : L'utilisateur n'est pas trouvé
+  it("devrait retourner une erreur si l'utilisateur n'est pas trouvé", async () => {
+    const fakeToken = createVerificationToken({ _id: new mongoose.Types.ObjectId(), email: 'fakemail@gmail.com' });
+
+    const res = await request(app)
+      .get(`/verify-email?token=${fakeToken}`)
+      .expect(400);
+
+    expect(res.text).toBe('Utilisateur non trouvé');
+  });
+
+  // Test 4 : Le token est invalide ou expiré
+  it('devrait retourner une erreur si le token est invalide ou expiré', async () => {
+    const invalidToken = 'invalidToken123';
+
+    const res = await request(app)
+      .get(`/verify-email?token=${invalidToken}`)
+      .expect(400);
+
+    expect(res.text).toBe('Token invalide ou expiré.');
   });
 });
