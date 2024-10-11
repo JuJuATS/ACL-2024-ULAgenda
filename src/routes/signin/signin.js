@@ -6,7 +6,9 @@ const signin = async(req,res)=>{
         return res.redirect("/");
     }
     else{
-        res.render("signin")
+        //req.flash("error","welcome")
+        const error = req.flash("error");
+        res.render("signin",{expressFlash:error})
     }
 }
 

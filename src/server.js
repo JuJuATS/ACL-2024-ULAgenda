@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MangoStore = require('connect-mongo');
+const flash = require('express-flash')
 const path = require('path');
 
 const routes = require('./routes');
@@ -26,7 +27,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Middleware pour analyser les données du formulaire
 app.use(express.urlencoded({ extended: true }));
 
-
+app.use(flash())
 // Configuration des sessions
 const store  = MangoStore.create({
   mongoUrl: 'mongodb://localhost:27017/db_ulagenda',
@@ -75,8 +76,7 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 app.get('/verify-email', routes.signup.verifyEmail);
 
 // Route de connection
-app.get("/login",routes.signin.signin)
-
+app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexion)
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
