@@ -16,18 +16,15 @@
         </div>
     <% } %>
 
-    <% console.log(user) %>
-
-
-    <h1>Welcome To ULAgenda<% if (user) { %>, <%= user.pseudo %><% } %></h1>
+    <!-- <% console.log(user) %> -->
 
     <header class="navbar">
-        <div class="logo">
-            <a href="./" class="ul-agenda-button">UL-AGENDA</a>
+        <div>
+            <a href="./" class="logo">UL AGENDA</a>
         </div>
         <nav>
             <% if (user) { %>
-                <a href="./account" class="user-button"><%= user.pseudo %></a>
+                <a href="./account" class="user-button"></a>
             <% } else { %>
                 <a href="./signin" class="connect-button">Connection</a>
             <% } %>
@@ -35,18 +32,57 @@
         </nav>
     </header>
 
-    <div class="section">
+    <div class="section1">
         <div class="content">
-            <h1>UL Agenda</h1>
+            <h1>Welcome To ULAgenda <% if (user) { %> <%= user.pseudo %> <%}%></h1>
             <p>
                 Organiser vos rendez-vous facilement
             </p>
-            <button class="start-agenda">Start Agenda</button>
+            <a href="./app" class="app-button">Start Building</a>
         </div>
         <div class="section-image">
-            <img src="front-page.png" alt="Agenda Illustration">
+            <img src="images/a.png" alt="Agenda Illustration">
+            <img src="images/b.png" alt="Agenda Illustration">
+            <img src="images/c.png" alt="Agenda Illustration">
+            <img src="images/e.png" alt="Agenda Illustration">
         </div>
     </div>
+
+    <div class="section-key-point">
+
+        <% [
+        {
+          "name": "Intuitive",
+          "id": "f1",
+          "desc": "L'application est conçue pour être intuitive et facile à utiliser, permettant aux utilisateurs de créer des agendas et d'ajouter des rendez-vous sans effort."
+        },
+        {
+          "name": "Flexibilité",
+          "id": "f2",
+          "desc": "L'application vous aide à gérer votre temps efficacement en suggérant les meilleurs créneaux horaires pour les rendez-vous et en facilitant l'organisation des événements."
+        },
+        {
+          "name": "Personnalisation",
+          "id": "f3",
+          "desc": "Les utilisateurs ont un contrôle total sur leurs agendas avec la possibilité de personnaliser les événements, les rappels et plus encore pour répondre à leurs besoins de planification."
+        },
+        {
+          "name": "Sécurité",
+          "id": "f4",
+          "desc": "L'application garantit que toutes vos données sont sécurisées. Vos rendez-vous et événements partagés sont protégés, assurant confidentialité et sécurité."
+        }
+      ].forEach(info => { %>        
+            <div class="features">
+                <img src="/images/<%= info.id %>.png" alt='<%= info.id %> Icon'>
+                <h3><%= info.name %></h3>
+                <p>
+                    <%= info.desc %>
+                </p>
+            </div>
+        <% }) %>
+    </div>
+
+      
 
     <footer>
         <div class="footer">

@@ -61,7 +61,7 @@ app.use((req, res, next) => {
 
 
 // Route de base
-app.get('/', (req, res) => res.render('index', {user: req.session.user}));
+app.get('/', (req, res) => res.render('index', req.session.user));    //{user: {pseudo:"lol"}}
 
 // Routes pour afficher le formulaire d'inscription
 app
