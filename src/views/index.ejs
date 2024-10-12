@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ULAgenda</title>
+    <link rel="stylesheet" href="./css/landing.css">
 </head>
 <body>
     <% if (locals.messagesFlash && messagesFlash.length > 0) { %>
@@ -11,9 +12,51 @@
             <% messagesFlash.forEach(function(message) { %>
                 <div><%= message.content %></div>
             <% }); %>
+            
         </div>
     <% } %>
 
-    <h1>Welcome To ULAgenda<% if (user && user.pseudo) { %>, <%= user.pseudo %><% } %></h1>
+    <% console.log(user) %>
+
+
+    <h1>Welcome To ULAgenda<% if (user) { %>, <%= user.pseudo %><% } %></h1>
+
+    <header class="navbar">
+        <div class="logo">
+            <a href="./" class="ul-agenda-button">UL-AGENDA</a>
+        </div>
+        <nav>
+            <% if (user) { %>
+                <a href="./account" class="user-button"><%= user.pseudo %></a>
+            <% } else { %>
+                <a href="./signin" class="connect-button">Connection</a>
+            <% } %>
+            <a href="./app" class="app-button">Agenda App</a>
+        </nav>
+    </header>
+
+    <div class="section">
+        <div class="content">
+            <h1>UL Agenda</h1>
+            <p>
+                Organiser vos rendez-vous facilement
+            </p>
+            <button class="start-agenda">Start Agenda</button>
+        </div>
+        <div class="section-image">
+            <img src="front-page.png" alt="Agenda Illustration">
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer">
+            <p>© 2024 UL-AGENDA. All rights reserved.</p>
+            <nav class="footer-nav">
+                <a href="/terms">Terms of Service</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/help">Help</a>
+            </nav>
+        </div>
+    </footer>
 </body>
 </html>

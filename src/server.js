@@ -10,7 +10,7 @@ const connectDB = require('./database/db');
 const User = require('./database/models/user');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT;
 
 // Connection à la base de données
 connectDB();
@@ -73,7 +73,7 @@ app.use((req, res, next) => {
 
 
 // Route de base
-app.get('/', (req, res) => res.render('index'));
+app.get('/', (req, res) => res.render('index', {user: req.session.user}));
 
 // Routes pour afficher le formulaire d'inscription
 app
