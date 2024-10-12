@@ -15,7 +15,7 @@ const path = require('path');
 
 // -- IMPORT ROUTES --
 const routes = require('./routes');
-//const agendaRoutes = require('./routes/agendas');
+const agendaRoutes = require('./routes/agendas/agendas');
 
 // -- BBD --
 const connectDB = require('./database/db');
@@ -96,3 +96,5 @@ app.get('/verify-email', routes.signup.verifyEmail);
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
 });
+
+app.use('/agendas', agendaRoutes);
