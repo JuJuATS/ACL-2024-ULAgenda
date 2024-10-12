@@ -1,4 +1,5 @@
 require('dotenv').config();
+
 const express = require('express');
 const session = require('express-session');
 const MangoStore = require('connect-mongo');
@@ -10,7 +11,9 @@ const connectDB = require('./database/db');
 const User = require('./database/models/user');
 
 const app = express();
-const port = process.env.PORT;
+const port = 3000;
+
+console.log(process.env.DATABASE_URL);
 
 // Connection à la base de données
 connectDB();
@@ -28,7 +31,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // Configuration des sessions
 const store  = MangoStore.create({
-  mongoUrl: process.env.DB_URL,
+  mongoUrl: 'mongodb://localhost:27017/db_ulagenda',
   ttl: 2 * 60 * 60, // Durée de validité de la session: 2 heures
   collectionName: 'sessions',
   autoRemove: 'interval',
@@ -61,7 +64,7 @@ app.use((req, res, next) => {
 
 
 // Route de base
-app.get('/', (req, res) => res.render('index', req.session.user));    //{user: {pseudo:"lol"}}
+app.get('/', (req, res) => res.render('index'));
 
 // Routes pour afficher le formulaire d'inscription
 app
@@ -73,14 +76,16 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 // Route pour vérifier l'email
 app.get('/verify-email', routes.signup.verifyEmail);
 
+
+// Démarrage du serveur
+app.listen(port, () => {
+  console.log(`Serveur en écoute sur http://localhost:${port}`);
+});
+
 app.get('/agenda', (req, res) => {
   const agendas = [
       
   ];
 
   res.render('VisualisationAgenda', { agendas });
-});
-// Démarrage du serveur
-app.listen(port, () => {
-  console.log(`Serveur en écoute sur http://localhost:${port}`);
 });
