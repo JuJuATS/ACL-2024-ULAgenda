@@ -1,0 +1,326 @@
+/* Importations */
+@import url("reset.css");
+@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
+
+/* Global */
+* {
+    font-family: "Afacad Flux", sans-serif;
+    font-weight: 600;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: #eef2f3; /* Couleur de fond claire */
+}
+
+.navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background-color: #212a3f;
+    z-index: 1000;
+}
+
+.logo {
+    background-color: transparent;
+    color: #cfbff7;
+    margin: 0 100px;
+    font-size: 1.5rem;
+}
+
+header nav {
+    width: 14%;
+    display: flex;
+    justify-content: space-around;
+}
+
+nav a {
+    color: #cfbff7;
+}
+
+.connect-button {
+    padding: 10px 15px;
+    font-size: 1rem; 
+    font-weight: bold;
+    text-align: center;
+}
+
+.user-button {
+    background: #cfbff7;
+    width: 17%;
+    padding-bottom: 17%;
+    background-image: url("../images/user.png");
+    background-repeat: no-repeat;
+    background-size: 75%;
+    background-position: center;
+    border-radius: 50%;
+}
+
+.app-button {
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem; 
+    color: white;
+    margin: 0 20px;
+    background-color: #259e88;
+    font-weight: bold;
+    text-align: center;
+}
+
+.section1 .app-button {
+    max-width: 150px;
+}
+
+/* Section des agendas */
+.container {
+    display: flex;
+    flex: 1;
+    padding: 20px;
+    margin-top: 70px; /* Ajustement du margin-top pour compenser la navbar */
+}
+
+.left-sidebar {
+    width: 15%;
+    background-color: #f7f9fc; /* Fond gris très clair */
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+}
+
+.left-sidebar h2 {
+    font-size: 20px;
+    color: #00BBEC; /* Couleur bleue similaire à la section clé */
+    text-align: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #00BBEC;
+    padding-bottom: 10px;
+}
+
+.main-content {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 colonnes */
+    grid-template-rows: 170px; /* Hauteur fixe de 150px pour chaque ligne */
+    gap: 15px;
+    padding-left: 20px;
+    overflow-y: auto; /* Ajoute un défilement si le contenu dépasse */
+    margin-top: 5px;
+}
+
+.calendar {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+    position: relative; /* Ajoutez cette ligne pour que la croix soit positionnée correctement */
+    cursor: pointer;
+    height: 150px; /* Hauteur fixe */
+    width: 100%; /* Prendre toute la largeur de la colonne */
+}
+
+.close-agenda {
+    position: absolute; /* Positionner la croix en haut à droite */
+    top: 10px; /* Ajuste la position */
+    right: 10px; /* Ajuste la position */
+    background: transparent; /* Pas de fond */
+    border: none; /* Pas de bordure */
+    color: red; /* Couleur rouge */
+    font-size: 20px; /* Taille de la police pour la croix */
+    cursor: pointer; /* Changer le curseur pour pointer */
+    z-index: 1; /* S'assurer que la croix est au-dessus des autres éléments */
+}
+
+.close-agenda:hover {
+    color: darkred; /* Couleur au survol */
+}
+
+.calendar h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #333;
+    text-align: center;
+    border-bottom: 3px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.calendar:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Bouton d'ajout d'agenda */
+.add-button {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #00BBEC; /* Bouton bleu similaire à la section clé */
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.add-button:hover {
+    background-color: #357ab8; /* Couleur au survol */
+    transform: scale(1.1) translate(-50%, -50%);
+}
+
+/* Styles pour la modal */
+.modal {
+    display: none; /* Masquer la modal par défaut */
+    position: fixed;
+    z-index: 1001; /* S'assurer qu'elle s'affiche au-dessus de tout */
+    left: 0;
+    top: 0;
+    width: 100%; /* Pleine largeur */
+    height: 100%; /* Pleine hauteur */
+    overflow: auto; /* Ajouter un défilement si nécessaire */
+    background-color: rgba(0, 0, 0, 0.7); /* Fond semi-transparent plus sombre */
+    backdrop-filter: blur(5px); /* Flou en arrière-plan pour un effet moderne */
+}
+
+.modal-content {
+    background-color: #ffffff; /* Fond blanc pour le contenu de la modal */
+    margin: 10% auto; /* 10% depuis le haut et centré */
+    padding: 30px; /* Ajout d'un padding plus large */
+    border: none; /* Enlever la bordure */
+    border-radius: 12px; /* Coins arrondis plus prononcés */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Ombre portée pour profondeur */
+    width: 90%; /* Largeur responsive */
+    max-width: 400px; /* Largeur maximum de la modal */
+    text-align: center;
+    transition: transform 0.3s ease-in-out; /* Transition pour l'animation */
+}
+
+.modal-content h2 {
+    font-size: 1.5rem; /* Taille de police pour le titre */
+    margin-bottom: 20px; /* Espace sous le titre */
+    color: #212a3f; /* Couleur du titre pour cohérence */
+}
+
+.modal-content p {
+    margin-bottom: 20px; /* Espace vertical sous le texte de confirmation */
+}
+
+
+
+.modal-content input[type="text"] {
+    width: calc(100% - 20px); /* Largeur responsive pour l'input */
+    padding: 10px; /* Padding à l'intérieur de l'input */
+    border: 1px solid #ccc; /* Bordure grise pour l'input */
+    border-radius: 5px; /* Coins arrondis pour l'input */
+    margin-bottom: 20px; /* Espace sous l'input */
+    font-size: 1rem; /* Taille de la police de l'input */
+    transition: border-color 0.3s; /* Transition pour la bordure */
+
+}
+
+.modal-content input[type="text"]:focus {
+    border-color: #00BBEC; /* Bordure bleue au focus */
+    outline: none; /* Enlever l'outline par défaut */
+    .close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer; /* Changer le curseur pour pointer */
+}
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer; /* Changer le curseur pour pointer */
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #ff6b6b; /* Couleur au survol pour le bouton de fermeture */
+    text-decoration: none;
+}
+
+
+/* Footer */
+footer {
+    background-color: #f7f9fc;
+    text-align: center;
+    padding: 10px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    color: #333;
+}
+
+#addAgendaButton {
+    background-color: #00BBEC; /* Couleur de fond bleu */
+    color: white; /* Couleur du texte */
+    border: none; /* Pas de bordure */
+    border-radius: 5px; /* Coins arrondis */
+    padding: 10px 15px; /* Espacement intérieur */
+    font-size: 1rem; /* Taille de la police */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Change le curseur pour pointer (main) */
+    transition: background-color 0.3s, transform 0.3s; /* Transitions pour un effet fluide */
+}
+
+#addAgendaButton:hover {
+    background-color: #357ab8; /* Couleur au survol */
+    transform: scale(1.05); /* Légère augmentation de taille au survol */
+}
+
+#confirmDeleteButton {
+    background-color: #00BBEC; /* Couleur de fond bleu */
+    color: white; /* Couleur du texte */
+    border: none; /* Pas de bordure */
+    border-radius: 5px; /* Coins arrondis */
+    padding: 10px 15px; /* Espacement intérieur */
+    font-size: 1rem; /* Taille de la police */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Change le curseur pour pointer (main) */
+    transition: background-color 0.3s, transform 0.3s; /* Transitions pour un effet fluide */
+}
+
+#confirmDeleteButton:hover {
+    background-color: #357ab8; /* Couleur au survol */
+    transform: scale(1.05); /* Légère augmentation de taille au survol */
+}
+
+#annuler {
+    background-color: #ec0000; /* Couleur de fond bleu */
+    margin-top: 10px;
+    color: white; /* Couleur du texte */
+    border: none; /* Pas de bordure */
+    border-radius: 5px; /* Coins arrondis */
+    padding: 10px 15px; /* Espacement intérieur */
+    font-size: 1rem; /* Taille de la police */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Change le curseur pour pointer (main) */
+    transition: background-color 0.3s, transform 0.3s; /* Transitions pour un effet fluide */
+}
+
+#annuler:hover {
+    background-color: #ff0000; /* Couleur au survol */
+    transform: scale(1.05); /* Légère augmentation de taille au survol */
+}
+
+#confirmDeleteButton,
+#annuler {
+    margin: 10px; /* Espacement entre les deux boutons */
+}
