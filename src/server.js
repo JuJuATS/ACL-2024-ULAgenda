@@ -1,19 +1,37 @@
+/**
+ * ==================================================
+ *                IMPORTS + VARIABLES
+ * ==================================================
+ */
+
 require('dotenv').config();
+
+// -- IMPORT MODULES --
 
 const express = require('express');
 const session = require('express-session');
 const MangoStore = require('connect-mongo');
 const path = require('path');
 
+// -- IMPORT ROUTES --
 const routes = require('./routes');
+const agendaRoutes = require('./routes/agendas/agendas');
 
+// -- BBD --
 const connectDB = require('./database/db');
 const User = require('./database/models/user');
 
+// -- EXPRESS --
 const app = express();
 const port = 3000;
 
-console.log(process.env.DATABASE_URL);
+/**
+ * ==================================================
+ *                  CONFIGURATION
+ * ==================================================
+ */
+
+console.log('Connecting to DB_URI:', process.env.DB_URI); // Vérifiez si cela affiche l'URI correctement
 
 // Connection à la base de données
 connectDB();
@@ -27,7 +45,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // Middleware pour analyser les données du formulaire
 app.use(express.urlencoded({ extended: true }));
-
 
 // Configuration des sessions
 const store  = MangoStore.create({
@@ -62,7 +79,6 @@ app.use((req, res, next) => {
   next();
 });
 
-
 // Route de base
 app.get('/', (req, res) => res.render('index'));
 
@@ -76,16 +92,9 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 // Route pour vérifier l'email
 app.get('/verify-email', routes.signup.verifyEmail);
 
-
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
 });
 
-app.get('/agenda', (req, res) => {
-  const agendas = [
-      
-  ];
-
-  res.render('VisualisationAgenda', { agendas });
-});
+app.use('/agendas', agendaRoutes);
