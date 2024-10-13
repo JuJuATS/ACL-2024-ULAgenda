@@ -35,6 +35,10 @@ const userSchema = new mangoose.Schema({
         type: Boolean,
         default: false,
     },
+    resetPasswordToken:{
+        type:String,
+        default:false
+    }
 }, {timestamps: true});
 
 const User = mangoose.model('User', userSchema);

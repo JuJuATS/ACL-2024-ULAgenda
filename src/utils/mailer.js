@@ -23,5 +23,21 @@ const sendVerificationEmail = (user, token) => {
 
     return transporter.sendMail(mailOptions);
 };
+const sendResetMail = (user,token)=>{
+    const verificationLink = `http://localhost:3000/reset-password?token=${token}`;
+    const mailOptions = {
+        from: process.env.EMAIL,
+        to: user.email,
+        subject: 'Reinitialisation du mot de passe',
+        html: `<p>Bonjour ${user.firstname},</p>
+                <p>Une demande de réinitilisation à été effectué</p>
+               <a href="${verificationLink}">Reiniatiliser votre mot de passe</a>
+               <p>Ce lien est valide pendant 1 heure.</p>
+               <p>Si vous n'avez pas effectué cette demande, ignoré la`,
+    };
 
-module.exports = { sendVerificationEmail };
+    return transporter.sendMail(mailOptions);
+}
+module.exports = { sendVerificationEmail,
+                   sendResetMail
+                 };

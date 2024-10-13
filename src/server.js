@@ -77,7 +77,12 @@ app.get('/verify-email', routes.signup.verifyEmail);
 
 // Route de connection
 app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexion)
+
+// Route pour récuperer son mot de passe
+app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker)
+
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
 });
+module.exports = app
