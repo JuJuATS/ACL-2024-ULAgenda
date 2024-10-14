@@ -2,8 +2,7 @@ const mongoose = require('mongoose');
 const rdvSchema = require('./rdv');
 
 const agendaSchema = new mongoose.Schema({
-    title: { type: String, required: true },
-    description: { type: String },
+    name: { type: String, required: true },
     rdvs: [rdvSchema]
 }, { collection: 'agendas' });
 

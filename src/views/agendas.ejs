@@ -30,12 +30,12 @@
         <!-- Contenu principal : les autres agendas -->
         <div class="main-content">
             <!-- Pop-up pour ajouter un nouvel agenda -->
-            <div id="agendaModal" class="modal">
+            <div id="agendaModal" class="modal" style="display:none;">
                 <div class="modal-content">
-                    <span class="close-button">&times;</span>
-                    <h2>Créer un nouvel agenda</h2>
-                    <input type="text" id="agendaName" placeholder="Nom de l'agenda" required>
-                    <button id="addAgendaButton">Ajouter Agenda</button>
+                <span class="close-button">&times;</span>
+                <h2>Créer un nouvel agenda</h2>
+                <input type="text" id="agendaName" placeholder="Nom de l'agenda" required>
+                <button id="addAgendaButton">Ajouter Agenda</button>
                 </div>
             </div>
 
@@ -70,6 +70,7 @@
         &copy; 2024 UL-AGENDA. All rights reserved.
     </footer>
 </body>
+
 <script>
     // Récupérer les éléments de la modal et du bouton
     const modal = document.getElementById("agendaModal");
@@ -97,16 +98,34 @@
     }
 
     // Fonction pour ajouter l'agenda à la liste
-    addAgendaButton.onclick = function() {
+    addAgendaButton.onclick = async () => {
         const agendaName = agendaNameInput.value;
-        if (agendaName) {
+
+        if (!agendaName) {
+          alert("Veuillez entrer un nom d'agenda.");
+          return;
+        }
+
+        try {
+          const response = await fetch('http://localhost:3000/agendas', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ name: agendaName })
+          });
+
+          if (response.ok) {
+            const newAgenda = await response.json();
+
             // Créer un nouvel élément agenda
             const agendaDiv = document.createElement("div");
             agendaDiv.className = "calendar"; // Assurez-vous que le style est appliqué
             agendaDiv.innerHTML = `
-            <button class="close-agenda" onclick="removeAgenda(this)">×</button>
-            <h3>${agendaName}</h3>
-        `; 
+              <button class="close-agenda" onclick="removeAgenda(this)">×</button>
+              <h3>${newAgenda.name}</h3>
+            `;
+
             // Ajouter le nouvel agenda au conteneur principal
             mainContent.appendChild(agendaDiv);
 
@@ -114,10 +133,15 @@
             agendaNameInput.value = "";
             // Fermer la modal
             modal.style.display = "none";
-        } else {
-            alert("Veuillez entrer un nom d'agenda.");
+          } else {
+            const errorData = await response.json();
+            alert(errorData.message + ' : ' + JSON.stringify(errorData.error));
+          }
+        } catch (error) {
+          console.error('Erreur:', error);
+          alert('Une erreur s\'est produite lors de la création de l\'agenda');
         }
-    }
+    };
 
     let agendaToDelete = null; // Variable pour stocker l'agenda à supprimer
 

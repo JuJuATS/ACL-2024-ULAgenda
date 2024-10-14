@@ -23,15 +23,13 @@ const User = require('./database/models/user');
 
 // -- EXPRESS --
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 /**
  * ==================================================
  *                  CONFIGURATION
  * ==================================================
  */
-
-console.log('Connecting to DB_URI:', process.env.DB_URI); // Vérifiez si cela affiche l'URI correctement
 
 // Connection à la base de données
 connectDB();
@@ -46,9 +44,12 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Middleware pour analyser les données du formulaire
 app.use(express.urlencoded({ extended: true }));
 
+// Middleware pour analyser les données Json.
+app.use(express.json());
+
 // Configuration des sessions
 const store  = MangoStore.create({
-  mongoUrl: 'mongodb://localhost:27017/db_ulagenda',
+  mongoUrl: process.env.DB_URI,
   ttl: 2 * 60 * 60, // Durée de validité de la session: 2 heures
   collectionName: 'sessions',
   autoRemove: 'interval',
