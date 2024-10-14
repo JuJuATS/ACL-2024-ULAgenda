@@ -43,7 +43,7 @@ const forgottenPasswordLinkMaker  = async(req,res)=>{
 }
 const resetPassword = async(req,res)=>{
     if(req.session.isLoggedIn){
-        return
+        return res.redirect("/")
     }
     const {token} = req.body
     const currentTime = Math.floor(Date.now() / 1000);
@@ -63,7 +63,13 @@ const resetPassword = async(req,res)=>{
     }
 }
 const changePassword = async(req,res)=>{
+    if(req.session.isLoggedIn){
+        return res.redirect("/");
+    }
+    const {token,password,confirmPassword} = req.body
+    try{
 
+    }
 }
 module.exports = {
     forgottenPassword,
