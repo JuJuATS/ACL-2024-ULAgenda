@@ -11,6 +11,7 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MangoStore = require('connect-mongo');
+const flash = require('express-flash')
 const path = require('path');
 const cors = require('cors');
 
@@ -21,6 +22,7 @@ const agendaRoutes = require('./routes/agendas/agendas');
 // -- BBD --
 const connectDB = require('./database/db');
 const User = require('./database/models/user');
+const { sign } = require('crypto');
 
 // -- EXPRESS --
 const app = express();
@@ -44,14 +46,15 @@ app.set('views', path.join(__dirname, 'views'));
 // Middleware pour servir les fichiers du dossier public
 app.use(express.static(path.join(__dirname, 'public')))
   // Middleware pour analyser les données du formulaire
-.use(express.urlencoded({ extended: true }))
+  .use(express.urlencoded({ extended: true }))
   // Middleware pour analyser les données Json.
-.use(express.json())
+  .use(express.json())
   // Middleware pour cors.
-.use(cors({
-  origin: 'http://localhost:' + port,
-  credential: true
-}));
+  .use(cors({
+    origin: 'http://localhost:' + port,
+    credential: true
+  }))
+  .use(flash());
 
 // Configuration des sessions
 const store  = MangoStore.create({
@@ -87,7 +90,9 @@ app.use((req, res, next) => {
 });
 
 // Route de base
-app.get('/', (req, res) => res.render('index'));
+app.get('/', (req, res) => res.render('index', { user:req.session.id }));
+
+app.use('/agendas', agendaRoutes);
 
 // Routes pour afficher le formulaire d'inscription
 app
@@ -99,9 +104,16 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 // Route pour vérifier l'email
 app.get('/verify-email', routes.signup.verifyEmail);
 
+// Route de connection
+app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexion)
+
+// Route pour récuperer son mot de passe
+app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker)
+app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword)
+app.get("/logout",routes.signin.logout)
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
 });
 
-app.use('/agendas', agendaRoutes);
+module.exports = app

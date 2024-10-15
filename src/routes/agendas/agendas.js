@@ -1,12 +1,14 @@
 const express = require('express');
 const Agenda = require('../../database/models/agenda.js');
+const ObjectId = require('mongodb').ObjectId;
 const authMiddleware = require('../../middlewares/authMiddleware.js')
 const router = express.Router();
 
+
 // Route pour afficher les agendas
 router.get('/', authMiddleware, async (req, res) => {
-  const userId = req.session.id;
-  const agendas = await Agenda.find({ userId });
+  const userId = ObjectId.createFromTime(req.session.id);  
+  const agendas = await Agenda.find({userId:userId});
 
   res.render('agendas' ,{ agendas });
 });
@@ -15,7 +17,7 @@ router.get('/', authMiddleware, async (req, res) => {
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const { name } = req.body;
-    const userId = req.session.id;
+    const userId = ObjectId.createFromTime(req.session.id);
 
     if (!name) {
       return res.status(400).json({ message: 'Le nom de l\'agenda est requis' });

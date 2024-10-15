@@ -7,7 +7,7 @@ const router = express.Router();
 /*
 router.get('/:agendaId', authMiddleware, async (req, res) => {
   const userId = req.session.id;
-  const rdvUser = await Rdv.find({ agendaId });
+  const rdvUser = await Rdv.findById(agendaId);
 
   res.render('rendezvous', { rdvUser });
 });
