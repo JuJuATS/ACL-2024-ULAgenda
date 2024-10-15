@@ -1,16 +1,20 @@
 const express = require('express');
 const Rdv = (require('../../database/models/rdv.js')).Rdv;
+const authMiddleware = require('../../middlewares/authMiddleware.js')
 const router = express.Router();
 
 // Route pour afficher les rendez-vous avec le bon id.
 /*
-router.get('/:agendaId', (req, res) => {
-    res.render('rdv', { nom_vue_rdv });
+router.get('/:agendaId', authMiddleware, async (req, res) => {
+  const userId = req.session.id;
+  const rdvUser = await Rdv.find({ agendaId });
+
+  res.render('rendezvous', { rdvUser });
 });
 */
 
 // Route pour créer un nouveau rendez-vous.
-router.post('/:agendaId', async (req, res) => {
+router.post('/:agendaId', authMiddleware, async (req, res) => {
   try {
     const agendaId = req.params.agendaId;
     const { name, description, dateDebut, dateFin, category } = req.body;

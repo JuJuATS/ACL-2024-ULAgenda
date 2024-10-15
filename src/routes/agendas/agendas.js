@@ -6,7 +6,6 @@ const router = express.Router();
 // Route pour afficher les agendas
 router.get('/', authMiddleware, async (req, res) => {
   const userId = req.session.id;
-
   const agendas = await Agenda.find({ userId });
 
   res.render('agendas' ,{ agendas });
@@ -23,7 +22,6 @@ router.post('/', authMiddleware, async (req, res) => {
     }
 
     const newAgenda = new Agenda({ name, userId });
-    
     await newAgenda.save();
 
     res.status(201).json(newAgenda);
