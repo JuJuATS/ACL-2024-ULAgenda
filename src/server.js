@@ -12,6 +12,7 @@ const express = require('express');
 const session = require('express-session');
 const MangoStore = require('connect-mongo');
 const path = require('path');
+const cors = require('cors');
 
 // -- IMPORT ROUTES --
 const routes = require('./routes');
@@ -38,14 +39,19 @@ connectDB();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// -- [MIDDLEWARES] --
+
 // Middleware pour servir les fichiers du dossier public
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Middleware pour analyser les données du formulaire
-app.use(express.urlencoded({ extended: true }));
-
-// Middleware pour analyser les données Json.
-app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public')))
+  // Middleware pour analyser les données du formulaire
+.use(express.urlencoded({ extended: true }))
+  // Middleware pour analyser les données Json.
+.use(express.json())
+  // Middleware pour cors.
+.use(cors({
+  origin: 'http://localhost:' + port,
+  credential: true
+}));
 
 // Configuration des sessions
 const store  = MangoStore.create({
