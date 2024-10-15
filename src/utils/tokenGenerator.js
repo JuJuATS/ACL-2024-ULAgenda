@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken');
+
 // Crée un token de vérification JWT
 const createVerificationToken = (user) => {
     const payload = { userId: user._id, email: user.email };

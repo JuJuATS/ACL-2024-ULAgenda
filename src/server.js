@@ -80,7 +80,8 @@ app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexi
 
 // Route pour récuperer son mot de passe
 app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker)
-app.get("/reset-password",routes.signin.resetPassword)
+app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword)
+app.get("/logout",routes.signin.logout)
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);

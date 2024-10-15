@@ -2,7 +2,7 @@ const User = require('../../database/models/user');
 const { sendResetMail} = require('../../utils/mailer');
 const { createVerificationToken } = require("../../utils/tokenGenerator");
 const jwt = require('jsonwebtoken');
-
+const argon2 = require('argon2');
 
 const forgottenPassword = async (req,res)=>{
     if(req.session.isLoggedIn){
@@ -28,7 +28,7 @@ const forgottenPasswordLinkMaker  = async(req,res)=>{
             req.flash("errors","Veuillez entrer une adresse mail valide")
             res.redirect(302,"/forgotten-password");
         }
-        const user = await User.findOneBy({email:email});
+        const user = await User.findOne({email:email});
         if(!user){
             req.flash("errors","adresse mail non trouvé");
             res.redirect(302,"/forgotten-password");
@@ -45,49 +45,59 @@ const resetPassword = async(req,res)=>{
     if(req.session.isLoggedIn){
         return res.redirect("/")
     }
-    const {token} = req.body
+    const {token} = req.query
+    console.log(token)
     const currentTime = Math.floor(Date.now() / 1000);
     try{
         const verifyToken = jwt.verify(token,process.env.JWT_SECRET);
+        
+        const user = User.findById(verifyToken.id);
+        if(!user){
+            req.flash("errors","utilisateur non trouvé");
+            res.redirect(401,"/forgottenPassword");
+        }else{
+            res.render("passwordChange",{expressFlash:req.flash("errors"),token:token});
+        }
     }catch(error){
         req.flash("errors","ce lien n'est pas valide ou expiré");
-        res.redirect(403,"/forgottenPassword");
+        res.redirect(403,"/forgottenPassword",{expressFlash:req.flash("errors")});
     }
-  
-    const user = User.findById(verifyToken.id);
-    if(!user){
-        req.flash("errors","utilisateur non trouvé");
-        res.redirect(401,"/forgottenPassword");
-    }else{
-        res.render("passwordChange");
     }
-}
 const changePassword = async(req,res)=>{
     if(req.session.isLoggedIn){
         return res.redirect("/");
     }
-    const {token,password,confirmPassword} = req.body
+    const {token} = req.query;
+    const {password,confirmPassword} = req.body
+    
     try{
-        const token = jwt.verify(token); 
+        const verifytoken = jwt.verify(token,process.env.JWT_SECRET); 
         if(password!==confirmPassword){
             req.flash("errors","les mots de passe doivent correspondre");
             req.redirect(`/reset-password?token=${token}`);         
         }
         else{
-            const user = await User.findById(token.id);
+            if(password.length<8){
+                req.flash("errors","le mot de passe doit faire plus de 8 caractères")
+                req.redirect(`/reset-password?token=${token}`); 
+            }
+            console.log(verifytoken)
+            const user = await User.findById(verifytoken.userId);
             if(!user){
-                req.flash("Utilisateur non trouvé");
-                res.redirect("/forgottenPassword");
+                req.flash("errors","Utilisateur non trouvé");
+                res.redirect("/forgotten-password");
             }
             else{
-                user.password = password;
+                const hashedPassword = await argon2.hash(password);
+                user.password = hashedPassword;
                 user.save();
                 res.redirect("/signin");
             }
         }
     }catch(error){
+        console.log(error)
         req.flash("errors","Token expiré ou non valide");
-        res.redirect(403,"/forgottenPassword");
+        res.redirect(403,"/forgotten-password");
     }
 }
 module.exports = {

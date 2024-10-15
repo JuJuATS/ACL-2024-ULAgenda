@@ -7,5 +7,6 @@ module.exports = {
     forgottenPassword,
     forgottenPasswordLinkMaker,
     resetPassword,
-    changePassword,logout
+    changePassword,
+    logout
 };
