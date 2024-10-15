@@ -1,9 +1,11 @@
 const signin = require('./signin');
-const userConnexion = require('./userConnexion')
-const {forgottenPassword, forgottenPasswordLinkMaker} = require("./forgottenPassword")
+const { userConnexion,logout } = require('./userConnexion')
+const {forgottenPassword, forgottenPasswordLinkMaker,resetPassword,changePassword} = require("./forgottenPassword")
 module.exports = {
     signin,
     userConnexion,
     forgottenPassword,
-    forgottenPasswordLinkMaker
+    forgottenPasswordLinkMaker,
+    resetPassword,
+    changePassword,logout
 };

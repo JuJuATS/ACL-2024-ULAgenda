@@ -50,7 +50,7 @@ const resetPassword = async(req,res)=>{
     try{
         const verifyToken = jwt.verify(token,process.env.JWT_SECRET);
     }catch(error){
-        req.flash("errors","ce lien n'est plus valide");
+        req.flash("errors","ce lien n'est pas valide ou expiré");
         res.redirect(403,"/forgottenPassword");
     }
   
@@ -68,7 +68,26 @@ const changePassword = async(req,res)=>{
     }
     const {token,password,confirmPassword} = req.body
     try{
-
+        const token = jwt.verify(token); 
+        if(password!==confirmPassword){
+            req.flash("errors","les mots de passe doivent correspondre");
+            req.redirect(`/reset-password?token=${token}`);         
+        }
+        else{
+            const user = await User.findById(token.id);
+            if(!user){
+                req.flash("Utilisateur non trouvé");
+                res.redirect("/forgottenPassword");
+            }
+            else{
+                user.password = password;
+                user.save();
+                res.redirect("/signin");
+            }
+        }
+    }catch(error){
+        req.flash("errors","Token expiré ou non valide");
+        res.redirect(403,"/forgottenPassword");
     }
 }
 module.exports = {

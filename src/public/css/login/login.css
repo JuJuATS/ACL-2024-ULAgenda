@@ -127,6 +127,8 @@ input{
   line-height: 30px;
   outline: none !important;
   width: 100%;
+  border:1px solid black;
+  border-radius: 10px;
 }
 
 input::-moz-focus-inner { 
@@ -136,6 +138,9 @@ input::-moz-focus-inner {
   color: #707075;
   margin-top: 40px;
   transition: color 300ms;
+}
+#submit:hover{
+  color: #f2f2f2;
 }
 #submit:focus {
   color: #f2f2f2;

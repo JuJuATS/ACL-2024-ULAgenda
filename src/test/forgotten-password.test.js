@@ -1,4 +1,5 @@
 const request = require('supertest');
+require('dotenv').config();
 const mongoose = require('mongoose');
 const { MongoMemoryServer } = require('mongodb-memory-server');
 const app = require('../server');
@@ -13,7 +14,7 @@ describe("Test de la fonction de mot de passe oublié",()=>{
         mongoServer = await MongoMemoryServer.create();
         const mongoUri = mongoServer.getUri();
         // Connexion à la base de données en mémoire
-        await mongoose.connect("mongodb://localhost:27017/db_ulagenda");
+        await mongoose.connect(process.env.DB_URI);
       });
     
       

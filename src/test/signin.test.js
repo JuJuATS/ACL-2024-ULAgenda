@@ -4,6 +4,7 @@ const { MongoMemoryServer } = require('mongodb-memory-server');
 const app = require('../server');
 const User = require('../database/models/user');
 const argon2 = require('argon2');
+require('dotenv').config();
 
 let mongoServer;
 describe('Tests de la fonction de login', () => {
@@ -14,7 +15,7 @@ describe('Tests de la fonction de login', () => {
     
     console.log(mongoUri)
     // Connexion à la base de données en mémoire
-    await mongoose.connect("mongodb://localhost:27017/db_ulagenda");
+    await mongoose.connect(process.env.DB_URI);
   });
 
   

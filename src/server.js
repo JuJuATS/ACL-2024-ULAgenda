@@ -30,7 +30,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(flash())
 // Configuration des sessions
 const store  = MangoStore.create({
-  mongoUrl: 'mongodb://localhost:27017/db_ulagenda',
+  mongoUrl: process.env.DB_URI,
   ttl: 2 * 60 * 60, // Durée de validité de la session: 2 heures
   collectionName: 'sessions',
   autoRemove: 'interval',
@@ -80,7 +80,7 @@ app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexi
 
 // Route pour récuperer son mot de passe
 app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker)
-
+app.get("/reset-password",routes.signin.resetPassword)
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
