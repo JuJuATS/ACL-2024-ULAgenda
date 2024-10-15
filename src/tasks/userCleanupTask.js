@@ -24,7 +24,9 @@ const deleteUnverifiedUsers = async () => {
 };
 
 // Planifier la tâche pour s'exécuter toutes les heures
-cron.schedule('0 * * * *', () => {
-    console.log('Exécution de la tâche de suppression des comptes non vérifiés');
-    deleteUnverifiedUsers();
-});
+if (process.env.NODE_ENV !== 'test') {
+    cron.schedule('0 * * * *', () => {
+        console.log('Exécution de la tâche de suppression des comptes non vérifiés');
+        deleteUnverifiedUsers();
+    });
+}

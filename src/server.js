@@ -42,25 +42,29 @@ app.set('views', path.join(__dirname, 'views'));
 // -- [MIDDLEWARES] --
 
 // Middleware pour servir les fichiers du dossier public
-app.use(express.static(path.join(__dirname, 'public')))
-  // Middleware pour analyser les données du formulaire
-.use(express.urlencoded({ extended: true }))
-  // Middleware pour analyser les données Json.
-.use(express.json())
-  // Middleware pour cors.
-.use(cors({
-  origin: 'http://localhost:' + port,
-  credential: true
-}));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Middleware pour analyser les données du formulaire
+app.use(express.urlencoded({ extended: true }));
+
 
 // Configuration des sessions
-const store  = MangoStore.create({
-  mongoUrl: process.env.DB_URI,
-  ttl: 2 * 60 * 60, // Durée de validité de la session: 2 heures
-  collectionName: 'sessions',
-  autoRemove: 'interval',
-  autoRemoveInterval: 10,
-});
+let store;
+if (process.env.NODE_ENV == 'test') {
+  // Utilisation de MemoryStore pour les tests
+  const MemoryStore = require('memorystore')(session);
+  store = new MemoryStore({
+    checkPeriod: 86400000
+  });
+} else {
+  store  = MangoStore.create({
+    mongoUrl: 'mongodb://localhost:27017/db_ulagenda',
+    ttl: 2 * 60 * 60, // Durée de validité de la session: 2 heures
+    collectionName: 'sessions',
+    autoRemove: 'interval',
+    autoRemoveInterval: 10,
+  });
+}
 
 app.use(session({
   secret: process.env.SECRET,
@@ -103,5 +107,3 @@ app.get('/verify-email', routes.signup.verifyEmail);
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
 });
-
-app.use('/agendas', agendaRoutes);
