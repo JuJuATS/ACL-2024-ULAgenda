@@ -2,7 +2,7 @@
  * ==================================================
  *                IMPORTS + VARIABLES
  * ==================================================
-*/
+ */
 
 require('dotenv').config();
 
@@ -42,29 +42,25 @@ app.set('views', path.join(__dirname, 'views'));
 // -- [MIDDLEWARES] --
 
 // Middleware pour servir les fichiers du dossier public
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Middleware pour analyser les données du formulaire
-app.use(express.urlencoded({ extended: true }));
-
+app.use(express.static(path.join(__dirname, 'public')))
+  // Middleware pour analyser les données du formulaire
+.use(express.urlencoded({ extended: true }))
+  // Middleware pour analyser les données Json.
+.use(express.json())
+  // Middleware pour cors.
+.use(cors({
+  origin: 'http://localhost:' + port,
+  credential: true
+}));
 
 // Configuration des sessions
-let store;
-if (process.env.NODE_ENV == 'test') {
-  // Utilisation de MemoryStore pour les tests
-  const MemoryStore = require('memorystore')(session);
-  store = new MemoryStore({
-    checkPeriod: 86400000
-  });
-} else {
-  store  = MangoStore.create({
-    mongoUrl: 'mongodb://localhost:27017/db_ulagenda',
-    ttl: 2 * 60 * 60, // Durée de validité de la session: 2 heures
-    collectionName: 'sessions',
-    autoRemove: 'interval',
-    autoRemoveInterval: 10,
-  });
-}
+const store  = MangoStore.create({
+  mongoUrl: process.env.DB_URI,
+  ttl: 2 * 60 * 60, // Durée de validité de la session: 2 heures
+  collectionName: 'sessions',
+  autoRemove: 'interval',
+  autoRemoveInterval: 10,
+});
 
 app.use(session({
   secret: process.env.SECRET,
@@ -103,9 +99,9 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 // Route pour vérifier l'email
 app.get('/verify-email', routes.signup.verifyEmail);
 
-app.use('/agendas', agendaRoutes);
-
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
 });
+
+app.use('/agendas', agendaRoutes);
