@@ -103,6 +103,8 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 // Route pour vérifier l'email
 app.get('/verify-email', routes.signup.verifyEmail);
 
+app.use('/agendas', agendaRoutes);
+
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
