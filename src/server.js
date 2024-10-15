@@ -1,16 +1,38 @@
+/**
+ * ==================================================
+ *                IMPORTS + VARIABLES
+ * ==================================================
+ */
+
 require('dotenv').config();
+
+// -- IMPORT MODULES --
+
 const express = require('express');
 const session = require('express-session');
 const MangoStore = require('connect-mongo');
+const flash = require('express-flash')
 const path = require('path');
+const cors = require('cors');
 
+// -- IMPORT ROUTES --
 const routes = require('./routes');
+const agendaRoutes = require('./routes/agendas/agendas');
 
+// -- BBD --
 const connectDB = require('./database/db');
 const User = require('./database/models/user');
+const { sign } = require('crypto');
 
+// -- EXPRESS --
 const app = express();
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
+
+/**
+ * ==================================================
+ *                  CONFIGURATION
+ * ==================================================
+ */
 
 // Connection à la base de données
 connectDB();
@@ -19,33 +41,29 @@ connectDB();
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
+// -- [MIDDLEWARES] --
+
 // Middleware pour servir les fichiers du dossier public
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Middleware pour analyser les données JSON
-app.use(express.json());
-
-// Middleware pour analyser les données du formulaire
-app.use(express.urlencoded({ extended: true }));
-
+app.use(express.static(path.join(__dirname, 'public')))
+  // Middleware pour analyser les données du formulaire
+  .use(express.urlencoded({ extended: true }))
+  // Middleware pour analyser les données Json.
+  .use(express.json())
+  // Middleware pour cors.
+  .use(cors({
+    origin: 'http://localhost:' + port,
+    credential: true
+  }))
+  .use(flash());
 
 // Configuration des sessions
-let store;
-if (process.env.NODE_ENV == 'test') {
-  // Utilisation de MemoryStore pour les tests
-  const MemoryStore = require('memorystore')(session);
-  store = new MemoryStore({
-    checkPeriod: 86400000
-  });
-} else {
-  store  = MangoStore.create({
-    mongoUrl: 'mongodb://localhost:27017/db_ulagenda',
-    ttl: 2 * 60 * 60, // Durée de validité de la session: 2 heures
-    collectionName: 'sessions',
-    autoRemove: 'interval',
-    autoRemoveInterval: 10,
-  });
-}
+const store  = MangoStore.create({
+  mongoUrl: process.env.DB_URI,
+  ttl: 2 * 60 * 60, // Durée de validité de la session: 2 heures
+  collectionName: 'sessions',
+  autoRemove: 'interval',
+  autoRemoveInterval: 10,
+});
 
 app.use(session({
   secret: process.env.SECRET,
@@ -71,9 +89,10 @@ app.use((req, res, next) => {
   next();
 });
 
-
 // Route de base
-app.get('/', (req, res) => res.render('index', {user: req.session.user}));
+app.get('/', (req, res) => res.render('index', { user:req.session.id }));
+
+app.use('/agendas', agendaRoutes);
 
 // Routes pour afficher le formulaire d'inscription
 app
@@ -85,12 +104,16 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 // Route pour vérifier l'email
 app.get('/verify-email', routes.signup.verifyEmail);
 
+// Route de connection
+app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexion)
 
+// Route pour récuperer son mot de passe
+app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker)
+app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword)
+app.get("/logout",routes.signin.logout)
 // Démarrage du serveur
-if (process.env.NODE_ENV !== 'test') {
-  app.listen(port, () => {
-    console.log(`Serveur en écoute sur http://localhost:${port}`);
-  });
-}
+app.listen(port, () => {
+  console.log(`Serveur en écoute sur http://localhost:${port}`);
+});
 
-module.exports = app;
+module.exports = app

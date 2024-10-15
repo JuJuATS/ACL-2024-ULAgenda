@@ -27,14 +27,12 @@ const userSchema = new mangoose.Schema({
         type: [String],
         default: [],
     },
-    agendas: {
-        type: [String],
-        default: [],
-    },
+    agendas: [{ type: mangoose.Schema.Types.ObjectId, ref: 'Agenda' }],
     isVerified: {
         type: Boolean,
         default: false,
     },
+   
 }, {timestamps: true});
 
 const User = mangoose.model('User', userSchema);
