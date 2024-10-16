@@ -1,0 +1,52 @@
+<% if (locals.messagesFlash && messagesFlash.length > 0) { %>
+    <div class="flash-messages">
+        <% messagesFlash.forEach(message => { %>
+            <div class="flash-message <%= message.type %>">
+                <%= message.content %>
+            </div>
+        <% }); %>
+    </div>
+<% } %>
+
+<button onclick="window.location.href = '/'">Retour à l'accueil</button>
+
+<h1>Gestion des catégories</h1>
+
+<h2>Catégories Globales</h2>
+<ul>
+    <% globalCategories.forEach(category => { %>
+        <li>
+            <strong><%= category.name %></strong>
+            <ul>
+                <li>Couleur : <span style="background-color: <%= category.color %>;">&nbsp;&nbsp;&nbsp;&nbsp;</span></li>
+                <li>Durée par défaut : <%= category.defaultDuration %> minutes</li>
+                <li>Récurrence par défaut : <%= category.recurrence %></li>
+                <li>Priorité : <%= category.priority %></li>
+                <li>Visibilité : <%= category.visibility %></li>
+                <li><a href="/edit-category/<%= category._id %>">Modifier</a></li>
+            </ul>
+        </li>
+    <% }); %>
+</ul>
+
+<h2>Catégories Personnelles</h2>
+<ul>
+    <% personalCategories.forEach(category => { %>
+        <li>
+            <strong><%= category.name %></strong>
+            <ul>
+                <li>Couleur : <span style="background-color: <%= category.color %>;">&nbsp;&nbsp;&nbsp;&nbsp;</span></li>
+                <li>Durée par défaut : <%= category.defaultDuration %> minutes</li>
+                <li>Récurrence par défaut : <%= category.recurrence %></li>
+                <li>Priorité : <%= category.priority %></li>
+                <li>Visibilité : <%= category.visibility %></li>
+                <li><a href="/edit-category/<%= category._id %>">Modifier</a></li>
+            </ul>
+        </li>
+    <% }); %>
+</ul>
+
+<!-- Bouton pour ajouter une nouvelle catégorie -->
+<!-- <form action="/create-category" method="POST">
+    <button type="submit">Créer une nouvelle catégorie</button>
+</form> -->

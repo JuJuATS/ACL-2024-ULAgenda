@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier la catégorie</title>
+    <style>
+        /* Style pour les messages de succès */
+        .success {
+            color: green; /* Couleur verte pour indiquer le succès */
+            background-color: #e6ffe6; /* Un léger fond vert clair */
+            padding: 10px;
+            border: 1px solid green; /* Bordure verte */
+            border-radius: 5px; /* Coins arrondis */
+            margin-bottom: 10px; /* Espacement en bas */
+        }
+
+        /* Style pour les messages d'erreur */
+        .error {
+            color: red; /* Couleur rouge pour indiquer une erreur */
+            background-color: #ffe6e6; /* Un léger fond rouge clair */
+            padding: 10px;
+            border: 1px solid red; /* Bordure rouge */
+            border-radius: 5px; /* Coins arrondis */
+            margin-bottom: 10px; /* Espacement en bas */
+        }
+    </style>
+</head>
+<body>
+    <div id="message-container"></div> <!-- Conteneur pour les messages -->
+    <button onclick="window.location.href = '/manage-categories'">Gérer les catégories</button>
+    <h1>Modifier la catégorie : <%= category.name %></h1>
+
+    <form id="edit-category-form" method="POST">
+        <label for="name">Nom :</label>
+        <input type="text" id="name" name="name" value="<%= category.name %>" required <%= category.isGlobal ? 'disabled' : '' %> >
+
+        <label for="color">Couleur :</label>
+        <input type="color" id="color" name="color" value="<%= category.color %>">
+
+        <label for="priority">Priorité :</label>
+        <select id="priority" name="priority">
+            <option value="Haute" <%= category.priority === 'Haute' ? 'selected' : '' %>>Haute</option>
+            <option value="Moyenne" <%= category.priority === 'Moyenne' ? 'selected' : '' %>>Moyenne</option>
+            <option value="Basse" <%= category.priority === 'Basse' ? 'selected' : '' %>>Basse</option>
+        </select>
+
+        <label for="visibility">Visibilité :</label>
+        <select id="visibility" name="visibility">
+            <option value="Public" <%= category.visibility === 'Public' ? 'selected' : '' %>>Public</option>
+            <option value="Privé" <%= category.visibility === 'Privé' ? 'selected' : '' %>>Privé</option>
+        </select>
+
+        <label for="recurrence">Récurrence :</label>
+        <select id="recurrence" name="recurrence">
+            <option value="Aucune" <%= category.recurrence === 'Aucune' ? 'selected' : '' %>>Aucune</option>
+            <option value="Quotidienne" <%= category.recurrence === 'Quotidienne' ? 'selected' : '' %>>Quotidienne</option>
+            <option value="Hebdomadaire" <%= category.recurrence === 'Hebdomadaire' ? 'selected' : '' %>>Hebdomadaire</option>
+            <option value="Mensuelle" <%= category.recurrence === 'Mensuelle' ? 'selected' : '' %>>Mensuelle</option>
+        </select>
+
+        <label for="defaultDuration">Durée par défaut (minutes) :</label>
+        <input type="number" id="defaultDuration" name="defaultDuration" value="<%= category.defaultDuration %>" required>
+
+        <button type="submit">Enregistrer les modifications</button>
+    </form>
+
+    <!-- Si la catégorie est globale, afficher le bouton "Réinitialiser" -->
+    <% if (category.isGlobal) { %>
+        <button type="button" id="reset-category-button">Réinitialiser les valeurs par défaut</button>
+    <% } %>
+
+    <!-- Si la catégorie n'est pas globale, afficher le bouton "Supprimer" -->
+    <% if (!category.isGlobal) { %>
+        <form id="delete-category-form" action="/delete-category/<%= category._id %>" method="POST">
+            <button type="button" id="delete-category-button">Supprimer la catégorie</button>
+        </form>
+    <% } %>
+
+    <script>
+        document.getElementById('edit-category-form').addEventListener('submit', async (event) => {
+            event.preventDefault(); // Empêche l'envoi traditionnel du formulaire
+
+            const formData = new FormData(event.target);
+            const categoryId = "<%= category._id %>";
+
+            const jsonData = {};
+            formData.forEach((value, key) => {
+                jsonData[key] = value;
+            });
+
+            try {
+                const response = await fetch(`/update-category/${categoryId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(jsonData),
+                });
+
+                const data = await response.json();
+
+                // Créer un élément de message
+                const messageContainer = document.getElementById('message-container');
+                messageContainer.innerHTML = `<div class="${data.type}">${data.message}</div>`; // Afficher le message de succès ou d'erreur
+
+                if (response.ok) {
+                    disableSubmitButton();
+                }
+
+            } catch (error) {
+                console.error('Erreur lors de la mise à jour de la catégorie:', error);
+                const messageContainer = document.getElementById('message-container');
+                messageContainer.innerHTML = `<div class="error">Erreur lors de la mise à jour de la catégorie</div>`;
+            }
+
+            masquerMessage();
+        });
+
+        // Confirmation avant de supprimer une catégorie
+        document.getElementById('delete-category-button')?.addEventListener('click', function() {
+            const confirmation = confirm('Êtes-vous sûr de vouloir supprimer cette catégorie ? Cette action est irréversible.');
+            if (confirmation) {
+                document.getElementById('delete-category-form').submit();
+            }
+        });
+
+        // Réinitialiser la catégorie avec fetch (DELETE)
+        document.getElementById('reset-category-button')?.addEventListener('click', async function() {
+            const confirmation = confirm('Êtes-vous sûr de vouloir réinitialiser cette catégorie ?');
+            if (confirmation) {
+                const categoryId = "<%= category._id %>"; // ID de la catégorie
+
+                try {
+                    const response = await fetch(`/reset-category/${categoryId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        }
+                    });
+
+                    const data = await response.json();
+
+                    if (data.success) {
+                        // Mise à jour des champs du formulaire avec les valeurs par défaut de la catégorie globale
+                        document.getElementById('color').value = data.defaultValues.color;
+                        document.getElementById('priority').value = data.defaultValues.priority;
+                        document.getElementById('visibility').value = data.defaultValues.visibility;
+                        document.getElementById('recurrence').value = data.defaultValues.recurrence;
+                        document.getElementById('defaultDuration').value = data.defaultValues.defaultDuration;
+
+                        // Afficher un message de succès
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = `<div class="success">Catégorie réinitialisée avec les valeurs par défaut</div>`;
+
+                        disableSubmitButton();
+                    } else {
+                        // Afficher un message d'erreur si échec
+                        const messageContainer = document.getElementById('message-container');
+                        messageContainer.innerHTML = `<div class="error">${data.error}</div>`;
+                    }
+
+                } catch (error) {
+                    const messageContainer = document.getElementById('message-container');
+                    messageContainer.innerHTML = `<div class="error">Erreur lors de la réinitialisation de la catégorie</div>`;
+                }
+
+                masquerMessage();
+            }
+        });
+
+        function masquerMessage() {
+            // Masquer le message après 7 secondes
+            setTimeout(() => {
+                const messageContainer = document.getElementById('message-container');
+                messageContainer.innerHTML = '';
+            }, 7000);
+        }
+
+
+        // Gestion de l'activation/désactivation du bouton de soumission
+        const originalValues = {
+            name: document.getElementById('name').value,
+            color: document.getElementById('color').value,
+            priority: document.getElementById('priority').value,
+            visibility: document.getElementById('visibility').value,
+            recurrence: document.getElementById('recurrence').value,
+            defaultDuration: document.getElementById('defaultDuration').value
+        };
+
+        const submitButton = document.querySelector('button[type="submit"]');
+        submitButton.disabled = true; // Désactive le bouton au chargement
+
+        const checkFormChanges = () => {
+            const currentValues = {
+                name: document.getElementById('name').value,
+                color: document.getElementById('color').value,
+                priority: document.getElementById('priority').value,
+                visibility: document.getElementById('visibility').value,
+                recurrence: document.getElementById('recurrence').value,
+                defaultDuration: document.getElementById('defaultDuration').value
+            };
+
+            // Active le bouton uniquement si les valeurs actuelles sont différentes des valeurs originales
+            if (JSON.stringify(originalValues) !== JSON.stringify(currentValues)) {
+                submitButton.disabled = false;
+            } else {
+                submitButton.disabled = true;
+            }
+        };
+
+        // Ajouter des écouteurs d'événements pour chaque champ du formulaire
+        document.getElementById('name').addEventListener('input', checkFormChanges);
+        document.getElementById('color').addEventListener('input', checkFormChanges);
+        document.getElementById('priority').addEventListener('change', checkFormChanges);
+        document.getElementById('visibility').addEventListener('change', checkFormChanges);
+        document.getElementById('recurrence').addEventListener('change', checkFormChanges);
+        document.getElementById('defaultDuration').addEventListener('input', checkFormChanges);
+
+        // Fonction pour désactiver le bouton après enregistrement ou réinitialisation
+        const disableSubmitButton = () => {
+            // Actualiser les valeurs originales après la soumission ou réinitialisation
+            originalValues.name = document.getElementById('name').value;
+            originalValues.color = document.getElementById('color').value;
+            originalValues.priority = document.getElementById('priority').value;
+            originalValues.visibility = document.getElementById('visibility').value;
+            originalValues.recurrence = document.getElementById('recurrence').value;
+            originalValues.defaultDuration = document.getElementById('defaultDuration').value;
+
+            // Désactiver le bouton
+            submitButton.disabled = true;
+        };
+    </script>
+</body>
+</html>

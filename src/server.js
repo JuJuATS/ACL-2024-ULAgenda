@@ -7,13 +7,15 @@ const path = require('path');
 const routes = require('./routes');
 
 const connectDB = require('./database/db');
-const User = require('./database/models/user');
+const populateCategories = require('./database/populateCategories');
 
 const app = express();
 const port = process.env.PORT;
 
 // Connection à la base de données
 connectDB();
+// Peuplement des catégories
+populateCategories();
 
 // Configuration EJS comme moteur de template
 app.set('view engine', 'ejs');
@@ -60,6 +62,16 @@ app.use(session({
   },
 }));
 
+
+// Middleware pour vérifier si l'utilisateur est connecté
+const isAuthenticated = (req, res, next) => {
+  if (req.session.user) {
+    return next();
+  }
+  res.redirect('/signin');
+}
+
+
 // Configuration des variables res.locals
 app.use((req, res, next) => {
   res.locals.messagesFlash = [];
@@ -67,7 +79,6 @@ app.use((req, res, next) => {
     res.locals.messagesFlash = req.session.messagesFlash;
     req.session.messagesFlash = []; // Réinitialisation des messages flash
   }
-  res.locals.user = req.session.user || null; 
   next();
 });
 
@@ -84,6 +95,14 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 
 // Route pour vérifier l'email
 app.get('/verify-email', routes.signup.verifyEmail);
+
+
+// Route pour la personnalisation des catégories
+app
+  .get('/manage-categories', isAuthenticated, routes.categories.getCategories)
+  .get('/edit-category/:categoryId', isAuthenticated, routes.categories.editCategory)
+  .put('/update-category/:categoryId', isAuthenticated, routes.categories.updateCategory)
+  .delete('/reset-category/:categoryId', isAuthenticated, routes.categories.resetCategory);
 
 
 // Démarrage du serveur
