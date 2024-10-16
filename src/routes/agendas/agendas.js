@@ -17,7 +17,7 @@ router.get('/', authMiddleware, async (req, res) => {
    let userId = ObjectId.createFromTime(req.session.id);  
   const agendas = await Agenda.find({userId:userId});
 
-  res.render('agendas' ,{ agendas });
+  res.render('agendas' ,{ agendas,user:req.session.isLoggedIn });
 });
 
 // Route pour supprimer un agenda par son ID

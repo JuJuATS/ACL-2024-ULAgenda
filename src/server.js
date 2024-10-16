@@ -90,7 +90,7 @@ app.use((req, res, next) => {
 });
 
 // Route de base
-app.get('/', (req, res) => res.render('index', { user:req.session.id }));
+app.get('/', (req, res) => res.render('index', { user:req.session.isLoggedIn }));
 
 app.use('/agendas', agendaRoutes);
 

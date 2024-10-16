@@ -129,18 +129,25 @@ input{
   width: 100%;
   border:1px solid black;
   border-radius: 10px;
+  padding-left: 5px;
+  color: #707075;
+  transition: color 300ms;
 }
-
+input::placeholder{
+  transition: color 300ms;
+}
 input::-moz-focus-inner { 
   border: 0; 
 }
 #submit {
-  color: #707075;
+  
   margin-top: 40px;
-  transition: color 300ms;
 }
 #submit:hover{
   color: #f2f2f2;
+}
+input:hover::placeholder{
+  color:#f2f2f2
 }
 #submit:focus {
   color: #f2f2f2;
