@@ -17,7 +17,6 @@ describe('Tests de la fonction de login', () => {
     // Connexion à la base de données en mémoire
     await mongoose.connect(process.env.DB_URI);
   });
-
   
   afterEach(async () => {
     // Nettoyer toutes les collections après chaque test
@@ -28,7 +27,6 @@ describe('Tests de la fonction de login', () => {
     await mongoose.disconnect();
     //await mongoServer.stop();
   });
-
 
   it('devrait rediriger vers "/" [pseudo]" pour un utilisateur valide', async () => {
     // Créer un utilisateur avec un mot de passe hashé
@@ -60,7 +58,6 @@ describe('Tests de la fonction de login', () => {
 
     expect(response.statusCode).toBe(400);
   });
-
 
   it('devrait retourner 400 si le mot de passe est incorrect', async () => {
     // Créer un utilisateur

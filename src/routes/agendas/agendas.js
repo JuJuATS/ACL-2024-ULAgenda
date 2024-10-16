@@ -4,7 +4,6 @@ const ObjectId = require('mongodb').ObjectId;
 const authMiddleware = require('../../middlewares/authMiddleware.js')
 const router = express.Router();
 
-
 // Route pour afficher les agendas
 router.get('/', authMiddleware, async (req, res) => {
   const userId = ObjectId.createFromTime(req.session.id);  

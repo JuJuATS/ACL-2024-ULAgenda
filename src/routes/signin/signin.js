@@ -1,6 +1,3 @@
-
-
-
 const signin = async(req,res)=>{
     if(req.session.isLoggedIn){
         return res.redirect("/");
@@ -11,6 +8,5 @@ const signin = async(req,res)=>{
         res.render("signin",{expressFlash:error})
     }
 }
-
 
 module.exports = signin;
