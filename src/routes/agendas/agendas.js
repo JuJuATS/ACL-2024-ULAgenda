@@ -10,7 +10,7 @@ router.get('/', authMiddleware, async (req, res) => {
   const userId = ObjectId.createFromTime(req.session.id);  
   const agendas = await Agenda.find({userId:userId});
 
-  res.render('agendas' ,{ agendas });
+  res.render('agendas' ,{ agendas,user:req.session.isLoggedIn });
 });
 
 // Route pour créer un nouvel agenda
