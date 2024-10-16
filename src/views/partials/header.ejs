@@ -1,11 +1,17 @@
-<div>
-    <a href="./" class="logo">UL AGENDA</a>
-</div>
 <nav>
-    <% if (user) { %>
-        <a href="./account" class="user-button"></a>
-    <% } else { %>
-        <a href="./signin" class="connect-button">Connection</a>
-    <% } %>
-    <a href="./agendas" class="app-button">Agenda App</a>
+    <div>
+        <a href="./" class="logo">UL AGENDA</a>
+    </div>
+    <div class="right">
+        <% if (user) { %>
+            <div class="user-container">
+                <a class="user-button" href="./account" ></a>
+                <a class="hidden" href="./logout">Déconnecté</a>
+            </div>
+        <% } else { %>
+            <a href="./signin" class="connect-button">Connection</a>
+        <% } %>
+        <a href="./agendas" class="app-button">Agenda App</a>
+    </div>
+    
 </nav>

@@ -20,7 +20,9 @@ const userConnexion = async (req,res)=>{
         }
         
         req.session.isLoggedIn = true;
-        req.session.id = existingUser.id; 
+        req.session.id = existingUser._id;
+        req.session.userId = existingUser._id;
+
         return res.redirect("/")
     }
     else{

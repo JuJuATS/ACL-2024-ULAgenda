@@ -23,6 +23,7 @@ const agendaRoutes = require('./routes/agendas/agendas');
 const connectDB = require('./database/db');
 const User = require('./database/models/user');
 const { sign } = require('crypto');
+const ObjectId = require('mongodb').ObjectId;
 
 // -- EXPRESS --
 const app = express();
@@ -87,10 +88,12 @@ app.use((req, res, next) => {
 
 // Route de base
 app.get('/', async (req, res) => {
-  console.log(req.session, req.session.id)
-  const user = await User.findById(req.session.id)
-  console.log(user)
-  res.render('index', { user: req.session.islogedin })
+  let userInfo = null;
+  if (req.session.userId) {
+    const user = await User.findById(req.session.userId)
+    userInfo = { firstname: user.firstname, lastname: user.lastname, pseudo: user.pseudo };
+  }
+  res.render('index', { user: userInfo} )
 });
 
 app.use('/agendas', agendaRoutes);

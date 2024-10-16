@@ -6,12 +6,11 @@
 </head>
 <body>
     <header>
-        <%- include('./partials/header', {user: {user}}); %>
+        <%- include('./partials/header', {user: user}); %>
     </header>
-
     <div class="section1">
         <div class="content">
-            <h1>Welcome To ULAgenda <% if (user) { %> <%= user.pseudo %> <%}%></h1>
+            <h1>Bienvenue sur ULAgenda <% if (user) { %> <%= user.pseudo %> <%}%></h1>
             <p>
                 Organiser vos rendez-vous facilement
             </p>
@@ -29,7 +28,7 @@
 
         <% [
         {
-          "name": "Intuitive",
+          "name": "Intuitif",
           "id": "classic-calendar",
           "desc": "L'application est conçue pour être intuitive et facile à utiliser, permettant aux utilisateurs de créer des agendas et d'ajouter des rendez-vous sans effort."
         },
