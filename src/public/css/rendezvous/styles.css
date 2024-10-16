@@ -1,0 +1,93 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #CFB1B7; /* Arrière-plan de la page */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.wrapper {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.container, #agenda {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 400px;
+}
+
+h1, h2 {
+    text-align: center;
+    color: #595959;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #595959;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #CFB1B7;
+    border-radius: 5px;
+    font-size: 16px;
+    color: #595959;
+    background-color: #ffffff;
+}
+
+input:focus, textarea:focus, select:focus {
+    border-color: #595959;
+    outline: none;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.btn-placer {
+    background-color: #595959; /* Bouton en #595959 */
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.btn-placer:hover {
+    background-color: #333333; /* Sombre lors du survol */
+}
+
+#agenda-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+#agenda-list li {
+    background-color: #CFBFF7; /* Fond des rendez-vous */
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    color: #595959;
+}
