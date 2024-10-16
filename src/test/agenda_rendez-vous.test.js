@@ -1,13 +1,17 @@
-const signin = require('../utils/signin.js');
-const request = require('supertest');
-require('dotenv').config();
+// Modules natifs de Node.js
 const mongoose = require('mongoose');
+
+// Modules tiers
+require('dotenv').config();  // Configuration des variables d'environnement
+const request = require('supertest');
 const { MongoMemoryServer } = require('mongodb-memory-server');
+const argon2 = require('argon2');
+const ObjectId = require('mongodb').ObjectId;
+
+// Modules locaux
 const app = require('../server');
 const Agenda = require('../database/models/agenda');
 const User = require('../database/models/user');
-const argon2 = require('argon2');
-const ObjectId = require('mongodb').ObjectId;
 
 let mongoServer;
 
@@ -32,7 +36,7 @@ describe("Test de l'ajout d'un agenda", () => {
 
   // Test de l'ajout d'un agenda.
   it("Test de l'ajout d'un agenda", async () => {
-      // Créer un utilisateur avec un mot de passe hashé
+    // Créer un utilisateur avec un mot de passe hashé
     const passwordHash = await argon2.hash('password123');
     const user = new User({
       firstname: 'John',
@@ -52,19 +56,19 @@ describe("Test de l'ajout d'un agenda", () => {
     expect(r.statusCode).toBe(302); // Vérifier la redirection
     expect(r.headers.location).toBe('/'); // Vérifier la redirection vers "/"
 
-      const name = 'agendaTest';
+    const cookie = r.headers['set-cookie'][0];
 
-      const response = await request(app)
-        .post('/agendas')
-        .send({ name: name });
+    const name = 'agendaTest';
 
-      console.log("Response: ", response.body);
+    const agendaResponse = await request(app).post('/agendas').set('Cookie', cookie).send({ name : name });
 
-      const agendaAdded = await Agenda.findOne({ name: name });
+    console.log("Response: ", agendaResponse.body);
 
-      console.log("Neil : ", agendaAdded);
+    const agendaAdded = await Agenda.findOne({ name: name });
 
-      expect(agendaAdded).not.toBeNull();
-      expect(agendaAdded.name).toBe(name);
+    console.log("Neil : ", agendaAdded);
+
+    expect(agendaAdded).not.toBeNull();
+    expect(agendaAdded.name).toBe(name);
   });
 });
