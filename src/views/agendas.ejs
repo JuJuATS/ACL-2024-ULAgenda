@@ -60,7 +60,7 @@
                     <div class="calendar">
 
                         <button class="close-agenda" onclick="removeAgenda(this)">×</button>
-                        <h3><a href="/rendezvous?agendaId<%= agenda._id%>"><%= agenda.name %></a></h3>
+                        <h3><a href="/rendezvous?agendaId=<%= agenda._id%>"><%= agenda.name %></a></h3>
 
                         <!-- Contenu de l'agenda -->
                     </div>
@@ -127,7 +127,7 @@
             agendaDiv.className = "calendar"; // Assurez-vous que le style est appliqué
             agendaDiv.innerHTML = `
               <button class="close-agenda" onclick="removeAgenda(this)">×</button>
-              <h3>${newAgenda.name}</h3>
+              <h3><a href="/rendezvous?agendaId=${newAgenda._id}">${newAgenda.name}</a></h3>
             `;
 
             // Ajouter le nouvel agenda au conteneur principal

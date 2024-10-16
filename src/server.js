@@ -18,7 +18,7 @@ const cors = require('cors');
 // -- IMPORT ROUTES --
 const routes = require('./routes');
 const agendaRoutes = require('./routes/agendas/agendas');
-
+const rdvRoutes = require("./routes/agendas/rdvs")
 // -- BBD --
 const connectDB = require('./database/db');
 const User = require('./database/models/user');
@@ -93,7 +93,7 @@ app.use((req, res, next) => {
 app.get('/', (req, res) => res.render('index', { user:req.session.isLoggedIn }));
 
 app.use('/agendas', agendaRoutes);
-
+app.use('/rendezvous',rdvRoutes);
 // Routes pour afficher le formulaire d'inscription
 app
   .get('/signup', (req, res) => res.render('signup'))
@@ -111,6 +111,7 @@ app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexi
 app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker)
 app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword)
 app.get("/logout",routes.signin.logout)
+
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
