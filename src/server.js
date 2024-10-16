@@ -14,11 +14,13 @@ const MangoStore = require('connect-mongo');
 const flash = require('express-flash')
 const path = require('path');
 const cors = require('cors');
+const morgan = require('morgan');
 
 // -- IMPORT ROUTES --
 const routes = require('./routes');
 const agendaRoutes = require('./routes/agendas/agendas');
 const rdvRoutes = require("./routes/agendas/rdvs")
+
 // -- BBD --
 const connectDB = require('./database/db');
 const User = require('./database/models/user');
@@ -52,6 +54,7 @@ app.use(express.static(path.join(__dirname, 'public')))
   .use(express.json())
   // Middleware pour cors.
   .use(cors())
+  .use(morgan())
   .use(flash());
 // Configuration des sessions
 const store  = MangoStore.create({
