@@ -1,6 +1,6 @@
-const mangoose = require('mongoose');
+const mongoose = require('mongoose');
 
-const userSchema = new mangoose.Schema({
+const userSchema = new mongoose.Schema({
     firstname: {
         type: String,
         required: true,
@@ -23,20 +23,30 @@ const userSchema = new mangoose.Schema({
         type: String,
         required: true,
     },
-    personalCategories: {
-        type: [String],
-        default: [],
-    },
-    agendas: {
-        type: [String],
-        default: [],
-    },
+    globalCategoryPersonalizations: [
+        {
+            categoryId: { type: mongoose.Schema.Types.ObjectId, ref: 'Category' },
+            personalizations: {
+                color: String,
+                priority: String,
+                visibility: String,
+                recurrence: String,
+                defaultDuration: Number,
+            },
+        },
+    ],
+    personalCategories: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Category', // Référence à la table 'Category'
+        },
+    ],
     isVerified: {
         type: Boolean,
         default: false,
     },
-}, {timestamps: true});
+}, { timestamps: true });
 
-const User = mangoose.model('User', userSchema);
+const User = mongoose.model('User', userSchema);
 
 module.exports = User;
