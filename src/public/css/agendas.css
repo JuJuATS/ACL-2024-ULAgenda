@@ -1,5 +1,4 @@
 /* Importations */
-@import url("reset.css");
 @import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
 
 /* Global */
@@ -17,67 +16,6 @@ body {
     background-color: #eef2f3; /* Couleur de fond claire */
 }
 
-.navbar {
-    position: fixed;
-    top: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 20px;
-    background-color: #212a3f;
-    z-index: 1000;
-}
-
-.logo {
-    background-color: transparent;
-    color: #cfbff7;
-    margin: 0 100px;
-    font-size: 1.5rem;
-}
-
-header nav {
-    width: 14%;
-    display: flex;
-    justify-content: space-around;
-}
-
-nav a {
-    color: #cfbff7;
-}
-
-.connect-button {
-    padding: 10px 15px;
-    font-size: 1rem; 
-    font-weight: bold;
-    text-align: center;
-}
-
-.user-button {
-    background: #cfbff7;
-    width: 17%;
-    padding-bottom: 17%;
-    background-image: url("../images/user.png");
-    background-repeat: no-repeat;
-    background-size: 75%;
-    background-position: center;
-    border-radius: 50%;
-}
-
-.app-button {
-    padding: 10px 15px;
-    border-radius: 5px;
-    font-size: 1rem; 
-    color: white;
-    margin: 0 20px;
-    background-color: #259e88;
-    font-weight: bold;
-    text-align: center;
-}
-
-.section1 .app-button {
-    max-width: 150px;
-}
 
 /* Section des agendas */
 .container {
