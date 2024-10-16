@@ -13,7 +13,7 @@
         </div>
         <nav>
             <% if (user) { %>
-                <a href="./account" class="user-button"></a>
+                <a href="./logout" class="user-button"></a>
             <% } else { %>
                 <a href="./signin" class="connect-button">Connection</a>
             <% } %>
@@ -56,9 +56,16 @@
         
             <% if (agendas && agendas.length > 0) { %>
                 <% agendas.forEach(function(agenda, index) { %>
-                    <div class="calendar" data-id="<%= agenda._id %>">
+<<<<<<< Updated upstream
+
+                    <div class="calendar">
+
+=======
+                    <div class="calendar">
+>>>>>>> Stashed changes
                         <button class="close-agenda" onclick="removeAgenda(this)">×</button>
-                        <h3><%= agenda.name %></h3>
+                        <h3><a href="/rendezvous?agendaId=<%= agenda._id%>"><%= agenda.name %></a></h3>
+
                         <!-- Contenu de l'agenda -->
                     </div>
                 <% }); %>
@@ -124,7 +131,7 @@
             agendaDiv.className = "calendar"; // Assurez-vous que le style est appliqué
             agendaDiv.innerHTML = `
               <button class="close-agenda" onclick="removeAgenda(this)">×</button>
-              <h3>${newAgenda.name}</h3>
+              <h3><a href="/rendezvous?agendaId=${newAgenda._id}">${newAgenda.name}</a></h3>
             `;
 
             // Ajouter le nouvel agenda au conteneur principal
@@ -191,6 +198,8 @@ document.getElementById("confirmDeleteButton").onclick = async function() {
         }
     }
 };
+
+
 
 
 </script>
