@@ -56,10 +56,12 @@
         
             <% if (agendas && agendas.length > 0) { %>
                 <% agendas.forEach(function(agenda, index) { %>
+
                     <div class="calendar">
 
                         <button class="close-agenda" onclick="removeAgenda(this)">×</button>
                         <h3><a href="/rendezvous?agendaId<%= agenda._id%>"><%= agenda.name %></a></h3>
+
                         <!-- Contenu de l'agenda -->
                     </div>
                 <% }); %>
@@ -167,6 +169,32 @@ document.getElementById("confirmDeleteButton").onclick = function() {
         agendaToDelete = null; // Réinitialise la variable
     }
 };
+
+// Ajouter l'événement de confirmation pour supprimer l'agenda
+document.getElementById("confirmDeleteButton").onclick = async function() {
+    if (agendaToDelete) {
+        const agendaId = agendaToDelete.getAttribute('data-id'); // Récupérer l'ID de l'agenda
+
+        try {
+            const response = await fetch(`http://localhost:3000/agendas/${agendaId}`, {
+                method: 'DELETE', // Envoi d'une requête DELETE
+            });
+
+            if (response.ok) {
+                agendaToDelete.remove(); // Supprime l'agenda du DOM
+                closeConfirmDeleteModal(); 
+                agendaToDelete = null; 
+            } else {
+                const errorData = await response.json();
+                alert('Erreur lors de la suppression de l\'agenda: ' + errorData.message);
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('Une erreur s\'est produite lors de la suppression de l\'agenda');
+        }
+    }
+};
+
 
 </script>
 

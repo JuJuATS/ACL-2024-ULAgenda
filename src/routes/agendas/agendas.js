@@ -7,10 +7,34 @@ const router = express.Router();
 
 // Route pour afficher les agendas
 router.get('/', authMiddleware, async (req, res) => {
-  const userId = ObjectId.createFromTime(req.session.id);  
+
+  /*let userId = req.session.userId;
+
+  if (!userId) {
+    return res.status(401).json({ message: 'Utilisateur non authentifié' });
+  }*/
+
+   let userId = ObjectId.createFromTime(req.session.id);  
   const agendas = await Agenda.find({userId:userId});
 
   res.render('agendas' ,{ agendas,user:req.session.isLoggedIn });
+});
+
+// Route pour supprimer un agenda par son ID
+router.delete('/:id', async (req, res) => {
+  try {
+      const { id } = req.params; // Récupérer l'ID de l'agenda 
+      const deletedAgenda = await Agenda.findByIdAndDelete(id); // récupère l'agenda de la BDD
+
+      if (!deletedAgenda) {
+          return res.status(404).json({ message: "Agenda non trouvé" });
+      }
+
+      res.status(200).json({ message: "Agenda supprimé avec succès" });
+  } catch (error) {
+      console.error('Erreur lors de la suppression de l\'agenda:', error);
+      res.status(500).json({ message: "Erreur lors de la suppression de l'agenda", error });
+  }
 });
 
 // Route pour créer un nouvel agenda
