@@ -96,7 +96,7 @@ app.use('/agendas', agendaRoutes);
 app.use('/rendezvous',rdvRoutes);
 // Routes pour afficher le formulaire d'inscription
 app
-  .get('/signup', (req, res) => res.render('signup'))
+  .get('/signup', (req, res) => res.render('signup',{expressFlash:req.flash("error")}))
   .post('/signup', routes.signup.createAccount);
 
 app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veuillez vérifier votre email.'));
