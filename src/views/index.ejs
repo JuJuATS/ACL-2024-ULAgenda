@@ -6,7 +6,7 @@
 </head>
 <body>
     <header>
-        <%- include('./partials/header', {user: {}}); %>
+        <%- include('./partials/header', {user: {user}}); %>
     </header>
 
     <div class="section1">
@@ -18,10 +18,10 @@
             <a href="./app" class="app-button">Start Building</a>
         </div>
         <div class="section-image">
-            <img src="images/a.png" alt="Agenda Illustration">
-            <img src="images/b.png" alt="Agenda Illustration">
-            <img src="images/c.png" alt="Agenda Illustration">
-            <img src="images/e.png" alt="Agenda Illustration">
+            <img src="images/f1.png" alt="Agenda Illustration">
+            <img src="images/f3.png" alt="Agenda Illustration">
+            <img src="images/f4.png" alt="Agenda Illustration">
+            <img src="images/f5.png" alt="Agenda Illustration">
         </div>
     </div>
 
@@ -30,22 +30,22 @@
         <% [
         {
           "name": "Intuitive",
-          "id": "f1",
+          "id": "classic-calendar",
           "desc": "L'application est conçue pour être intuitive et facile à utiliser, permettant aux utilisateurs de créer des agendas et d'ajouter des rendez-vous sans effort."
         },
         {
-          "name": "Flexibilité",
-          "id": "f2",
-          "desc": "L'application vous aide à gérer votre temps efficacement en suggérant les meilleurs créneaux horaires pour les rendez-vous et en facilitant l'organisation des événements."
+          "name": "Partage",
+          "id": "share-calendar",
+          "desc": "L'application vous facilitera l'organisation de vos événements et vous donnera la possibilités de partager vos planning à tout le monde."
         },
         {
           "name": "Personnalisation",
-          "id": "f3",
+          "id": "flexible-calendar",
           "desc": "Les utilisateurs ont un contrôle total sur leurs agendas avec la possibilité de personnaliser les événements, les rappels et plus encore pour répondre à leurs besoins de planification."
         },
         {
           "name": "Sécurité",
-          "id": "f4",
+          "id": "lock-calendar",
           "desc": "L'application garantit que toutes vos données sont sécurisées. Vos rendez-vous et événements partagés sont protégés, assurant confidentialité et sécurité."
         }
       ].forEach(info => { %>        
@@ -58,8 +58,6 @@
             </div>
         <% }) %>
     </div>
-
-      
 
     <footer>
         <%- include('./partials/footer', {user: {}}); %>

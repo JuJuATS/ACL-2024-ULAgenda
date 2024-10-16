@@ -87,9 +87,10 @@ app.use((req, res, next) => {
 
 // Route de base
 app.get('/', async (req, res) => {
-  const user = await User.find({id: req.session.id})
+  console.log(req.session, req.session.id)
+  const user = await User.findById(req.session.id)
   console.log(user)
-  res.render('index', { user: req.session.islogedin})
+  res.render('index', { user: req.session.islogedin })
 });
 
 app.use('/agendas', agendaRoutes);
