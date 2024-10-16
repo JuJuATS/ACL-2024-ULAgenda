@@ -1,0 +1,11 @@
+<div>
+    <a href="./" class="logo">UL AGENDA</a>
+</div>
+<nav>
+    <% if (user) { %>
+        <a href="./account" class="user-button"></a>
+    <% } else { %>
+        <a href="./signin" class="connect-button">Connection</a>
+    <% } %>
+    <a href="./agendas" class="app-button">Agenda App</a>
+</nav>

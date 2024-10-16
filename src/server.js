@@ -50,12 +50,8 @@ app.use(express.static(path.join(__dirname, 'public')))
   // Middleware pour analyser les données Json.
   .use(express.json())
   // Middleware pour cors.
-  .use(cors({
-    origin: 'http://localhost:' + port,
-    credential: true
-  }))
+  .use(cors())
   .use(flash());
-
 // Configuration des sessions
 const store  = MangoStore.create({
   mongoUrl: process.env.DB_URI,
@@ -90,7 +86,11 @@ app.use((req, res, next) => {
 });
 
 // Route de base
-app.get('/', (req, res) => res.render('index', { user:req.session.id }));
+app.get('/', async (req, res) => {
+  const user = await User.find({id: req.session.id})
+  console.log(user)
+  res.render('index', { user: req.session.islogedin})
+});
 
 app.use('/agendas', agendaRoutes);
 
