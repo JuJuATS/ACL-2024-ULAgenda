@@ -3,7 +3,7 @@ const argon2 = require('argon2');
 const request = require('supertest');
 const app = require('../server');
 
-const sigin = async () =>  {
+const signin = async () => {
     const passwordHash = await argon2.hash('password123');
 
     const user = new User({
@@ -21,8 +21,8 @@ const sigin = async () =>  {
         .post('/signin')
         .send({ email: 'johndoe@example.com', password: 'password123' });
 
-    if (response.statusCode == 400 ) {
-        console.log("Echec de la création de l'utilisateur. : ");
+    if (response.statusCode === 400) {
+        console.log("Échec de la création de l'utilisateur.");
     } else {
         console.log("Création de l'utilisateur réussie.");
     }
@@ -30,4 +30,4 @@ const sigin = async () =>  {
     return user._id;
 }
 
-module.exports = sigin;
+module.exports = signin;

@@ -3,14 +3,17 @@ const argon2 = require('argon2');
 
 const userConnexion = async (req,res)=>{
     const {email, password} = req.body;
+
     if(email == undefined || password == undefined){
         //res.text("Email ou mot de passe manquant")
         return res.redirect("/signin")
     }
     
     const existingUser = await User.findOne({ email: email });
+
     if(existingUser){
         const isPasswordValid = await argon2.verify(existingUser.password, password);
+        
         if (!isPasswordValid) {
             req.flash("error", "nom d'utilisateur ou mot de passe incorrect");
             return res.redirect(400,",/signin");
