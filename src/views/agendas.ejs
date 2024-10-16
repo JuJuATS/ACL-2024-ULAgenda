@@ -56,9 +56,13 @@
         
             <% if (agendas && agendas.length > 0) { %>
                 <% agendas.forEach(function(agenda, index) { %>
+<<<<<<< Updated upstream
 
                     <div class="calendar">
 
+=======
+                    <div class="calendar" data-id="<%= agenda._id %>" >
+>>>>>>> Stashed changes
                         <button class="close-agenda" onclick="removeAgenda(this)">×</button>
                         <h3><a href="/rendezvous?agendaId=<%= agenda._id%>"><%= agenda.name %></a></h3>
 
@@ -194,6 +198,8 @@ document.getElementById("confirmDeleteButton").onclick = async function() {
         }
     }
 };
+
+
 
 
 </script>

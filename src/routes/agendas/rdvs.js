@@ -18,6 +18,8 @@ router.get('/', authMiddleware, async (req, res) => {
   res.render('rendezvous', { rdvUser:rdvUser,agenda:agendaId });
 });
 
+
+
 // Route pour créer un nouveau rendez-vous.
 router.post('/', authMiddleware, async (req, res) => {
   try {
