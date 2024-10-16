@@ -56,7 +56,7 @@ async function saveRendezVous(rendezvous) {
         const json = await response.json()
         if (json.ok) {
           const li = document.createElement("li");
-          li.innerHTML =  `<strong> ${rendezvous.name} <</strong> - 
+          li.innerHTML =  `<strong> ${rendezvous.name} </strong> - 
           du
            ${new Date(rendezvous.dateDebut).toLocaleString('fr-FR')} au
           ${new Date(rendezvous.dateFin).toLocaleString('fr-FR')} <br>

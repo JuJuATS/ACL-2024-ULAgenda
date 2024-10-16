@@ -99,39 +99,6 @@
 }
 
 
-/* Footer */
-.footer {
-    background-color: #111828;
-    padding: 40px 20px;
-    text-align: center;
-    color: #cfbff7;
-}
-
-
-.footer-nav {
-    margin-top: 15px;
-    display:flex;
-    justify-content: space-evenly;
-}
-
-.footer-nav a {
-
-    color: #cfbff7;
-
-    background:#3f78a5;
-    text-decoration: none;
-    margin: 0 15px;
-    font-size: 0.9rem;
-
-    padding: 10px 15px;
-    border-radius: 5px;
-
-    font-size: 1rem; 
-}
-
-.footer-nav a:hover {
-    color: #cfbff7;
-}
 
 
 @keyframes fadeOutLeft {

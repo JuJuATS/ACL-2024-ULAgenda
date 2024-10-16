@@ -197,16 +197,6 @@ body {
 
 
 /* Footer */
-footer {
-    background-color: #f7f9fc;
-    text-align: center;
-    padding: 10px;
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    color: #333;
-}
-
 #addAgendaButton {
     background-color: #00BBEC; /* Couleur de fond bleu */
     color: white; /* Couleur du texte */

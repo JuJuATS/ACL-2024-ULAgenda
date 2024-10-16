@@ -44,13 +44,7 @@
         
             <% if (agendas && agendas.length > 0) { %>
                 <% agendas.forEach(function(agenda, index) { %>
-<<<<<<< Updated upstream
-
                     <div class="calendar">
-
-=======
-                    <div class="calendar">
->>>>>>> Stashed changes
                         <button class="close-agenda" onclick="removeAgenda(this)">×</button>
                         <h3><a href="/rendezvous?agendaId=<%= agenda._id%>"><%= agenda.name %></a></h3>
 
@@ -61,8 +55,9 @@
                
             <% } %>
         </div>
+    </div>
     <footer>
-        &copy; 2024 UL-AGENDA. All rights reserved.
+        <%- include('./partials/footer', {user: {}}); %>
     </footer>
 </body>
 
