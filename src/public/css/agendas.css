@@ -129,6 +129,7 @@ nav a {
 .close-agenda {
     position: absolute; /* Positionner la croix en haut à droite */
     top: 10px; /* Ajuste la position */
+    display: none;
     right: 10px; /* Ajuste la position */
     background: transparent; /* Pas de fond */
     border: none; /* Pas de bordure */
