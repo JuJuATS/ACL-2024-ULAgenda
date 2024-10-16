@@ -1,48 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ULAgenda</title>
+    <%- include('./partials/head', {pageName: "ULAgenda"}); %>
     <link rel="stylesheet" href="./css/landing.css">
 </head>
 <body>
-    <% if (locals.messagesFlash && messagesFlash.length > 0) { %>
-        <div>
-            <% messagesFlash.forEach(function(message) { %>
-                <div><%= message.content %></div>
-            <% }); %>
-            
-        </div>
-    <% } %>
-
-    <header class="navbar">
-        <div>
-            <a href="./" class="logo">UL AGENDA</a>
-        </div>
-        <nav>
-            <% if (user) { %>
-                <a href="./logout" class="user-button"></a>
-            <% } else { %>
-                <a href="./signin" class="connect-button">Connection</a>
-            <% } %>
-            <a href="./agendas" class="app-button">Agenda App</a>
-        </nav>
+    <header>
+        <%- include('./partials/header', {user: user}); %>
     </header>
-
     <div class="section1">
         <div class="content">
-            <h1>Welcome To ULAgenda <% if (user) { %> <%= user.pseudo %> <%}%></h1>
+            <h1>Bienvenue sur ULAgenda <% if (user) { %> <%= user.pseudo %> <%}%></h1>
             <p>
                 Organiser vos rendez-vous facilement
             </p>
-            <a href="./app" class="app-button">Start Building</a>
+            <a href="./agendas" class="app-button">Start Building</a>
         </div>
         <div class="section-image">
-            <img src="images/a.png" alt="Agenda Illustration">
-            <img src="images/b.png" alt="Agenda Illustration">
-            <img src="images/c.png" alt="Agenda Illustration">
-            <img src="images/e.png" alt="Agenda Illustration">
+            <img src="images/f1.png" alt="Agenda Illustration">
+            <img src="images/f3.png" alt="Agenda Illustration">
+            <img src="images/f4.png" alt="Agenda Illustration">
+            <img src="images/f5.png" alt="Agenda Illustration">
         </div>
     </div>
 
@@ -50,23 +28,23 @@
 
         <% [
         {
-          "name": "Intuitive",
-          "id": "f1",
+          "name": "Intuitif",
+          "id": "classic-calendar",
           "desc": "L'application est conçue pour être intuitive et facile à utiliser, permettant aux utilisateurs de créer des agendas et d'ajouter des rendez-vous sans effort."
         },
         {
-          "name": "Flexibilité",
-          "id": "f2",
-          "desc": "L'application vous aide à gérer votre temps efficacement en suggérant les meilleurs créneaux horaires pour les rendez-vous et en facilitant l'organisation des événements."
+          "name": "Partage",
+          "id": "share-calendar",
+          "desc": "L'application vous facilitera l'organisation de vos événements et vous donnera la possibilités de partager vos planning à tout le monde."
         },
         {
           "name": "Personnalisation",
-          "id": "f3",
+          "id": "flexible-calendar",
           "desc": "Les utilisateurs ont un contrôle total sur leurs agendas avec la possibilité de personnaliser les événements, les rappels et plus encore pour répondre à leurs besoins de planification."
         },
         {
           "name": "Sécurité",
-          "id": "f4",
+          "id": "lock-calendar",
           "desc": "L'application garantit que toutes vos données sont sécurisées. Vos rendez-vous et événements partagés sont protégés, assurant confidentialité et sécurité."
         }
       ].forEach(info => { %>        
@@ -80,17 +58,8 @@
         <% }) %>
     </div>
 
-      
-
     <footer>
-        <div class="footer">
-            <p>© 2024 UL-AGENDA. All rights reserved.</p>
-            <nav class="footer-nav">
-                <a href="/terms">Terms of Service</a>
-                <a href="/privacy">Privacy Policy</a>
-                <a href="/help">Help</a>
-            </nav>
-        </div>
+        <%- include('./partials/footer', {user: {}}); %>
     </footer>
 </body>
 </html>

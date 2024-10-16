@@ -20,11 +20,12 @@ const userConnexion = async (req,res)=>{
         }
         if(!existingUser.isVerified){
             req.flash("error","Cette utilisateur n'est pas vérifié veuillez consultez votre boite mail afin de validez votre compte");
-            return res.redirect(400,"/signin");
+            return res.redirect("/signin")
         }
         
         req.session.isLoggedIn = true;
-        req.session.id = existingUser._id; 
+        req.session.id = existingUser._id;
+        req.session.userId = existingUser._id;
 
         return res.redirect("/")
     } else {

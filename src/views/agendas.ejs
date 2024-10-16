@@ -1,24 +1,12 @@
 *<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ULAgenda</title>
+    <%- include('./partials/head', {pageName: "ULAgenda"}); %>
     <link rel="stylesheet" href="/css/agendas.css"> <!-- Lien vers le fichier CSS externe -->
 </head>
 <body>
-    <header class="navbar">
-        <div>
-            <a href="./" class="logo">UL AGENDA</a>
-        </div>
-        <nav>
-            <% if (user) { %>
-                <a href="./logout" class="user-button"></a>
-            <% } else { %>
-                <a href="./signin" class="connect-button">Connection</a>
-            <% } %>
-            <a href="./app" class="app-button">Agenda App</a>
-        </nav>
+    <header>
+        <%- include('./partials/header', {user: user}); %>
     </header>
     <div class="container">
         <!-- Sidebar Gauche -->
@@ -56,11 +44,9 @@
         
             <% if (agendas && agendas.length > 0) { %>
                 <% agendas.forEach(function(agenda, index) { %>
-
                     <div class="calendar">
-
                         <button class="close-agenda" onclick="removeAgenda(this)">×</button>
-                        <h3><a href="/rendezvous?agendaId<%= agenda._id%>"><%= agenda.name %></a></h3>
+                        <h3><a href="/rendezvous?agendaId=<%= agenda._id%>"><%= agenda.name %></a></h3>
 
                         <!-- Contenu de l'agenda -->
                     </div>
@@ -69,8 +55,9 @@
                
             <% } %>
         </div>
+    </div>
     <footer>
-        &copy; 2024 UL-AGENDA. All rights reserved.
+        <%- include('./partials/footer', {user: {}}); %>
     </footer>
 </body>
 
@@ -127,7 +114,7 @@
             agendaDiv.className = "calendar"; // Assurez-vous que le style est appliqué
             agendaDiv.innerHTML = `
               <button class="close-agenda" onclick="removeAgenda(this)">×</button>
-              <h3>${newAgenda.name}</h3>
+              <h3><a href="/rendezvous?agendaId=${newAgenda._id}">${newAgenda.name}</a></h3>
             `;
 
             // Ajouter le nouvel agenda au conteneur principal
@@ -194,6 +181,8 @@ document.getElementById("confirmDeleteButton").onclick = async function() {
         }
     }
 };
+
+
 
 
 </script>

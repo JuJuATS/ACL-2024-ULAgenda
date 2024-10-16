@@ -46,7 +46,6 @@ const resetPassword = async(req,res)=>{
         return res.redirect("/")
     }
     const {token} = req.query
-    console.log(token)
     const currentTime = Math.floor(Date.now() / 1000);
     try{
         const verifyToken = jwt.verify(token,process.env.JWT_SECRET);

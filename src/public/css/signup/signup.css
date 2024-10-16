@@ -1,0 +1,175 @@
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "Afacad Flux", sans-serif;
+    font-weight:600;
+  }
+  @import url('https://rsms.me/inter/inter-ui.css');
+@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
+  ::selection {
+    background: #2D2F36;
+  }
+  ::-webkit-selection {
+    background: #2D2F36;
+  }
+  ::-moz-selection {
+    background: #2D2F36;
+  }
+  body {
+    
+    font-family: "Afacad Flux", sans-serif;
+    margin: 0;
+   height: 100vh;
+    background-color: #1e273d;
+  }
+  .page {
+    background: #1e273d;
+    display: flex;
+    flex-direction: column;
+    height: calc(100% - 40px);
+    place-content: center;
+    width: calc(100% - 40px);
+  }
+  @media (max-width: 767px) {
+    .page {
+      height: auto;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+    }
+  }
+  .container {
+    display: flex;
+    margin: 0 auto;
+    width: 640px;
+  }
+  @media (max-width: 767px) {
+    .container {
+      flex-direction: column;
+      height: 630px;
+      width: 320px;
+    }
+  }
+  .left {
+    background: #CFB1B7;
+    top: 20px;
+    position: relative;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  @media (max-width: 767px) {
+    .left {
+      height: 100%;
+      left: 20px;
+      width: calc(100% - 40px);
+      max-height: 270px;
+    }
+  }
+  .login {
+    font-size: 1.4em;
+    font-weight: 900;
+    margin: 50px 40px 40px;
+    display: flex;
+    justify-content: center;
+  }
+
+  .right {
+    background: #474A59;
+    box-shadow: 0px 0px 40px 16px rgba(0,0,0,0.22);
+    color: #F1F1F2;
+    position: relative;
+    width: 50%;
+    height: 100%;
+    padding: 20px;
+  }
+  @media (max-width: 767px) {
+    .right {
+      flex-shrink: 0;
+      height: 100%;
+      width: 100%;
+      max-height: 350px;
+    }
+  }
+
+  .form {
+    margin: 0 40px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+  }
+  label {
+    color:  #c2c2c5;
+    display: block;
+    font-size: 14px;
+    height: 16px;
+    margin-top: 20px;
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  input{
+    background: transparent;
+    border: 0;
+    color: #f2f2f2;
+    font-size: 20px;
+    height: 30px;
+    line-height: 30px;
+    outline: none !important;
+    width: 100%;
+    border:1px solid black;
+    border-radius: 10px;
+    padding-left: 5px;
+    color: #ababbb;
+    transition: color 300ms; 
+  }
+  #eye{
+    position: absolute;
+    left: 95%;
+    top: 50%;
+    transform: translate(-50%,-50%);
+  }
+ 
+  input::placeholder{
+    transition: color 300ms;
+  }
+  input::-moz-focus-inner { 
+    border: 0; 
+  }
+  #submit {
+    
+    margin-top: 40px;
+  }
+  #submit:hover{
+    color: #f2f2f2;
+  }
+  input:hover::placeholder{
+    color:#f2f2f2
+  }
+  #submit:focus {
+    color: #f2f2f2;
+  }
+  #submit:active {
+    color: #d0d0d2;
+  }
+  #forgotten-password{
+    position: absolute;
+    bottom: 0;
+    margin-bottom:20px ;
+    text-decoration: none;
+    left: 50%;
+    transform: translate(-50%,0);
+    color: #c2c2c5;
+  }
+  .error{
+    display: flex;
+    margin-top: 20px;
+    justify-content: center;
+    color: red;
+    font-weight: bold;
+    font-size: 0.9em;
+  }
+  input::placeholder{
+    color: #707075;
+  }
+  

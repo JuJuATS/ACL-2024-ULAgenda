@@ -18,11 +18,12 @@ const cors = require('cors');
 // -- IMPORT ROUTES --
 const routes = require('./routes');
 const agendaRoutes = require('./routes/agendas/agendas');
-
+const rdvRoutes = require("./routes/agendas/rdvs")
 // -- BBD --
 const connectDB = require('./database/db');
 const User = require('./database/models/user');
 const { sign } = require('crypto');
+const ObjectId = require('mongodb').ObjectId;
 
 // -- EXPRESS --
 const app = express();
@@ -50,12 +51,8 @@ app.use(express.static(path.join(__dirname, 'public')))
   // Middleware pour analyser les données Json.
   .use(express.json())
   // Middleware pour cors.
-  .use(cors({
-    origin: 'http://localhost:' + port,
-    credential: true
-  }))
+  .use(cors())
   .use(flash());
-
 // Configuration des sessions
 const store  = MangoStore.create({
   mongoUrl: process.env.DB_URI,
@@ -90,13 +87,20 @@ app.use((req, res, next) => {
 });
 
 // Route de base
-app.get('/', (req, res) => res.render('index', { user:req.session.isLoggedIn }));
+app.get('/', async (req, res) => {
+  let userInfo = null;
+  if (req.session.userId) {
+    const user = await User.findById(req.session.userId)
+    userInfo = { firstname: user.firstname, lastname: user.lastname, pseudo: user.pseudo };
+  }
+  res.render('index', { user: userInfo} )
+});
 
 app.use('/agendas', agendaRoutes);
-
+app.use('/rendezvous',rdvRoutes);
 // Routes pour afficher le formulaire d'inscription
 app
-  .get('/signup', (req, res) => res.render('signup'))
+  .get('/signup', (req, res) => res.render('signup',{expressFlash:req.flash("error")}))
   .post('/signup', routes.signup.createAccount);
 
 app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veuillez vérifier votre email.'));
@@ -111,6 +115,7 @@ app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexi
 app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker)
 app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword)
 app.get("/logout",routes.signin.logout)
+
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);
