@@ -30,7 +30,7 @@ router.post('/', authMiddleware, async (req, res) => {
       console.log("il manque quelque chose")
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
     }
-    let userId = ObjectId.createFromTime(req.session.id);  
+    let userId = req.session.userId;
     const agenda = await Agenda.findOne({_id:agendaId});
     
     if (!agenda) {
