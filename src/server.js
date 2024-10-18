@@ -11,10 +11,11 @@ require('dotenv').config();
 const express = require('express');
 const session = require('express-session');
 const MangoStore = require('connect-mongo');
-const flash = require('express-flash')
+const flash = require('connect-flash')
 const path = require('path');
 const cors = require('cors');
 const morgan = require('morgan');
+const methodOverride = require('method-override');
 
 // -- IMPORT ROUTES --
 const routes = require('./routes');
@@ -25,6 +26,7 @@ const rdvRoutes = require("./routes/agendas/rdvs")
 const connectDB = require('./database/db');
 const User = require('./database/models/user');
 const { sign } = require('crypto');
+const isAuthentified = require('./middlewares/authMiddleware');
 const ObjectId = require('mongodb').ObjectId;
 
 // -- EXPRESS --
@@ -55,7 +57,10 @@ app.use(express.static(path.join(__dirname, 'public')))
   // Middleware pour cors.
   .use(cors())
   .use(morgan())
-  .use(flash());
+  .use(flash())
+  // Middleware pour les requêtes PUT et DELETE depuis un formulaire
+  .use(methodOverride('_method'));
+
 // Configuration des sessions
 const store  = MangoStore.create({
   mongoUrl: process.env.DB_URI,
@@ -78,16 +83,13 @@ app.use(session({
   },
 }));
 
-// Configuration des variables res.locals
+
+// Configuration des messages flash
 app.use((req, res, next) => {
-  res.locals.messagesFlash = [];
-  if (req.session.messagesFlash) {
-    res.locals.messagesFlash = req.session.messagesFlash;
-    req.session.messagesFlash = []; // Réinitialisation des messages flash
-  }
-  res.locals.user = req.session.user || null; 
+  res.locals.flash = req.flash();
   next();
 });
+
 
 // Route de base
 app.get('/', async (req, res) => {
@@ -112,12 +114,23 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 app.get('/verify-email', routes.signup.verifyEmail);
 
 // Route de connection
-app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexion)
+app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexion);
 
 // Route pour récuperer son mot de passe
-app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker)
-app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword)
-app.get("/logout",routes.signin.logout)
+app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker);
+app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword);
+
+
+// Routes en lien avec les presets
+app
+  .get('/presets', isAuthentified, routes.presets.getPresets)
+  .get('/presets/new', isAuthentified, routes.presets.createPreset)
+  .get('/presets/:id', isAuthentified, (req, res) => res.render('presets/edit', { id: req.params.id }))
+  .delete('/presets/:id', isAuthentified, routes.presets.deletePreset)
+  .put('/presets/:id', isAuthentified, routes.presets.updatePreset)
+  .use('/presets/api/:id', isAuthentified, routes.presets.getPresetInfosById);
+
+app.get("/logout",routes.signin.logout);
 
 // Démarrage du serveur
 app.listen(port, () => {
