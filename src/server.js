@@ -20,6 +20,7 @@ const cors = require('cors');
 const morgan = require('morgan');
 const methodOverride = require('method-override');
 const passport = require('./config/passport');
+const methodOverride = require('method-override');
 
 // -- IMPORT ROUTES --
 const routes = require('./routes');
