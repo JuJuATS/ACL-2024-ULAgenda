@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Préréglages</title>
+</head>
+<body>
+    <h1>Mes Préréglages</h1>
+
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Nom</th>
+                <th>Couleur</th>
+                <th>Priorité</th>
+                <th>Récurrence</th>
+                <th>Durée par défaut</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if (presets.length === 0) { %>
+                <tr>
+                    <td colspan="8">Aucun préréglage trouvé.</td>
+                </tr>
+            <% } else { %>
+                <% presets.forEach(preset => { %>
+                    <tr>
+                        <td><%= preset.name %></td>
+                        <td style="background-color: <%= preset.color %>;">&nbsp;</td>
+                        <td><%= preset.priority %></td>
+                        <td><%= preset.recurrence %></td>
+                        <td><%= preset.defaultDuration %> minutes</td>
+                        <td><%= preset.description || 'N/A' %></td>
+                        <td>
+                            <a href="/presets/<%= preset._id %>">Modifier</a>
+                        </td>
+                    </tr>
+                <% }) %>
+            <% } %>
+        </tbody>
+    </table>
+
+    <a href="/presets/new">Créer un nouveau préréglage</a>
+</body>
+</html>
