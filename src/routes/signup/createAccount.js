@@ -49,11 +49,11 @@ const createAccount = async (req, res) => {
         // Sauvegarde de l'utilisateur dans la base de données
         await newUser.save();
 
-        res.redirect('/successfull-signup');
+        res.redirect('/');
     } catch (error) {
         console.error(error);
         const messagesFlash = [{ type: 'error', content: 'Erreur lors de la création du compte' }];
-        res.render('signup', { messagesFlash, formData: req.body });
+        res.render('signup', { messagesFlash, formData: req.body,expressFlash:req.flash() });
     }
 };
 

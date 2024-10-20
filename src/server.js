@@ -20,7 +20,7 @@ const morgan = require('morgan');
 const routes = require('./routes');
 const agendaRoutes = require('./routes/agendas/agendas');
 const rdvRoutes = require("./routes/agendas/rdvs")
-
+const planningRoute = require("./routes/planning/planning")
 // -- BBD --
 const connectDB = require('./database/db');
 const User = require('./database/models/user');
@@ -101,6 +101,8 @@ app.get('/', async (req, res) => {
 
 app.use('/agendas', agendaRoutes);
 app.use('/rendezvous',rdvRoutes);
+
+app.use("/planning",planningRoute)
 // Routes pour afficher le formulaire d'inscription
 app
   .get('/signup', (req, res) => res.render('signup',{expressFlash:req.flash("error")}))
@@ -118,7 +120,6 @@ app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexi
 app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker)
 app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword)
 app.get("/logout",routes.signin.logout)
-
 // Démarrage du serveur
 app.listen(port, () => {
   console.log(`Serveur en écoute sur http://localhost:${port}`);

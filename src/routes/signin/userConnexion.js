@@ -16,7 +16,7 @@ const userConnexion = async (req,res)=>{
         
         if (!isPasswordValid) {
             req.flash("error", "nom d'utilisateur ou mot de passe incorrect");
-            return res.redirect(400,",/signin");
+            return res.redirect("/signin");
         }
         if(!existingUser.isVerified){
             req.flash("error","Cette utilisateur n'est pas vérifié veuillez consultez votre boite mail afin de validez votre compte");
@@ -30,7 +30,7 @@ const userConnexion = async (req,res)=>{
         return res.redirect("/")
     } else {
         req.flash("error","nom d'utilisateur ou mot de passe incorrect");
-        return res.redirect(400,"/signin");
+        return res.redirect("/signin");
     }
 }
 
