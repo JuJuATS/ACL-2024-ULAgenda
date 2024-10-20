@@ -14,32 +14,32 @@
     <form id="presetForm" action="/presets/<%= id %>?_method=PUT" method="POST">
 
         <label for="name">Nom :</label>
-        <input type="text" id="name" name="name" required><br>
+        <input type="text" id="name" name="name" value="<%= name %>" required><br>
 
         <label for="color">Couleur :</label>
-        <input type="color" id="color" name="color"><br>
+        <input type="color" id="color" name="color" value="<%= color %>"><br>
 
         <label for="priority">Priorité :</label>
         <select id="priority" name="priority">
-            <option value="Haute">Haute</option>
-            <option value="Moyenne">Moyenne</option>
-            <option value="Basse">Basse</option>
+            <option value="Haute" <%= priority === 'Haute' ? 'selected' : '' %>>Haute</option>
+            <option value="Moyenne" <%= priority === 'Moyenne' ? 'selected' : '' %>>Moyenne</option>
+            <option value="Basse" <%= priority === 'Basse' ? 'selected' : '' %>>Basse</option>
         </select><br>
 
         <label for="recurrence">Récurrence :</label>
         <select id="recurrence" name="recurrence">
-            <option value="Aucune">Aucune</option>
-            <option value="Quotidienne">Quotidienne</option>
-            <option value="Hebdomadaire">Hebdomadaire</option>
-            <option value="Mensuelle">Mensuelle</option>
-            <option value="Annuelle">Annuelle</option>
+            <option value="Aucune" <%= recurrence === 'Aucune' ? 'selected' : '' %>>Aucune</option>
+            <option value="Quotidienne" <%= recurrence === 'Quotidienne' ? 'selected' : '' %>>Quotidienne</option>
+            <option value="Hebdomadaire" <%= recurrence === 'Hebdomadaire' ? 'selected' : '' %>>Hebdomadaire</option>
+            <option value="Mensuelle" <%= recurrence === 'Mensuelle' ? 'selected' : '' %>>Mensuelle</option>
+            <option value="Annuelle" <%= recurrence === 'Annuelle' ? 'selected' : '' %>>Annuelle</option>
         </select><br>
 
         <label for="duration">Durée par défaut (en minutes) :</label>
-        <input type="number" id="duration" name="duration"><br>
+        <input type="number" id="duration" name="duration" value="<%= duration %>"><br>
 
         <label for="description">Description :</label>
-        <textarea id="description" name="description"></textarea><br>
+        <textarea id="description" name="description"><%= description %></textarea><br>
 
         <button type="submit">Mettre à jour</button>
     </form>
@@ -54,29 +54,6 @@
         function confirmDelete() {
             return confirm('Êtes-vous sûr de vouloir supprimer ce préréglage ? Cette action est irréversible.');
         }
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                const presetId = '<%= id %>';
-                const response = await fetch(`/presets/api/${presetId}`);
-
-                if (response.ok) {
-                    const preset = await response.json();
-
-                    // Remplir les champs avec les données reçues
-                    document.getElementById('name').value = preset.name;
-                    document.getElementById('color').value = preset.color;
-                    document.getElementById('priority').value = preset.priority;
-                    document.getElementById('recurrence').value = preset.recurrence;
-                    document.getElementById('duration').value = preset.duration;
-                    document.getElementById('description').value = preset.description || '';
-                } else {
-                    console.error('Erreur lors de la récupération du préréglage.');
-                }
-            } catch (error) {
-                console.error('Erreur de communication avec le serveur :', error);
-            }
-        });
     </script>
 </body>
 </html>

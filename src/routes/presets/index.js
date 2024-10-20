@@ -3,6 +3,7 @@ const createPreset = require('./createPreset');
 const deletePreset = require('./deletePreset');
 const updatePreset = require('./updatePreset');
 const getPresetInfosById = require('./getPresetInfosById');
+const getPresetEditionPage = require('./getPresetEditionPage');
 
 module.exports = {
     getPresets,
@@ -10,4 +11,5 @@ module.exports = {
     deletePreset,
     updatePreset,
     getPresetInfosById,
+    getPresetEditionPage,
 };
