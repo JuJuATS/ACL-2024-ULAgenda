@@ -9,6 +9,7 @@ require('dotenv').config({
 });
 
 
+
 // -- IMPORT MODULES --
 
 const express = require('express');
@@ -136,7 +137,7 @@ app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",ro
 app
   .get('/presets', isAuthentified, routes.presets.getPresets)
   .get('/presets/new', isAuthentified, routes.presets.createPreset)
-  .get('/presets/:id', isAuthentified, (req, res) => res.render('presets/edit', { id: req.params.id }))
+  .get('/presets/:id', isAuthentified, routes.presets.getPresetEditionPage)
   .delete('/presets/:id', isAuthentified, routes.presets.deletePreset)
   .put('/presets/:id', isAuthentified, routes.presets.updatePreset)
   .use('/presets/api/:id', isAuthentified, routes.presets.getPresetInfosById);
