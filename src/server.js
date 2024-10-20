@@ -29,6 +29,7 @@ const planningRoute = require("./routes/planning/planning")
 const apiRoute = require("./routes/api/getAgenda")
 const apiRouter = require('./routes/apiRouter');
 
+const planningRoute = require("./routes/planning/planning")
 // -- BBD --
 const connectDB = require('./database/db');
 const isAuthentified = require('./middlewares/authMiddleware');
