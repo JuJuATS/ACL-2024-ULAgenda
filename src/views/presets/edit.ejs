@@ -8,21 +8,7 @@
 <body>
     <h1>Modifier le préréglage</h1>
 
-    <% if (flash.success && flash.success.length > 0) { %>
-        <div class="flash-success">
-            <% flash.success.forEach(function(msg) { %>
-                <p><%= msg %></p>
-            <% }) %>
-        </div>
-    <% } %>
-
-    <% if (flash.error && flash.error.length > 0) { %>
-        <div class="flash-error">
-            <% flash.error.forEach(function(msg) { %>
-                <p><%= msg %></p>
-            <% }) %>
-        </div>
-    <% } %>
+    <%- include('../partials/flashMessages') %>
 
     <!-- Formulaire pour modifier le préréglage -->
     <form id="presetForm" action="/presets/<%= id %>?_method=PUT" method="POST">
@@ -58,9 +44,17 @@
         <button type="submit">Mettre à jour</button>
     </form>
 
+    <form id="deletePresetForm" action="/presets/<%= id %>?_method=DELETE" method="POST" onsubmit="return confirmDelete()">
+        <button type="submit" class="delete-button">Supprimer le préréglage</button>
+    </form>
+
     <a href="/presets">Retourner à la liste</a>
 
     <script>
+        function confirmDelete() {
+            return confirm('Êtes-vous sûr de vouloir supprimer ce préréglage ? Cette action est irréversible.');
+        }
+
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const presetId = '<%= id %>';

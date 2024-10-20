@@ -2,23 +2,28 @@ const Preset = require('../../database/models/preset');
 
 const deletePreset = async (req, res) => {
     try {
-        const id = req.params.id;
+        const presetId = req.params.id;
+        const userId = req.session.userId;
 
-        const preset = await Preset.findById(id);
+        const preset = await Preset.findById(presetId);
+
         if (!preset) {
-            return res.status(404).send("Preset non trouvé");
+            return res.status(404).send('Preset not found');
         }
 
-        if (!preset.userId.equals(req.session.userId)) {
-            return res.status(403).send("Vous n'êtes pas autorisé à supprimer ce preset");
+        if (!preset.userId.equals(userId)) {
+            return res.status(403).send('Unauthorized to delete this preset');
         }
 
-        await preset.remove();
+        await Preset.findByIdAndDelete(presetId);
 
-        res.status(204).send();
+        req.flash('success', `Votre préréglage '${preset.name}' à été supprimé.`);
+        res.redirect('/presets');
     } catch (error) {
-        res.status(500).send("Erreur lors de la suppression du preset");
+        console.error('Error deleting preset:', error);
+        req.flash('error', 'Une erreur est survenue lors de la supression du préréglage.');
+        res.redirect(req.path);
     }
-}
+};
 
 module.exports = deletePreset;
