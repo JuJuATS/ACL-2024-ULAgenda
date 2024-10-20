@@ -22,6 +22,8 @@ const presetSchema = new mongoose.Schema({
     duration: {
         type: Number,
         default: 60,  // Durée par défaut de 60 minutes
+        min: [0, 'La durée doit être supérieure ou égale à 0 minutes.'],
+        max: [1440, 'La durée doit être inférieure ou égale à 1440 minutes (24 heures).'],
     },
     description: {
         type: String,

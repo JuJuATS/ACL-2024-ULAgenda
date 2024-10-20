@@ -32,11 +32,11 @@ const updatePreset = async (req, res) => {
         await preset.save();
 
         req.flash('success', 'Préréglage modifié avec succès.');
-        res.redirect(`/presets/${presetId}`);
     } catch (error) {
-        res.status(500).send("Erreur lors de la modification du preset");
         console.error(error);
+        req.flash('error', 'Une erreur est survenue lors de la mise à jour du préréglage.');
     }
+    res.redirect(req.path);
 }
 
 module.exports = updatePreset;
