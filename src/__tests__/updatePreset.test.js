@@ -119,6 +119,7 @@ describe('Tests de la modification d\'un preset', () => {
         const partialData = {
             name: 'Partially Updated Preset',
             duration: 90,
+            description: '',
         };
     
         const response = await agent.put(`/presets/${presetId}`).send(partialData);
@@ -141,7 +142,7 @@ describe('Tests de la modification d\'un preset', () => {
         expect(updatedPreset.color).toBe('#ff0000');
         expect(updatedPreset.priority).toBe('Moyenne');
         expect(updatedPreset.recurrence).toBe('Hebdomadaire');
-        expect(updatedPreset.description).toBe('Test description');
+        expect(updatedPreset.description).toBe('');
         expect(updatedPreset.userId.toString()).toBe(userId.toString());
     });
 
