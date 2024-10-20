@@ -4,13 +4,17 @@
  * ==================================================
  */
 
-require('dotenv').config();
+require('dotenv').config({
+  path: process.env.NODE_ENV === 'test' ? '.env.test' : '.env'
+});
+
 
 // -- IMPORT MODULES --
 
 const express = require('express');
 const session = require('express-session');
 const MangoStore = require('connect-mongo');
+const MemoryStore = require('memorystore')(session);
 const flash = require('connect-flash')
 const path = require('path');
 const cors = require('cors');
@@ -62,13 +66,20 @@ app.use(express.static(path.join(__dirname, 'public')))
   .use(methodOverride('_method'));
 
 // Configuration des sessions
-const store  = MangoStore.create({
-  mongoUrl: process.env.DB_URI,
-  ttl: 2 * 60 * 60, // Durée de validité de la session: 2 heures
-  collectionName: 'sessions',
-  autoRemove: 'interval',
-  autoRemoveInterval: 10,
-});
+let store;
+if (process.env.NODE_ENV !== 'test') {
+  store  = MangoStore.create({
+    mongoUrl: process.env.DB_URI,
+    ttl: 7 * 24 * 60 * 60, // Durée de validité de la session: 1 semaine
+    collectionName: 'sessions',
+    autoRemove: 'interval',
+    autoRemoveInterval: 10,
+  });
+} else {
+  store = new MemoryStore({
+    checkPeriod: 86400000 // prune expired entries every 24h
+  });
+}
 
 app.use(session({
   secret: process.env.SECRET,
@@ -77,7 +88,7 @@ app.use(session({
   saveUninitialized: false,
   store,
   cookie: {
-    maxAge: 2 * 60 * 60 * 1000, // Durée de validité du cookie: 2 heures
+    maxAge: 7 * 24 * 60 * 60 * 1000, // Durée de validité de la session: 1 semaine
     httpOnly: true,
     secure: false // false en HTTP, true en HTTPS
   },
@@ -133,8 +144,10 @@ app
 app.get("/logout",routes.signin.logout);
 
 // Démarrage du serveur
-app.listen(port, () => {
-  console.log(`Serveur en écoute sur http://localhost:${port}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(port, () => {
+    console.log(`Serveur en écoute sur http://localhost:${port}`);
+  });
+}
 
 module.exports = app

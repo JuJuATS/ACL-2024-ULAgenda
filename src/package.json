@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "jest"
+    "test": "NODE_ENV=test jest --runInBand --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
