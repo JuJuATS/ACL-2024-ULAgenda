@@ -22,6 +22,17 @@ const updatePreset = async (req, res) => {
             return res.status(403).send("Vous n'êtes pas autorisé à modifier ce préréglage");
         }
 
+        // On vérifie qu'aucun autre preser de l'utilisateur ne porte le même nom
+        const existingPreset = await Preset.findOne({
+            name : { $regex: new RegExp(`^${name}$`, 'i') }, // On ignore la casse
+            userId: req.session.userId,
+            _id: { $ne: presetId }, // On exclut évidemment le préréglage actuel
+        });
+        if (existingPreset) {
+            req.flash('error', `Vous avez déjà un préréglage nommé "${name}".`);
+            return res.redirect(req.path);
+        }
+
         preset.name = name || preset.name;
         preset.color = color || preset.color;
         preset.priority = priority || preset.priority;
@@ -33,7 +44,13 @@ const updatePreset = async (req, res) => {
 
         req.flash('success', 'Préréglage modifié avec succès.');
     } catch (error) {
-        req.flash('error', 'Une erreur est survenue lors de la mise à jour du préréglage.');
+        if (error.name === 'ValidationError') {
+            const errorMessages = Object.values(error.errors).map(err => err.message);
+            errorMessages.forEach(msg => req.flash('error', msg));
+        } else {
+            console.error(error);
+            req.flash('error', 'Une erreur est survenue lors de la mise à jour du préréglage.');
+        }
     }
     res.redirect(req.path);
 }

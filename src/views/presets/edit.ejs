@@ -4,6 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modifier un préréglage</title>
+    <script defer>
+        document.addEventListener('DOMContentLoaded', () => {
+            const presetForm = document.getElementById('presetForm');
+            const submitButton = presetForm.querySelector('button[type="submit"]');
+            const originalValues = {
+                name: '<%= name %>',
+                color: '<%= color %>',
+                priority: '<%= priority %>',
+                recurrence: '<%= recurrence %>',
+                duration: '<%= duration %>',
+                description: '<%= description %>'
+            };
+
+            // Le bouton d'envoie est désactivé par défaut 
+            submitButton.disabled = true;
+
+            // Fonction pour vérifier si un champ a été modifié
+            function checkIfModified() {
+                const currentValues = {
+                    name: document.getElementById('name').value,
+                    color: document.getElementById('color').value,
+                    priority: document.getElementById('priority').value,
+                    recurrence: document.getElementById('recurrence').value,
+                    duration: document.getElementById('duration').value,
+                    description: document.getElementById('description').value
+                };
+
+                // Activer le bouton d'envoie si un champ a été modifié
+                const modified = Object.keys(originalValues).some(key => currentValues[key] !== originalValues[key]);
+                submitButton.disabled = !modified;
+            }
+
+            // Ajouter les écouteurs d'événements pour chaque champ du formulaire
+            presetForm.querySelectorAll('input, select, textarea').forEach(field => {
+                field.addEventListener('input', checkIfModified);
+                field.addEventListener('change', checkIfModified);
+            });
+        });
+    </script>
 </head>
 <body>
     <h1>Modifier le préréglage</h1>
@@ -41,7 +80,7 @@
         <label for="description">Description :</label>
         <textarea id="description" name="description"><%= description %></textarea><br>
 
-        <button type="submit">Mettre à jour</button>
+        <button type="submit" disabled>Mettre à jour</button>
     </form>
 
     <form id="deletePresetForm" action="/presets/<%= id %>?_method=DELETE" method="POST" onsubmit="return confirmDelete()">

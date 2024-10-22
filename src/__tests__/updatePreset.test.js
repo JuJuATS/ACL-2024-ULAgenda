@@ -166,30 +166,11 @@ describe('Tests de la modification d\'un preset', () => {
         expect(updatedPreset.duration).toBe(60);
         expect(updatedPreset.description).toBe('Test description');
     });
-    
 
-    it('devrait ne pas mettre à jour le préréglage pour une récurrence invalide', async () => {
-        const invalidData = {
-            recurrence: 'invalidRecurrence',
-        };
-    
-        const response = await agent.put(`/presets/${presetId}`).send(invalidData);
-    
-        expect(response.status).toBe(302);
-        expect(response.headers.location).toBe(`/presets/${presetId}`);
-
-        const getResponse = await agent.get(response.headers.location);
-        const $ = cheerio.load(getResponse.text);
-        const flashMessage = $('.flash-message-error p').text();
-        expect(flashMessage).toBe('Une erreur est survenue lors de la mise à jour du préréglage.');
-
-        const preset = await Preset.findById(presetId);
-        expect(preset.recurrence).toBe('Hebdomadaire');
-    });
-
-    it('devrait ne pas mettre à jour le préréglage pour une durée négative', async () => {
+    it('devrait ne pas mettre à jour le préréglage pour une durée négative et une récurrence invalide', async () => {
         const invalidData = {
             duration: -1,
+            recurrence: 'invalidRecurrence',
         };
 
         const response = await agent.put(`/presets/${presetId}`).send(invalidData);
@@ -199,11 +180,14 @@ describe('Tests de la modification d\'un preset', () => {
 
         const getResponse = await agent.get(response.headers.location);
         const $ = cheerio.load(getResponse.text);
-        const flashMessage = $('.flash-message-error p').text();
-        expect(flashMessage).toBe('Une erreur est survenue lors de la mise à jour du préréglage.');
+        const flashMessages = $('.flash-message-error p').toArray().map(el => $(el).text());
+        expect(flashMessages.length).toBe(2);
+        expect(flashMessages).toContain('La durée doit être une valeur positive.');
+        expect(flashMessages).toContain('`invalidRecurrence` is not a valid enum value for path `recurrence`.');
 
         const preset = await Preset.findById(presetId);
         expect(preset.duration).toBe(60);
+        expect(preset.recurrence).toBe('Hebdomadaire');
     });
 
     it('devrait ne pas mettre à jour le préréglage pour une durée supérieure à 24 heures', async () => {
@@ -219,7 +203,7 @@ describe('Tests de la modification d\'un preset', () => {
         const getResponse = await agent.get(response.headers.location);
         const $ = cheerio.load(getResponse.text);
         const flashMessage = $('.flash-message-error p').text();
-        expect(flashMessage).toBe('Une erreur est survenue lors de la mise à jour du préréglage.');
+        expect(flashMessage).toBe('La durée doit être inférieure ou égale à 1440 minutes (24 heures).');
 
         const preset = await Preset.findById(presetId);
         expect(preset.duration).toBe(60);
@@ -251,5 +235,37 @@ describe('Tests de la modification d\'un preset', () => {
         const response = await agent.put(`/presets/${nonExistentId}`).send(updatedData);
 
         expect(response.status).toBe(404);
+    });
+
+    it('devrait renvoyer une erreur si un autre preset de l\'utilisateur porte déjà le même nom (pas de sensibilité à la casse)', async () => {
+        // Créer un deuxième preset pour l'utilisateur
+        const secondPreset = new Preset({
+            name: 'Second Preset',
+            userId: userId,
+            color: '#0000ff',
+            priority: 'Basse',
+            recurrence: 'Mensuelle',
+            duration: 30,
+            description: 'Second preset description',
+        });
+        await secondPreset.save();
+
+        // Essayer de mettre à jour le premier preset avec le nom du deuxième preset
+        const updatedData = {
+            name: 'second Preset',
+        };
+
+        const response = await agent.put(`/presets/${presetId}`).send(updatedData);
+
+        expect(response.status).toBe(302);
+        expect(response.headers.location).toBe(`/presets/${presetId}`);
+
+        const getResponse = await agent.get(response.headers.location);
+        const $ = cheerio.load(getResponse.text);
+        const flashMessage = $('.flash-message-error p').text();
+        expect(flashMessage).toBe('Vous avez déjà un préréglage nommé "second Preset".');
+
+        const preset = await Preset.findById(presetId);
+        expect(preset.name).toBe('Original Preset');
     });
 });
