@@ -4,6 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mes Préréglages</title>
+    <style>
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .action-buttons form {
+            margin: 0;
+        }
+    </style>
 </head>
 <body>
     <h1>Mes Préréglages</h1>
@@ -19,7 +28,7 @@
                 <th>Récurrence</th>
                 <th>Durée par défaut</th>
                 <th>Description</th>
-                <th>Actions</th>
+                <th colspan="2">Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -34,10 +43,15 @@
                         <td style="background-color: <%= preset.color %>;">&nbsp;</td>
                         <td><%= preset.priority %></td>
                         <td><%= preset.recurrence %></td>
-                        <td><%= preset.defaultDuration %> minutes</td>
-                        <td><%= preset.description || 'N/A' %></td>
-                        <td>
-                            <a href="/presets/<%= preset._id %>">Modifier</a>
+                        <td><%= preset.duration %> minutes</td>
+                        <td><%- preset.description ? preset.description : '<i>Aucune</i>' %></td>
+                        <td colspan="2">
+                            <div class="action-buttons">
+                                <button onclick="window.location.href='/presets/<%= preset._id %>'">Modifier</button>
+                                <form action="/presets/<%= preset._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer ce préréglage ?')">
+                                    <button type="submit">Supprimer</button>
+                                </form>
+                            </div>
                         </td>
                     </tr>
                 <% }) %>
