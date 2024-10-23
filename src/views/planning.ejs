@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8' />
+    <link rel="stylesheet" href="css/planning/style.css">
+    <%- include('./partials/head', {pageName: "planning"}); %>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          allDaySlot:false,
+          nowIndicator:true,
+          height:"100%",
+          initialView: 'timeGridWeek',
+          dayHeaderFormat:{ month:'short',weekday: 'short'},
+           locale: 'fr',
+           firstDay:1,
+           headerToolbar:{
+            start:'title',
+            center:"timeGridWeek,dayGridMonth",
+            end:'today prev,next'
+           },
+           buttonText:{
+              today:"Aujourd'hui",
+              week:"semaine",
+              month:"mois"
+           },
+           EventSources:[
+            "/getDate"
+           ]
+          
+        });
+        const sideBar = document.querySelector(".sideBar");
+        calendar.render();
+        const menu = document.querySelector(".menu");
+        menu.addEventListener("click",()=>{
+          sideBar.classList.toggle("sideBar-open");
+          setTimeout(()=>{
+            calendar.updateSize();
+            
+          },1000)
+        })
+      });
+      const listAgenda = document.querySelector(".sideBar");
+      fetch("/api/getAgenda").then(res=>res.json()).then(data=>data.forEach(element => {
+         const agenda = document.createElement("ul")
+         di
+      }))
+    </script>
+  </head>
+  <body>
+    <header>
+      <%- include('./partials/header', {user: user}); %>
+  </header>
+  
+    <div class="container">
+      
+      <div class="sideBar">
+        <p style="
+          font-size: 20px;
+          color: #00BBEC;
+          text-align: center;
+          margin-bottom: 20px;
+          border-bottom: 2px solid #00BBEC;
+          white-space:nowrap;
+          padding-bottom: 10px;">Agenda</p>
+        <ul class="listAgenda"></ul>
+      </div>
+      <div>
+        <input type="checkbox" role="button" aria-label="Display the menu" class="menu">
+      </div>
+      <div id='calendar'></div>
+    </div>
+    
+  </body>
+</html>
