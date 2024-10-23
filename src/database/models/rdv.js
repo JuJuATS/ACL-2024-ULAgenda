@@ -5,7 +5,8 @@ const rdvSchema = new mongoose.Schema({
     dateDebut: { type: Date, required: true },
     dateFin: { type: Date, required: true },
     agendaId: { type: mongoose.Schema.Types.ObjectId, ref: 'Agenda', required: true },
-    description: { type: String },
+    recurrences: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Recurrence' }],
+    description: { type: String }
     
 });
 
