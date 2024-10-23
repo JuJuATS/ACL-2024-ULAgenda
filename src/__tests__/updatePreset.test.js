@@ -171,6 +171,7 @@ describe('Tests de la modification d\'un preset', () => {
         const invalidData = {
             duration: -1,
             recurrence: 'invalidRecurrence',
+            reminder: 15,
         };
 
         const response = await agent.put(`/presets/${presetId}`).send(invalidData);
@@ -181,9 +182,10 @@ describe('Tests de la modification d\'un preset', () => {
         const getResponse = await agent.get(response.headers.location);
         const $ = cheerio.load(getResponse.text);
         const flashMessages = $('.flash-message-error p').toArray().map(el => $(el).text());
-        expect(flashMessages.length).toBe(2);
+        expect(flashMessages.length).toBe(3);
         expect(flashMessages).toContain('La durée doit être une valeur positive.');
         expect(flashMessages).toContain('`invalidRecurrence` is not a valid enum value for path `recurrence`.');
+        expect(flashMessages).toContain('`15` is not a valid enum value for path `reminder`.');
 
         const preset = await Preset.findById(presetId);
         expect(preset.duration).toBe(60);
@@ -252,7 +254,7 @@ describe('Tests de la modification d\'un preset', () => {
 
         // Essayer de mettre à jour le premier preset avec le nom du deuxième preset
         const updatedData = {
-            name: 'second Preset',
+            name: 'second Preset ',
         };
 
         const response = await agent.put(`/presets/${presetId}`).send(updatedData);

@@ -23,15 +23,17 @@ const updatePreset = async (req, res) => {
             return res.status(403).send("Vous n'êtes pas autorisé à modifier ce préréglage");
         }
 
-        // On vérifie qu'aucun autre preser de l'utilisateur ne porte le même nom
-        const existingPreset = await Preset.findOne({
-            name : { $regex: new RegExp(`^${name}$`, 'i') }, // On ignore la casse
-            userId: req.session.userId,
-            _id: { $ne: presetId }, // On exclut évidemment le préréglage actuel
-        });
-        if (existingPreset) {
-            req.flash('error', `Vous avez déjà un préréglage nommé "${name}".`);
-            return res.redirect(req.path);
+        // On vérifie qu'aucun autre preset de l'utilisateur ne porte le même nom
+        if (name) {
+            const existingPreset = await Preset.findOne({
+                name : { $regex: new RegExp(`^${name.trim()}$`, 'i') }, // On ignore la casse
+                userId: req.session.userId,
+                _id: { $ne: presetId }, // On exclut évidemment le préréglage actuel
+            });
+            if (existingPreset) {
+                req.flash('error', `Vous avez déjà un préréglage nommé "${name.trim()}".`);
+                return res.redirect(req.path);
+            }
         }
 
         preset.name = name || preset.name;
