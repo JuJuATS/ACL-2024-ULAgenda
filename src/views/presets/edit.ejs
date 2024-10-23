@@ -77,6 +77,16 @@
         <label for="duration">Durée par défaut (en minutes) :</label>
         <input type="number" id="duration" name="duration" value="<%= duration %>"><br>
 
+        <label for="reminder">Rappel (en minutes) :</label>
+        <select id="reminder" name="reminder">
+            <option value="" <%= reminder === null ? 'selected' : '' %>>Aucun</option>
+            <option value="5" <%= reminder === 5 ? 'selected' : '' %>>5 minutes</option>
+            <option value="10" <%= reminder === 10 ? 'selected' : '' %>>10 minutes</option>
+            <option value="30" <%= reminder === 30 ? 'selected' : '' %>>30 minutes</option>
+            <option value="60" <%= reminder === 60 ? 'selected' : '' %>>1 heure</option>
+            <option value="1440" <%= reminder === 1440 ? 'selected' : '' %>>1 jour</option>
+        </select><br>
+
         <label for="description">Description :</label>
         <textarea id="description" name="description"><%= description %></textarea><br>
 

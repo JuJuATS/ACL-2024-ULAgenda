@@ -9,6 +9,7 @@ const updatePreset = async (req, res) => {
             priority,
             recurrence,
             duration,
+            reminder,
             description
         } = req.body;
 
@@ -38,6 +39,7 @@ const updatePreset = async (req, res) => {
         preset.priority = priority || preset.priority;
         preset.recurrence = recurrence || preset.recurrence;
         preset.duration = duration || preset.duration;
+        preset.reminder = reminder ? parseInt(reminder) : null;
         preset.description = description !== undefined ? description : preset.description;
 
         await preset.save();

@@ -41,6 +41,11 @@ const presetSchema = new mongoose.Schema({
         type: String,
         trim: true,
     },
+    reminder: {
+        type: Number,
+        enum: [5, 10, 30, 60, 1440],
+        default: null, // Pas de rappel par défaut
+    },
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',

@@ -24,6 +24,7 @@ const getPresetEditionPage = async (req, res) => {
             priority: preset.priority,
             recurrence: preset.recurrence,
             duration: preset.duration,
+            reminder: preset.reminder,
             description: preset.description || '',
         });
     } catch (error) {
