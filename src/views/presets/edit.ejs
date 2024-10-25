@@ -14,7 +14,10 @@
                 priority: '<%= priority %>',
                 recurrence: '<%= recurrence %>',
                 duration: '<%= duration %>',
-                description: '<%= description %>'
+                description: '<%= description %>',
+                eventName: '<%= eventName %>',
+                startHour: '<%= startHour %>',
+                reminder: '<%= reminder %>'
             };
 
             // Le bouton d'envoie est désactivé par défaut 
@@ -28,7 +31,10 @@
                     priority: document.getElementById('priority').value,
                     recurrence: document.getElementById('recurrence').value,
                     duration: document.getElementById('duration').value,
-                    description: document.getElementById('description').value
+                    description: document.getElementById('description').value,
+                    eventName: document.getElementById('eventName').value,
+                    startHour: document.getElementById('startHour').value,
+                    reminder: document.getElementById('reminder').value
                 };
 
                 // Activer le bouton d'envoie si un champ a été modifié
@@ -55,8 +61,14 @@
         <label for="name">Nom :</label>
         <input type="text" id="name" name="name" value="<%= name %>" required><br>
 
+        <label for="eventName">Nom du rendez-vous :</label>
+        <input type="text" id="eventName" name="eventName" value="<%= eventName %>"><br>
+
         <label for="color">Couleur :</label>
         <input type="color" id="color" name="color" value="<%= color %>"><br>
+
+        <label for="startHour">Heure de début :</label>
+        <input type="time" id="startHour" name="startHour" value="<%= startHour %>"><br>
 
         <label for="priority">Priorité :</label>
         <select id="priority" name="priority">

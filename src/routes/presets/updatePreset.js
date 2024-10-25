@@ -5,10 +5,12 @@ const updatePreset = async (req, res) => {
         const presetId = req.params.id;
         const {
             name,
+            eventName,
             color,
             priority,
             recurrence,
             duration,
+            startHour,
             reminder,
             description
         } = req.body;
@@ -37,10 +39,12 @@ const updatePreset = async (req, res) => {
         }
 
         preset.name = name || preset.name;
+        preset.eventName = eventName !== undefined ? eventName : preset.eventName;
         preset.color = color || preset.color;
         preset.priority = priority || preset.priority;
         preset.recurrence = recurrence || preset.recurrence;
         preset.duration = duration || preset.duration;
+        preset.startHour = startHour !== undefined ? startHour : preset.startHour;
         preset.reminder = reminder ? parseInt(reminder) : null;
         preset.description = description !== undefined ? description : preset.description;
 

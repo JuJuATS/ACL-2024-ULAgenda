@@ -10,6 +10,11 @@ const presetSchema = new mongoose.Schema({
         trim: true,
         minlength: [1, 'Le nom ne peut pas être vide'],
     },
+    eventName: {
+        type: String,
+        trim: true,
+        default: null,
+    },
     color: {
         type: String,
         validate: {
@@ -36,6 +41,17 @@ const presetSchema = new mongoose.Schema({
         min: [0, 'La durée doit être une valeur positive.'],
         max: [1440, 'La durée doit être inférieure ou égale à 1440 minutes (24 heures).'],
         default: 60, // Durée par défaut de 60 minutes
+    },
+    startHour: {
+        type: String,
+        validate: {
+            validator: function(v) {
+                // On vérifie que l'heure est bien au format HH:MM ou null
+                return !v || /^([01]\d|2[0-3]):([0-5]\d)$/.test(v);
+            },
+            message: props => `'${props.value}' n'est pas une heure valide (format attendu : HH:MM).`
+        },
+        default: null,
     },
     description: {
         type: String,

@@ -20,11 +20,13 @@ const getPresetEditionPage = async (req, res) => {
         res.render('presets/edit', {
             id: preset._id,
             name: preset.name,
+            eventName: preset.eventName || '',
             color: preset.color,
             priority: preset.priority,
             recurrence: preset.recurrence,
+            startHour: preset.startHour,
             duration: preset.duration,
-            reminder: preset.reminder,
+            reminder: preset.reminder || '',
             description: preset.description || '',
         });
     } catch (error) {

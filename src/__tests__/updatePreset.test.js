@@ -63,6 +63,7 @@ afterAll(async () => {
 beforeEach(async () => {
     const mockPreset = new Preset({
         name: 'Original Preset',
+        eventName: 'Original Event',
         userId: userId,
         color: '#ff0000',
         priority: 'Moyenne',
@@ -88,6 +89,9 @@ describe('Tests de la modification d\'un preset', () => {
             recurrence: 'Quotidienne',
             duration: 120,
             description: 'Updated description',
+            eventName: 'Updated Event',
+            startHour: '09:00',
+            reminder: 30,
         };
     
         const response = await agent.put(`/presets/${presetId}`).send(updatedData);
@@ -110,6 +114,9 @@ describe('Tests de la modification d\'un preset', () => {
         expect(updatedPreset.recurrence).toBe(updatedData.recurrence);
         expect(updatedPreset.duration).toBe(updatedData.duration);
         expect(updatedPreset.description).toBe(updatedData.description);
+        expect(updatedPreset.eventName).toBe(updatedData.eventName);
+        expect(updatedPreset.startHour).toBe(updatedData.startHour);
+        expect(updatedPreset.reminder).toBe(updatedData.reminder);
 
         // On vérifie que l'id de l'utilisateur n'a pas changé
         expect(updatedPreset.userId.toString()).toBe(userId.toString());
@@ -120,6 +127,7 @@ describe('Tests de la modification d\'un preset', () => {
             name: 'Partially Updated Preset',
             duration: 90,
             description: '',
+            eventName: '',
         };
     
         const response = await agent.put(`/presets/${presetId}`).send(partialData);
@@ -137,12 +145,15 @@ describe('Tests de la modification d\'un preset', () => {
         const updatedPreset = await Preset.findById(presetId);
         expect(updatedPreset.name).toBe(partialData.name);
         expect(updatedPreset.duration).toBe(partialData.duration);
+        expect(updatedPreset.description).toBe(partialData.description);
+        expect(updatedPreset.eventName).toBe(partialData.eventName);
     
         // Les données non présentes dans le formulaire de mise à jour doivent rester inchangées
         expect(updatedPreset.color).toBe('#ff0000');
         expect(updatedPreset.priority).toBe('Moyenne');
         expect(updatedPreset.recurrence).toBe('Hebdomadaire');
-        expect(updatedPreset.description).toBe('');
+        expect(updatedPreset.startHour).toBeNull();
+        expect(updatedPreset.reminder).toBeNull();
         expect(updatedPreset.userId.toString()).toBe(userId.toString());
     });
 
@@ -165,6 +176,9 @@ describe('Tests de la modification d\'un preset', () => {
         expect(updatedPreset.recurrence).toBe('Hebdomadaire');
         expect(updatedPreset.duration).toBe(60);
         expect(updatedPreset.description).toBe('Test description');
+        expect(updatedPreset.eventName).toBe('Original Event');
+        expect(updatedPreset.startHour).toBeNull();
+        expect(updatedPreset.reminder).toBeNull();
     });
 
     it('devrait ne pas mettre à jour le préréglage pour une durée négative et une récurrence invalide', async () => {
@@ -172,6 +186,7 @@ describe('Tests de la modification d\'un preset', () => {
             duration: -1,
             recurrence: 'invalidRecurrence',
             reminder: 15,
+            startHour: 'invalidHour',
         };
 
         const response = await agent.put(`/presets/${presetId}`).send(invalidData);
@@ -182,14 +197,17 @@ describe('Tests de la modification d\'un preset', () => {
         const getResponse = await agent.get(response.headers.location);
         const $ = cheerio.load(getResponse.text);
         const flashMessages = $('.flash-message-error p').toArray().map(el => $(el).text());
-        expect(flashMessages.length).toBe(3);
+        expect(flashMessages.length).toBe(4);
         expect(flashMessages).toContain('La durée doit être une valeur positive.');
         expect(flashMessages).toContain('`invalidRecurrence` is not a valid enum value for path `recurrence`.');
         expect(flashMessages).toContain('`15` is not a valid enum value for path `reminder`.');
+        expect(flashMessages).toContain('\'invalidHour\' n\'est pas une heure valide (format attendu : HH:MM).');
 
         const preset = await Preset.findById(presetId);
         expect(preset.duration).toBe(60);
         expect(preset.recurrence).toBe('Hebdomadaire');
+        expect(preset.reminder).toBeNull();
+        expect(preset.startHour).toBeNull();
     });
 
     it('devrait ne pas mettre à jour le préréglage pour une durée supérieure à 24 heures', async () => {

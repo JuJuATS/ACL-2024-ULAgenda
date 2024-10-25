@@ -22,12 +22,14 @@
     <table border="1">
         <thead>
             <tr>
-                <th>Nom</th>
+                <th>Nom du préréglage</th>
+                <th>Nom du rendez-vous</th>
                 <th>Couleur</th>
+                <th>Heure de début</th>
                 <th>Priorité</th>
                 <th>Récurrence</th>
-                <th>Durée par défaut</th>
-                <th>Description</th>
+                <th>Durée</th>
+                <th>Rappel</th>
                 <th colspan="2">Actions</th>
             </tr>
         </thead>
@@ -40,11 +42,13 @@
                 <% presets.forEach(preset => { %>
                     <tr>
                         <td><%= preset.name %></td>
+                        <td><%- preset.eventName ? preset.eventName : '<i>Aucun</i>' %></td>
                         <td style="background-color: <%= preset.color %>;">&nbsp;</td>
+                        <td><%- preset.startHour ? preset.startHour : '<i>Aucune</i>' %></td>
                         <td><%= preset.priority %></td>
                         <td><%= preset.recurrence %></td>
                         <td><%= preset.duration %> minutes</td>
-                        <td><%- preset.description ? preset.description : '<i>Aucune</i>' %></td>
+                        <td><%= preset.reminder ? preset.reminder + ' min' : 'Aucun' %></td>
                         <td colspan="2">
                             <div class="action-buttons">
                                 <button onclick="window.location.href='/presets/<%= preset._id %>'">Modifier</button>

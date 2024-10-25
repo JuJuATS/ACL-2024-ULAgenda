@@ -86,6 +86,9 @@ describe('Authenticated user preset creation tests', () => {
     expect(preset.recurrence).toBe('Aucune');
     expect(preset.duration).toBe(60);
     expect(preset.description).toBeUndefined();
+    expect(preset.reminder).toBeNull();
+    expect(preset.startHour).toBeNull();
+    expect(preset.eventName).toBeNull();
   });
 
   it('should create a preset with incremented name if "Nouveau Préréglage" already exists', async () => {
