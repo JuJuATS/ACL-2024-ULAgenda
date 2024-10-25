@@ -47,6 +47,11 @@
                 field.addEventListener('input', checkIfModified);
                 field.addEventListener('change', checkIfModified);
             });
+
+            document.getElementById('clearStartHour').addEventListener('click', () => {
+                document.getElementById('startHour').value = '';
+                checkIfModified();
+            });
         });
     </script>
 </head>
@@ -58,27 +63,28 @@
     <!-- Formulaire pour modifier le préréglage -->
     <form id="presetForm" action="/presets/<%= id %>?_method=PUT" method="POST">
 
-        <label for="name">Nom :</label>
+        <label for="name">Nom du préréglage *:</label>
         <input type="text" id="name" name="name" value="<%= name %>" required><br>
 
         <label for="eventName">Nom du rendez-vous :</label>
         <input type="text" id="eventName" name="eventName" value="<%= eventName %>"><br>
 
-        <label for="color">Couleur :</label>
-        <input type="color" id="color" name="color" value="<%= color %>"><br>
+        <label for="color">Couleur *:</label>
+        <input type="color" id="color" name="color" value="<%= color %>" required><br>
 
         <label for="startHour">Heure de début :</label>
-        <input type="time" id="startHour" name="startHour" value="<%= startHour %>"><br>
+        <input type="time" id="startHour" name="startHour" value="<%= startHour %>">
+        <button type="button" id="clearStartHour">Effacer l'heure</button><br>
 
-        <label for="priority">Priorité :</label>
-        <select id="priority" name="priority">
+        <label for="priority">Priorité *:</label>
+        <select id="priority" name="priority" required>
             <option value="Haute" <%= priority === 'Haute' ? 'selected' : '' %>>Haute</option>
             <option value="Moyenne" <%= priority === 'Moyenne' ? 'selected' : '' %>>Moyenne</option>
             <option value="Basse" <%= priority === 'Basse' ? 'selected' : '' %>>Basse</option>
         </select><br>
 
-        <label for="recurrence">Récurrence :</label>
-        <select id="recurrence" name="recurrence">
+        <label for="recurrence">Récurrence *:</label>
+        <select id="recurrence" name="recurrence" required>
             <option value="Aucune" <%= recurrence === 'Aucune' ? 'selected' : '' %>>Aucune</option>
             <option value="Quotidienne" <%= recurrence === 'Quotidienne' ? 'selected' : '' %>>Quotidienne</option>
             <option value="Hebdomadaire" <%= recurrence === 'Hebdomadaire' ? 'selected' : '' %>>Hebdomadaire</option>
@@ -86,11 +92,11 @@
             <option value="Annuelle" <%= recurrence === 'Annuelle' ? 'selected' : '' %>>Annuelle</option>
         </select><br>
 
-        <label for="duration">Durée par défaut (en minutes) :</label>
-        <input type="number" id="duration" name="duration" value="<%= duration %>"><br>
+        <label for="duration">Durée par défaut (en minutes) *:</label>
+        <input type="number" id="duration" name="duration" value="<%= duration %>" required><br>
 
-        <label for="reminder">Rappel (en minutes) :</label>
-        <select id="reminder" name="reminder">
+        <label for="reminder">Rappel (en minutes) *:</label>
+        <select id="reminder" name="reminder" required>
             <option value="" <%= reminder === null ? 'selected' : '' %>>Aucun</option>
             <option value="5" <%= reminder === 5 ? 'selected' : '' %>>5 minutes</option>
             <option value="10" <%= reminder === 10 ? 'selected' : '' %>>10 minutes</option>
@@ -99,7 +105,7 @@
             <option value="1440" <%= reminder === 1440 ? 'selected' : '' %>>1 jour</option>
         </select><br>
 
-        <label for="description">Description :</label>
+        <label for="description">Description :</label><br>
         <textarea id="description" name="description"><%= description %></textarea><br>
 
         <button type="submit" disabled>Mettre à jour</button>

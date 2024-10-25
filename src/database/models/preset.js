@@ -8,7 +8,6 @@ const presetSchema = new mongoose.Schema({
         type: String,
         required: true,
         trim: true,
-        minlength: [1, 'Le nom ne peut pas être vide'],
     },
     eventName: {
         type: String,

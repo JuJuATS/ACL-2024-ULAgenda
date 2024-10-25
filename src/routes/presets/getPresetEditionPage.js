@@ -24,7 +24,7 @@ const getPresetEditionPage = async (req, res) => {
             color: preset.color,
             priority: preset.priority,
             recurrence: preset.recurrence,
-            startHour: preset.startHour,
+            startHour: preset.startHour || '',
             duration: preset.duration,
             reminder: preset.reminder || '',
             description: preset.description || '',
