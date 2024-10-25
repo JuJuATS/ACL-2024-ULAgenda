@@ -24,6 +24,7 @@ const methodOverride = require('method-override');
 const routes = require('./routes');
 const agendaRoutes = require('./routes/agendas/agendas');
 const rdvRoutes = require("./routes/agendas/rdvs")
+const apiRouter = require('./routes/apiRouter');
 
 // -- BBD --
 const connectDB = require('./database/db');
@@ -100,6 +101,9 @@ app.use((req, res, next) => {
   next();
 });
 
+// Montage du routeur API
+app.use('/api', apiRouter);
+
 
 // Route de base
 app.get('/', async (req, res) => {
@@ -137,8 +141,7 @@ app
   .get('/presets/new', isAuthentified, routes.presets.createPreset)
   .get('/presets/:id', isAuthentified, routes.presets.getPresetEditionPage)
   .delete('/presets/:id', isAuthentified, routes.presets.deletePreset)
-  .put('/presets/:id', isAuthentified, routes.presets.updatePreset)
-  .use('/presets/api/:id', isAuthentified, routes.presets.getPresetInfosById);
+  .put('/presets/:id', isAuthentified, routes.presets.updatePreset);
 
 app.get("/logout",routes.signin.logout);
 

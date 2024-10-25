@@ -3,7 +3,8 @@ const Rdv = (require('../../database/models/rdv.js')).Rdv;
 const authMiddleware = require('../../middlewares/authMiddleware.js');
 const ObjectId = require('mongodb').ObjectId;
 const router = express.Router();
-const Agenda = require("../../database/models/agenda.js")
+const Agenda = require("../../database/models/agenda.js");
+const Preset = require('../../database/models/preset.js');
 
 // Route pour afficher les rendez-vous avec le bon id.
 
@@ -15,7 +16,9 @@ router.get('/', authMiddleware, async (req, res) => {
     const dateB = new Date(`${b.dateDebut}`);
     return dateA - dateB;  // Sort ascending by date and start time
 });
-  res.render('rendezvous', { rdvUser:rdvUser,agenda:agendaId });
+
+  const presets = await Preset.find({ userId: req.session.userId });
+  res.render('rendezvous', { rdvUser: rdvUser, agenda: agendaId, presets });
 });
 
 
