@@ -20,7 +20,6 @@ const cors = require('cors');
 const morgan = require('morgan');
 const methodOverride = require('method-override');
 const passport = require('./config/passport');
-const methodOverride = require('method-override');
 
 // -- IMPORT ROUTES --
 const routes = require('./routes');
@@ -76,7 +75,7 @@ if (process.env.NODE_ENV !== 'test') {
   });
 } else {
   store = new MemoryStore({
-    checkPeriod: 86400000 // prune expired entries every 24h
+    checkPeriod: 86400000
   });
 }
 
@@ -125,7 +124,12 @@ app.use('/agendas', agendaRoutes);
 app.use('/rendezvous',rdvRoutes);
 // Routes pour afficher le formulaire d'inscription
 app
-  .get('/signup', (req, res) => res.render('signup'))
+  .get('/signup', (req, res) => {
+    if (req.isAuthenticated()) {
+      return res.redirect('/');
+    }
+    res.render('signup');
+  })
   .post('/signup', routes.signup.createAccount);
 
 app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veuillez vérifier votre email.'));
