@@ -10,7 +10,22 @@
     <div class="wrapper">
         <div class="container">
             <h1>Planifier un rendez-vous</h1>
-            <form id="rendezvous-form" data-agendaId=<%= agenda %>>
+            <form id="rendezvous-form" data-agendaId="<%= agenda %>">
+                <div class="form-group">
+                    <label for="preset-select">Appliquer un préréglage:</label>
+                    <select id="preset-select">
+                        <option value="" disabled selected>-- Sélectionner un préréglage --</option>
+                        <% if (presets && presets.length > 0) { %>
+                            <% presets.forEach(function(preset) { %>
+                                <option value="<%= preset._id %>"><%= preset.name %></option>
+                            <% }); %>
+                        <% } else { %>
+                            <option disabled>Aucun préréglage disponible</option>
+                        <% } %>
+                    </select>
+                </div>
+
+                <!-- Form Fields -->
                 <div class="form-group">
                     <label for="nom">Nom du rendez-vous:</label>
                     <input type="text" id="nom" name="nom" required>
@@ -39,6 +54,7 @@
                 <div class="form-group">
                     <label for="rappel">Rappel:</label>
                     <select id="rappel" name="rappel">
+                        <option value="">Aucun</option>
                         <option value="5">5 minutes avant</option>
                         <option value="10">10 minutes avant</option>
                         <option value="30">30 minutes avant</option>

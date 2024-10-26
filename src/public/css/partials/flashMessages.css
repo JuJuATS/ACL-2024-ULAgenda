@@ -1,0 +1,46 @@
+/* Conteneur pour les messages flash */
+.flash-messages {
+    margin: 10px auto;
+    padding: 5px;
+    max-width: 600px;
+    font-size: 0.9rem;
+}
+
+/* Style de base pour tous les messages */
+.flash-message {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+    font-weight: normal;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+/* Message de succès - couleur plus douce */
+.flash-message-success {
+    background-color: #eaf7ea;
+    border-color: #b4e1b4;
+    color: #2e7031;
+}
+
+/* Message d'erreur - couleur plus discrète */
+.flash-message-error {
+    background-color: #f8e6e6;
+    border-color: #e1b4b4;
+    color: #70312e;
+}
+
+/* Message d'information - couleur neutre */
+.flash-message-info {
+    background-color: #e7f0f7;
+    border-color: #b4cfe1;
+    color: #2e5370;
+}
+
+/* Message d'avertissement - couleur douce */
+.flash-message-warning {
+    background-color: #fff4e5;
+    border-color: #e1d4b4;
+    color: #705c2e;
+}
