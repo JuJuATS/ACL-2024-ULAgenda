@@ -21,7 +21,7 @@ const updatePreset = async (req, res) => {
             return res.status(404).send("Préréglage non trouvé");
         }
 
-        if (!preset.userId.equals(req.session.userId)) {
+        if (!preset.userId.equals(req.user.id)) {
             return res.status(403).send("Vous n'êtes pas autorisé à modifier ce préréglage");
         }
 
@@ -33,7 +33,7 @@ const updatePreset = async (req, res) => {
             // On vérifie qu'aucun autre preset de l'utilisateur ne porte le même nom
             const existingPreset = await Preset.findOne({
                 name : { $regex: new RegExp(`^${name.trim()}$`, 'i') }, // On ignore la casse
-                userId: req.session.userId,
+                userId: req.user.id,
                 _id: { $ne: presetId }, // On exclut évidemment le préréglage actuel
             });
             if (existingPreset) {

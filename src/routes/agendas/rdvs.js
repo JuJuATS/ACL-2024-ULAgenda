@@ -17,7 +17,7 @@ router.get('/', authMiddleware, async (req, res) => {
     return dateA - dateB;  // Sort ascending by date and start time
 });
 
-  const presets = await Preset.find({ userId: req.session.userId });
+  const presets = await Preset.find({ userId: req.user.id });
   res.render('rendezvous', { rdvUser: rdvUser, agenda: agendaId, presets });
 });
 

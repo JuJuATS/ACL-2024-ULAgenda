@@ -45,8 +45,8 @@
               <input type="password" id="password" name="password" placeholder="Mot de passe">
               <input type="submit" id="submit" value="Se connecter">
             </form>
-            <% if ( locals.expressFlash) { %>
-                <p class="error"> <%= expressFlash %> </p>
+            <% if ( flash && flash.error ) { %>
+                <p class="error"> <%= flash.error %> </p>
                 <%}%>
                 
            

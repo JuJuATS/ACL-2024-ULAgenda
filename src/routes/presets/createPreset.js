@@ -16,10 +16,10 @@ const createPreset = async (req, res) => {
     try {
         // Générer un nom unique basé sur "Nouveau Préréglage"
         const baseName = 'Nouveau Préréglage';
-        const uniqueName = await generateUniqueName(baseName, req.session.userId);
+        const uniqueName = await generateUniqueName(baseName, req.user.id);
 
         const newPreset = new Preset({
-            userId: req.session.userId,
+            userId: req.user.id,
             name: uniqueName,
         });
 

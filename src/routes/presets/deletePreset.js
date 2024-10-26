@@ -3,7 +3,7 @@ const Preset = require('../../database/models/preset');
 const deletePreset = async (req, res) => {
     try {
         const presetId = req.params.id;
-        const userId = req.session.userId;
+        const userId = req.user.id;
 
         const preset = await Preset.findById(presetId);
 

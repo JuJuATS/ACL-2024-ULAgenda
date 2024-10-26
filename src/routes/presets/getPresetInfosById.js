@@ -10,7 +10,7 @@ const getPresetInfosById = async (req, res) => {
             return res.status(404).json({ message: 'Preset non trouvé' });
         }
 
-        if (!preset.userId.equals(req.session.userId)) {
+        if (!preset.userId.equals(req.user.id)) {
             return res.status(403).json({ message: 'Vous n\'êtes pas autorisé à accéder à ce préréglage' });
         }
 
