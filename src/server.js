@@ -19,6 +19,7 @@ const path = require('path');
 const cors = require('cors');
 const morgan = require('morgan');
 const methodOverride = require('method-override');
+const passport = require('./config/passport');
 
 // -- IMPORT ROUTES --
 const routes = require('./routes');
@@ -28,10 +29,7 @@ const apiRouter = require('./routes/apiRouter');
 
 // -- BBD --
 const connectDB = require('./database/db');
-const User = require('./database/models/user');
-const { sign } = require('crypto');
 const isAuthentified = require('./middlewares/authMiddleware');
-const ObjectId = require('mongodb').ObjectId;
 
 // -- EXPRESS --
 const app = express();
@@ -83,7 +81,7 @@ if (process.env.NODE_ENV !== 'test') {
 
 app.use(session({
   secret: process.env.SECRET,
-  resave: true,
+  resave: false,
   rolling: true,
   saveUninitialized: false,
   store,
@@ -95,8 +93,20 @@ app.use(session({
 }));
 
 
+// Middlewares pour Passport.js
+app.use(passport.initialize())
+   .use(passport.session());
+
+
+
 // Configuration des messages flash
 app.use((req, res, next) => {
+
+  // A DECOMMENTER SI PROBLEMES AVEC LES VARIABLES DE SESSIONS
+  // req.session.isLoggedIn = req.isAuthenticated();
+  // req.session.user = req.user;
+  // req.session.userId = req.user ? req.user.id : null;
+
   res.locals.flash = req.flash();
   next();
 });
@@ -107,19 +117,14 @@ app.use('/api', apiRouter);
 
 // Route de base
 app.get('/', async (req, res) => {
-  let userInfo = null;
-  if (req.session.userId) {
-    const user = await User.findById(req.session.userId)
-    userInfo = { firstname: user.firstname, lastname: user.lastname, pseudo: user.pseudo };
-  }
-  res.render('index', { user: userInfo} )
+  res.render('index', { user: req.user} );
 });
 
 app.use('/agendas', agendaRoutes);
 app.use('/rendezvous',rdvRoutes);
 // Routes pour afficher le formulaire d'inscription
 app
-  .get('/signup', (req, res) => res.render('signup',{expressFlash:req.flash("error")}))
+  .get('/signup', (req, res) => res.render('signup'))
   .post('/signup', routes.signup.createAccount);
 
 app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veuillez vérifier votre email.'));
@@ -128,7 +133,13 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 app.get('/verify-email', routes.signup.verifyEmail);
 
 // Route de connection
-app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexion);
+app
+  .get("/signin",routes.signin.signin)
+  .post("/signin", passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/signin',
+    failureFlash: true
+  }));
 
 // Route pour récuperer son mot de passe
 app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker);

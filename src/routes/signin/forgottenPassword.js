@@ -5,17 +5,17 @@ const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
 
 const forgottenPassword = async (req,res)=>{
-    if(req.session.isLoggedIn){
+    if(req.isAuthenticated()){
         res.redirect(302,"/")
     }
     else{
-        res.render("forgottenPasswordForm",{expressFlash:req.flash("error")});
+        res.render("forgottenPasswordForm");
 
     }
 }
 
 const forgottenPasswordLinkMaker  = async(req,res)=>{
-        if(req.session.isLoggedIn){
+        if(req.isAuthenticated()){
             return;
         }
         const { email } = req.body;
@@ -42,7 +42,7 @@ const forgottenPasswordLinkMaker  = async(req,res)=>{
         }
 }
 const resetPassword = async(req,res)=>{
-    if(req.session.isLoggedIn){
+    if(req.isAuthenticated()){
         return res.redirect("/")
     }
     const {token} = req.query
@@ -55,7 +55,7 @@ const resetPassword = async(req,res)=>{
             req.flash("error","utilisateur non trouvé");
             res.redirect(401,"/forgottenPassword");
         }else{
-            res.render("passwordChange",{expressFlash:req.flash("error"),token:token});
+            res.render("passwordChange",{token:token});
         }
     }catch(error){
         req.flash("error","ce lien n'est pas valide ou expiré");
@@ -63,7 +63,7 @@ const resetPassword = async(req,res)=>{
     }
     }
 const changePassword = async(req,res)=>{
-    if(req.session.isLoggedIn){
+    if(req.isAuthenticated()){
         return res.redirect("/");
     }
     const {token} = req.query;
