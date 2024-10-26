@@ -15,6 +15,7 @@ const flash = require('express-flash')
 const path = require('path');
 const cors = require('cors');
 const morgan = require('morgan');
+const passport = require('./config/passport');
 
 // -- IMPORT ROUTES --
 const routes = require('./routes');
@@ -23,9 +24,6 @@ const rdvRoutes = require("./routes/agendas/rdvs")
 
 // -- BBD --
 const connectDB = require('./database/db');
-const User = require('./database/models/user');
-const { sign } = require('crypto');
-const ObjectId = require('mongodb').ObjectId;
 
 // -- EXPRESS --
 const app = express();
@@ -56,6 +54,8 @@ app.use(express.static(path.join(__dirname, 'public')))
   .use(cors())
   .use(morgan())
   .use(flash());
+
+
 // Configuration des sessions
 const store  = MangoStore.create({
   mongoUrl: process.env.DB_URI,
@@ -67,7 +67,7 @@ const store  = MangoStore.create({
 
 app.use(session({
   secret: process.env.SECRET,
-  resave: true,
+  resave: false,
   rolling: true,
   saveUninitialized: false,
   store,
@@ -78,32 +78,34 @@ app.use(session({
   },
 }));
 
+// Middlewares pour Passport.js
+app.use(passport.initialize())
+   .use(passport.session());
+
+
+
 // Configuration des variables res.locals
 app.use((req, res, next) => {
-  res.locals.messagesFlash = [];
-  if (req.session.messagesFlash) {
-    res.locals.messagesFlash = req.session.messagesFlash;
-    req.session.messagesFlash = []; // Réinitialisation des messages flash
-  }
-  res.locals.user = req.session.user || null; 
+
+  // A DECOMMENTER SI PROBLEMES AVEC LES VARIABLES DE SESSIONS
+  // req.session.isLoggedIn = req.isAuthenticated();
+  // req.session.user = req.user;
+  // req.session.userId = req.user ? req.user.id : null;
+
+  res.locals.expressFlash = req.flash("error");
   next();
 });
 
 // Route de base
 app.get('/', async (req, res) => {
-  let userInfo = null;
-  if (req.session.userId) {
-    const user = await User.findById(req.session.userId)
-    userInfo = { firstname: user.firstname, lastname: user.lastname, pseudo: user.pseudo };
-  }
-  res.render('index', { user: userInfo} )
+  res.render('index', { user: req.user} );
 });
 
 app.use('/agendas', agendaRoutes);
 app.use('/rendezvous',rdvRoutes);
 // Routes pour afficher le formulaire d'inscription
 app
-  .get('/signup', (req, res) => res.render('signup',{expressFlash:req.flash("error")}))
+  .get('/signup', (req, res) => res.render('signup'))
   .post('/signup', routes.signup.createAccount);
 
 app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veuillez vérifier votre email.'));
@@ -112,11 +114,17 @@ app.get('/successfull-signup', (req, res) => res.send('Inscription réussie, veu
 app.get('/verify-email', routes.signup.verifyEmail);
 
 // Route de connection
-app.get("/signin",routes.signin.signin).post("/signin",routes.signin.userConnexion)
+app
+  .get("/signin",routes.signin.signin)
+  .post("/signin", passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/signin',
+    failureFlash: true
+  }));
 
 // Route pour récuperer son mot de passe
-app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker)
-app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword)
+app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker);
+app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword);
 app.get("/logout",routes.signin.logout)
 
 // Démarrage du serveur
