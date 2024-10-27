@@ -116,6 +116,10 @@ app.use((req, res, next) => {
 app.use('/api', apiRouter);
 
 
+// Montage du routeur pour la recherche de rendez-vous
+app.use('/search', routes.searchRouter);
+
+
 // Route de base
 app.get('/', async (req, res) => {
   res.render('index', { user: req.user} );
