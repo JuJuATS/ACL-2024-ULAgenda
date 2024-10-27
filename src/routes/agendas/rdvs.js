@@ -1,5 +1,5 @@
 const express = require('express');
-const Rdv = (require('../../database/models/rdv.js')).Rdv;
+const Rdv = (require('../../database/models/rdv.js'));
 const authMiddleware = require('../../middlewares/authMiddleware.js');
 const ObjectId = require('mongodb').ObjectId;
 const router = express.Router();
@@ -34,7 +34,7 @@ router.post('/', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
     }
     let userId = req.user.id;
-    const agenda = await Agenda.findOne({_id:agendaId});
+    const agenda = await Agenda.findById(agendaId);
     
     if (!agenda) {
       console.log("pas d'agenda")
@@ -58,9 +58,12 @@ router.post('/', authMiddleware, async (req, res) => {
       agendaId:agendaId
     });
    
-    agenda.rdvs.push(newRdv);
-    newRdv.save();
-    agenda.save();
+    await newRdv.save();
+   
+    agenda.rdvs.push(newRdv._id);
+
+    await agenda.save();
+
     res.status(201).json({ok:true,rdv:newRdv});
   } catch (error) {
     console.log("il y a une erreur")
