@@ -1,5 +1,5 @@
 const express = require('express');
-const Rdv = (require('../../database/models/rdv.js'));
+const Rdv = require('../../database/models/rdv.js');
 const authMiddleware = require('../../middlewares/authMiddleware.js');
 const ObjectId = require('mongodb').ObjectId;
 const router = express.Router();
@@ -68,7 +68,7 @@ router.post('/', authMiddleware, async (req, res) => {
       agendaId:agendaId,
       recurrences: recurrence
     });
-   
+
     await newRdv.save();
    
     agenda.rdvs.push(newRdv._id);
