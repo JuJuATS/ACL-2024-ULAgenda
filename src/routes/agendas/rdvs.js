@@ -4,6 +4,7 @@ const authMiddleware = require('../../middlewares/authMiddleware.js');
 const ObjectId = require('mongodb').ObjectId;
 const router = express.Router();
 const Agenda = require("../../database/models/agenda.js")
+const Recurrence = require("../../database/models/recurrence");
 
 // Route pour afficher les rendez-vous avec le bon id.
 
@@ -23,16 +24,16 @@ router.get('/', authMiddleware, async (req, res) => {
 // Route pour créer un nouveau rendez-vous.
 router.post('/', authMiddleware, async (req, res) => {
   try {
-    
-    const { name, description, dateDebut, dateFin,agendaId } = req.body;
+
+    const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence } = req.body;
     console.log(name,description,dateDebut,dateFin,agendaId)
-    if (!name || !dateDebut || !dateFin || !agendaId) {
+    if (!name || !dateDebut || !dateFin || !agendaId || !(recurrences && finRecurrence)) {
       console.log("il manque quelque chose")
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
     }
     let userId = req.session.userId;
     const agenda = await Agenda.findOne({_id:agendaId});
-    
+
     if (!agenda) {
       console.log("pas d'agenda")
       return res.status(404).json({ message: 'Agenda non trouvé' });
@@ -40,22 +41,33 @@ router.post('/', authMiddleware, async (req, res) => {
 
     const debut = new Date(dateDebut);
     const fin = new Date(dateFin);
-    
+
 
     if (fin <= debut) {
       console.log("date pas valide")
       return res.status(400).json({ message: "La date de fin doit être après la date de début." });
     }
 
+
+    const recurrence = new Recurrence({
+      yearDay: recurrences["year"] ,
+      monthDay: recurrences["month"],
+      weekDay: recurrences["week"],
+      dateDebut: debut,
+      dateFin: new Date(finRecurrence)
+    });
+
     const newRdv = new Rdv({
       name:name,
       description:description,
       dateDebut: debut,
       dateFin: fin,
-      agendaId:agendaId
+      agendaId:agendaId,
+      recurrences: recurrence
     });
-   
+
     agenda.rdvs.push(newRdv);
+    recurrence.save();
     newRdv.save();
     agenda.save();
     res.status(201).json({ok:true,rdv:newRdv});
