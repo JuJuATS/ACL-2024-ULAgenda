@@ -8,33 +8,66 @@ body {
     font-family: Arial, sans-serif;
     background-color: #CFB1B7; /* Arrière-plan de la page */
     display: flex;
-    justify-content: center;
+    height:100%;
+    max-height: 100vh;
+    flex-direction: column;
     align-items: center;
-    height: 100vh;
+    justify-content: center;
 }
 
 .wrapper {
     display: flex;
-    justify-content: space-between;
-    gap: 20px;
+    gap:50px;
+    width:100%;
+    height:100%;
+
+    justify-content: center;
+    align-items: center;
 }
 
-.container, #agenda {
+.container {
+    background-color: white;
+    padding: 20px;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.agenda {
+    position:relative;
+    right:0;
+    width: 0;
+    height:700px;
+    display:flex;
+    flex-direction: column;
+    visibility: hidden;
+    gap:10px;
     background-color: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 400px;
+    transition: width .7s ease-in-out;
 }
 
-h1, h2 {
+.agenda-open {
+    width: 400px;
+    visibility: visible !important;
+}
+
+h1, h2  {
     text-align: center;
     color: #595959;
-    margin-bottom: 20px;
+}
+
+
+form {
+    display:flex;
+    flex-direction: column;
+    gap:10px;
 }
 
 .form-group {
-    margin-bottom: 15px;
+
 }
 
 label {
@@ -63,7 +96,7 @@ textarea {
     resize: vertical;
 }
 
-.btn-placer {
+.form-button {
     background-color: #595959; /* Bouton en #595959 */
     color: white;
     padding: 10px;
@@ -75,19 +108,345 @@ textarea {
     transition: background-color 0.3s ease;
 }
 
-.btn-placer:hover {
-    background-color: #333333; /* Sombre lors du survol */
+.form-button:hover {
+    background: #333333;
 }
 
+
+
+
 #agenda-list {
+    margin-top: 50px;
     list-style-type: none;
-    padding: 0;
+    display:flex;
+    flex-direction: column;
+    justify-content: space-around;
+    gap:10px;
+    width:90%;
+    height:90%;
+    overflow-y:scroll;
+    position:absolute;
+
+}
+
+#agenda-list::-webkit-scrollbar {
+    display: none;
 }
 
 #agenda-list li {
+    width:0;
     background-color: #CFBFF7; /* Fond des rendez-vous */
     padding: 10px;
-    margin-bottom: 10px;
     border-radius: 5px;
     color: #595959;
+    transition: width .7s ease-in-out;
+}
+
+.rdv-open {
+    width: 100% !important;
+}
+
+
+.wrapper-pop-up {
+    display:none;
+    position:absolute;
+    width:100%;
+    height:100%;
+
+    background: rgba(128, 128, 128, 0.38);
+
+    justify-content: center;
+    align-items: center;
+}
+.recurrence-form-container {
+    background:#111828;
+    color:#00BBEC !important;
+    height:fit-content;
+    padding: 20px;
+    width: 400px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    position:relative;
+}
+
+.closer {
+    display:block;
+    width:15px;
+    height:15px;
+    position:absolute;
+    background:red;
+    border:none;
+    cursor:pointer;
+    top:5px;
+    right:5px;
+    clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+}
+
+
+.recurrence-form-container * {
+    color:#00BBEC !important;
+}
+/*
+form {
+    display:flex;
+    flex-direction: column;
+    gap:10px;
+}
+*/
+.tabs-container {
+    display:flex;
+    flex-direction: column;
+    border-radius: 15px 15px 0 0;
+    transition: height 0.5s ease, width 0.5s ease;
+}
+
+
+
+.tab {
+    overflow: hidden;
+    border-radius: 15px 15px 0 0;
+    border: 1px solid #00BBEC;
+    border-bottom:none;
+
+    background-color: #111828;
+
+    display:flex;
+    justify-content: flex-start;
+}
+
+.tab button {
+
+    cursor: pointer;
+    padding: 9px 16px;
+
+    border-radius: 15px 15px 0 0;
+    border:none;
+    background: #111828;
+
+}
+.tab button span {
+    z-index: 100;
+    position: relative;
+}
+.tab button:hover {
+    color: #cfbff7 !important;
+}
+
+.tab .active button {
+    /*background-color: #1e273d;*/
+    background-color: #cfbff7;
+}
+.tab .active button span {
+    color: #1e273d !important;
+}
+.tab .active svg {
+    display:block;
+    z-index: 50;
+}
+.tab > div {
+    position:relative;
+}
+
+.tab svg {
+    display:none;
+    bottom:0;
+    right:0;
+    position:absolute;
+}
+
+.tabcontent {
+    display: none;
+    padding: 30px;
+    background: #1e273d;
+    flex-wrap: wrap;
+    border-top: none;
+    gap:5px;
+    justify-content: flex-start;
+}
+.tabcontent#Année {
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 10px;
+    flex-direction: column;
+}
+.tabcontent label {
+    padding:5px 10px;
+}
+
+.tabcontent .yearList {
+    list-style-type: none;
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap:10px;
+    width:100%;
+    padding:5px;
+    border:none;
+    overflow-y:scroll;
+    max-height:200px;
+
+}
+.tabcontent .yearList  li {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    transition: width .7s ease-in-out;
+    position:relative;
+}
+.tabcontent .yearList li button {
+    display:block;
+    width:10px;
+    height:10px;
+    position:absolute;
+    background:red;
+    border:none;
+    cursor:pointer;
+    top:5px;
+    right:5px;
+    clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+}
+.tabcontent .yearList::-webkit-scrollbar {
+    display: none;
+}
+
+.selector-year-day {
+    border:none !important;
+    background:none;
+
+    width:100%;
+    display:flex;
+    align-items: center;
+    padding: 0 5px;
+    gap:5px;
+}
+
+.selector-year-day input::-webkit-calendar-picker-indicator, #dateUntilRecurrence::-webkit-calendar-picker-indicator {
+    filter: brightness(0) saturate(100%) invert(50%) sepia(97%) saturate(1443%) hue-rotate(154deg) brightness(98%) contrast(106%);
+}
+
+.selector-year-day input {
+    cursor:pointer;
+
+}
+.selector-year-day input:hover {
+    border: #cfbff7 1px solid;
+    color: #cfbff7 !important;
+}
+.selector-year-day input:hover::-webkit-calendar-picker-indicator {
+    filter: brightness(0) saturate(100%) invert(69%) sepia(61%) saturate(313%) hue-rotate(209deg) brightness(105%) contrast(94%);
+}
+
+.selector-year-day button {
+    width:45px;
+    height:40px;
+    border:none;
+    clip-path: polygon(13.1% 50.3%, 25.8% 65%, 86.1% 0%, 100% 15.8%, 52.7% 67.8%, 24.7% 96.8%, 0% 66%);
+    background: #00BBEC;
+}
+.selector-year-day button:hover {
+    border:none;
+    background: #cfbff7;
+}
+.tabcontent * {
+    border-radius: 10px;
+    border: #00BBEC 1px solid;
+    background-color: #1e273d;
+}
+
+.tabcontent button {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+.tabcontent button:hover {
+    color: #cfbff7 !important;
+    border: 1px solid #cfbff7;
+}
+.tabcontent button.selected {
+    border:none;
+    background-color: #cfbff7;
+    color: #1e273d !important;
+}
+
+.wday {
+    padding: 5px 15px;
+    font-size:1.2em;
+    text-align: center;
+}
+.mday {
+    width:45px;
+    height:45px;
+    padding: 5px;
+    text-align: center;
+}
+
+
+.recurrence-list {
+    display: none;
+    padding: 30px;
+    border: 1px solid #00BBEC;
+    background: #1e273d;
+    flex-wrap: wrap;
+    gap:5px;
+    justify-content: flex-start;
+}
+
+.recurrence-list ul {
+    list-style-type: none;
+    display:flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap:10px;
+    width:100%;
+    padding:5px;
+    border:none;
+    overflow-y:scroll;
+    max-height:200px;
+
+}
+.recurrence-list ul li {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    transition: width .7s ease-in-out;
+    position:relative;
+}
+
+.common {
+    width:100%;
+    padding:10px;
+    display:flex;
+    border: #00BBEC 1px solid;
+    border-top: none;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #1e273d;
+}
+
+#dateUntilRecurrence {
+    cursor:pointer;
+    width: 50%;
+    border-radius: 10px;
+    border: #00BBEC 1px solid;
+    background-color: #1e273d;
+}
+#dateUntilRecurrence:hover {
+    border: #cfbff7 1px solid;
+    color: #cfbff7 !important;
+}
+#dateUntilRecurrence:hover::-webkit-calendar-picker-indicator {
+    filter: brightness(0) saturate(100%) invert(69%) sepia(61%) saturate(313%) hue-rotate(209deg) brightness(105%) contrast(94%);
+}
+.clear-selection {
+    border-radius: 10px;
+    border: #00BBEC 1px solid;
+    background-color: #1e273d;
+    cursor: pointer;
+    padding: 0 15px;
+    font-size:1.2em;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+.clear-selection:hover {
+    color: #cfbff7 !important;
+    border: 1px solid #cfbff7;
 }
