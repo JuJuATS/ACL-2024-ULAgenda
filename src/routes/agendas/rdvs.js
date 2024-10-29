@@ -6,6 +6,7 @@ const router = express.Router();
 const Recurrence = require("../../database/models/recurrence");
 const Agenda = require("../../database/models/agenda.js");
 const Preset = require('../../database/models/preset.js');
+const Recurrence = require("../../database/models/recurrence");
 
 // Route pour afficher les rendez-vous avec le bon id.
 
@@ -34,7 +35,6 @@ router.post('/', authMiddleware, async (req, res) => {
       console.log("il manque quelque chose")
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
     }
-    let userId = req.user.id;
     const agenda = await Agenda.findById(agendaId);
     
     if (!agenda) {

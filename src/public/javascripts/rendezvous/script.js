@@ -219,3 +219,44 @@ function addYearDay() {
       }
   });
 });
+
+function selectDay(e, day) {
+
+    e.classList.toggle("selected")
+    const index = recurrences[currentTab].indexOf(day);
+
+    if (index===-1) {
+        recurrences[currentTab].push(day);
+    } else {
+        recurrences[currentTab].splice(index, 1);
+    }
+
+}
+
+function addYearDay() {
+    const date = new Date(document.querySelector("#dateYearRecurrence").value)
+
+    if (date.getDate()) {
+        const index = recurrences.year.findIndex(e => e.toString() === date.toString());
+        if (index === -1) {
+            const li = document.createElement("li");
+            li.textContent = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
+
+            const button = document.createElement("button");
+            button.type = "button"
+            button.addEventListener('click', function(e) {
+                recurrences.year.splice(index, 1);
+                e.currentTarget.parentNode.remove()
+            })
+
+            li.appendChild(button)
+            document.querySelector(".yearList").appendChild(li)
+            recurrences.year.push(date);
+        } else {
+            console.log("Date déjà ajoutés")
+        }
+        document.querySelector("#dateYearRecurrence").value = ''
+    }
+
+}
+
