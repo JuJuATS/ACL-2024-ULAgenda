@@ -12,4 +12,4 @@ const rdvSchema = new mongoose.Schema({
 
 const Rdv = mongoose.model('Rdv', rdvSchema);
 
-module.exports = { rdvSchema: rdvSchema, Rdv: Rdv };
+module.exports = Rdv;

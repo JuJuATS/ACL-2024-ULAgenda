@@ -23,10 +23,6 @@ const userSchema = new mangoose.Schema({
         type: String,
         required: true,
     },
-    personalCategories: {
-        type: [String],
-        default: [],
-    },
     agendas: [{ type: mangoose.Schema.Types.ObjectId, ref: 'Agenda' }],
     isVerified: {
         type: Boolean,

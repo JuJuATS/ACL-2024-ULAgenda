@@ -1,10 +1,11 @@
 const express = require('express');
-const Rdv = (require('../../database/models/rdv.js')).Rdv;
+const Rdv = (require('../../database/models/rdv.js'));
 const authMiddleware = require('../../middlewares/authMiddleware.js');
 const ObjectId = require('mongodb').ObjectId;
 const router = express.Router();
-const Agenda = require("../../database/models/agenda.js")
 const Recurrence = require("../../database/models/recurrence");
+const Agenda = require("../../database/models/agenda.js");
+const Preset = require('../../database/models/preset.js');
 
 // Route pour afficher les rendez-vous avec le bon id.
 
@@ -16,7 +17,9 @@ router.get('/', authMiddleware, async (req, res) => {
     const dateB = new Date(`${b.dateDebut}`);
     return dateA - dateB;  // Sort ascending by date and start time
 });
-  res.render('rendezvous', { rdvUser:rdvUser,agenda:agendaId });
+
+  const presets = await Preset.find({ userId: req.user.id });
+  res.render('rendezvous', { rdvUser: rdvUser, agenda: agendaId, presets });
 });
 
 
@@ -31,9 +34,9 @@ router.post('/', authMiddleware, async (req, res) => {
       console.log("il manque quelque chose")
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
     }
-    let userId = req.session.userId;
-    const agenda = await Agenda.findOne({_id:agendaId});
-
+    let userId = req.user.id;
+    const agenda = await Agenda.findById(agendaId);
+    
     if (!agenda) {
       console.log("pas d'agenda")
       return res.status(404).json({ message: 'Agenda non trouvé' });
@@ -65,11 +68,13 @@ router.post('/', authMiddleware, async (req, res) => {
       agendaId:agendaId,
       recurrences: recurrence
     });
+   
+    await newRdv.save();
+   
+    agenda.rdvs.push(newRdv._id);
 
-    agenda.rdvs.push(newRdv);
-    recurrence.save();
-    newRdv.save();
-    agenda.save();
+    await agenda.save();
+
     res.status(201).json({ok:true,rdv:newRdv});
   } catch (error) {
     console.log("il y a une erreur")

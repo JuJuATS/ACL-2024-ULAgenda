@@ -39,11 +39,8 @@
 
 .section-image {
 
-    mask-image: linear-gradient(to right, transparent, rgba(17, 24, 40, 0.808) 10%, rgba(17, 24, 40, 0.808) 90%, transparent); ;
-
-
+    mask-image: linear-gradient(to right, transparent, rgba(17, 24, 40, 0.808) 10%, rgba(17, 24, 40, 0.808) 90%, transparent); 
     height: 140%;
-
     width:46%;
     display: flex;
     overflow: hidden;

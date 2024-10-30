@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier un préréglage</title>
+    <script defer>
+        document.addEventListener('DOMContentLoaded', () => {
+            const presetForm = document.getElementById('presetForm');
+            const submitButton = presetForm.querySelector('button[type="submit"]');
+            const originalValues = {
+                name: '<%= name %>',
+                color: '<%= color %>',
+                priority: '<%= priority %>',
+                recurrence: '<%= recurrence %>',
+                duration: '<%= duration %>',
+                description: '<%= description %>',
+                eventName: '<%= eventName %>',
+                startHour: '<%= startHour %>',
+                reminder: '<%= reminder %>'
+            };
+
+            // Le bouton d'envoie est désactivé par défaut 
+            submitButton.disabled = true;
+
+            // Fonction pour vérifier si un champ a été modifié
+            function checkIfModified() {
+                const currentValues = {
+                    name: document.getElementById('name').value,
+                    color: document.getElementById('color').value,
+                    priority: document.getElementById('priority').value,
+                    recurrence: document.getElementById('recurrence').value,
+                    duration: document.getElementById('duration').value,
+                    description: document.getElementById('description').value,
+                    eventName: document.getElementById('eventName').value,
+                    startHour: document.getElementById('startHour').value,
+                    reminder: document.getElementById('reminder').value
+                };
+
+                // Activer le bouton d'envoie si un champ a été modifié
+                const modified = Object.keys(originalValues).some(key => currentValues[key] !== originalValues[key]);
+                submitButton.disabled = !modified;
+            }
+
+            // Ajouter les écouteurs d'événements pour chaque champ du formulaire
+            presetForm.querySelectorAll('input, select, textarea').forEach(field => {
+                field.addEventListener('input', checkIfModified);
+                field.addEventListener('change', checkIfModified);
+            });
+
+            document.getElementById('clearStartHour').addEventListener('click', () => {
+                document.getElementById('startHour').value = '';
+                checkIfModified();
+            });
+        });
+    </script>
+</head>
+<body>
+    <h1>Modifier le préréglage</h1>
+
+    <%- include('../partials/flashMessages') %>
+
+    <!-- Formulaire pour modifier le préréglage -->
+    <form id="presetForm" action="/presets/<%= id %>?_method=PUT" method="POST">
+
+        <label for="name">Nom du préréglage *:</label>
+        <input type="text" id="name" name="name" value="<%= name %>" required><br>
+
+        <label for="eventName">Nom du rendez-vous :</label>
+        <input type="text" id="eventName" name="eventName" value="<%= eventName %>"><br>
+
+        <label for="color">Couleur *:</label>
+        <input type="color" id="color" name="color" value="<%= color %>" required><br>
+
+        <label for="startHour">Heure de début :</label>
+        <input type="time" id="startHour" name="startHour" value="<%= startHour %>">
+        <button type="button" id="clearStartHour">Effacer l'heure</button><br>
+
+        <label for="priority">Priorité *:</label>
+        <select id="priority" name="priority" required>
+            <option value="Haute" <%= priority === 'Haute' ? 'selected' : '' %>>Haute</option>
+            <option value="Moyenne" <%= priority === 'Moyenne' ? 'selected' : '' %>>Moyenne</option>
+            <option value="Basse" <%= priority === 'Basse' ? 'selected' : '' %>>Basse</option>
+        </select><br>
+
+        <label for="recurrence">Récurrence *:</label>
+        <select id="recurrence" name="recurrence" required>
+            <option value="Aucune" <%= recurrence === 'Aucune' ? 'selected' : '' %>>Aucune</option>
+            <option value="Quotidienne" <%= recurrence === 'Quotidienne' ? 'selected' : '' %>>Quotidienne</option>
+            <option value="Hebdomadaire" <%= recurrence === 'Hebdomadaire' ? 'selected' : '' %>>Hebdomadaire</option>
+            <option value="Mensuelle" <%= recurrence === 'Mensuelle' ? 'selected' : '' %>>Mensuelle</option>
+            <option value="Annuelle" <%= recurrence === 'Annuelle' ? 'selected' : '' %>>Annuelle</option>
+        </select><br>
+
+        <label for="duration">Durée par défaut (en minutes) *:</label>
+        <input type="number" id="duration" name="duration" value="<%= duration %>" required><br>
+
+        <label for="reminder">Rappel (en minutes) *:</label>
+        <select id="reminder" name="reminder" required>
+            <option value="" <%= reminder === null ? 'selected' : '' %>>Aucun</option>
+            <option value="5" <%= reminder === 5 ? 'selected' : '' %>>5 minutes</option>
+            <option value="10" <%= reminder === 10 ? 'selected' : '' %>>10 minutes</option>
+            <option value="30" <%= reminder === 30 ? 'selected' : '' %>>30 minutes</option>
+            <option value="60" <%= reminder === 60 ? 'selected' : '' %>>1 heure</option>
+            <option value="1440" <%= reminder === 1440 ? 'selected' : '' %>>1 jour</option>
+        </select><br>
+
+        <label for="description">Description :</label><br>
+        <textarea id="description" name="description"><%= description %></textarea><br>
+
+        <button type="submit" disabled>Mettre à jour</button>
+    </form>
+
+    <form id="deletePresetForm" action="/presets/<%= id %>?_method=DELETE" method="POST" onsubmit="return confirmDelete()">
+        <button type="submit" class="delete-button">Supprimer le préréglage</button>
+    </form>
+
+    <a href="/presets">Retourner à la liste</a>
+
+    <script>
+        function confirmDelete() {
+            return confirm('Êtes-vous sûr de vouloir supprimer ce préréglage ? Cette action est irréversible.');
+        }
+    </script>
+</body>
+</html>

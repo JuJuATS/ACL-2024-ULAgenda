@@ -145,6 +145,10 @@ async function saveRendezVous(rendezvous) {
 
   };
 
+ 
+document.addEventListener('DOMContentLoaded', () => {
+  const presetSelect = document.getElementById('preset-select');
+  const form = document.getElementById('rendezvous-form');
 
 
 function selectDay(e, day) {
@@ -187,3 +191,31 @@ function addYearDay() {
 
 }
 
+  presetSelect.addEventListener('change', async () => {
+      const presetId = presetSelect.value;
+      if (!presetId) return;
+
+      const confirmApply = confirm("Voulez-vous vraiment appliquer ce préréglage ? Cela remplacera les valeurs actuelles du formulaire.");
+      if (!confirmApply) {
+          presetSelect.value = "";
+          return;
+      }
+
+      try {
+          const response = await fetch(`/api/presets/${presetId}`);
+          if (!response.ok) throw new Error("Erreur lors de la récupération du préréglage");
+          
+          const presetData = await response.json();
+
+          // Remplit les champs du formulaire avec les données du préréglage sélectionné
+          form.nom.value = presetData.eventName || '';
+          form.duree.value = presetData.duration;
+          form.description.value = presetData.description || '';
+          form.rappel.value = presetData.reminder || '';
+          form.heureDebut.value = presetData.startHour || '';
+      } catch (error) {
+          console.error("Erreur:", error);
+          alert("Impossible d'appliquer le préréglage.");
+      }
+  });
+});

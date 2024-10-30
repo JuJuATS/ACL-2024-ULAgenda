@@ -1,0 +1,13 @@
+<link rel="stylesheet" href="/css/partials/flashMessages.css">
+
+<% if (Object.keys(flash).length > 0) { %>
+    <div class="flash-messages">
+        <% Object.keys(flash).forEach(function(type) { %>
+            <div class="flash-message flash-message-<%= type %>">
+                <% flash[type].forEach(function(message) { %>
+                    <p><%= message %></p>
+                <% }) %>
+            </div>
+        <% }) %>
+    </div>
+<% } %>
