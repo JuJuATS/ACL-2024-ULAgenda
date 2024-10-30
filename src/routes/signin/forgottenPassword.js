@@ -6,7 +6,7 @@ const argon2 = require('argon2');
 
 const forgottenPassword = async (req,res)=>{
     if(req.isAuthenticated()){
-        res.redirect(302,"/")
+        res.redirect("/")
     }
     else{
         res.render("forgottenPasswordForm");
@@ -22,23 +22,25 @@ const forgottenPasswordLinkMaker  = async(req,res)=>{
         const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
         if(!email){
             req.flash("error","Entrer votre adresse mail");
-            res.redirect(302,"/forgotten-password");
-        }
-        if(!emailRegex.test(email)){
-            req.flash("error","Veuillez entrer une adresse mail valide")
-            res.redirect(302,"/forgotten-password");
-        }
-        const user = await User.findOne({email:email});
-        if(!user){
-            req.flash("error","adresse mail non trouvé");
-            res.redirect(302,"/forgotten-password");
-        }
-        else{
-            const token = createVerificationToken(user);
-            user.resetPasswordToken = token;
-            user.save();
-            const sendingMail = await sendResetMail(user,token);
-            res.render("resetPasswordLinkConfirmation");
+            return res.redirect("/forgotten-password");
+        }else{
+
+            if(!emailRegex.test(email)){
+                req.flash("error","Veuillez entrer une adresse mail valide")
+               return res.redirect("/forgotten-password");
+            }
+            const user = await User.findOne({email:email});
+            if(!user){
+                req.flash("error","adresse mail non trouvé");
+               return res.redirect("/forgotten-password");
+            }
+            else{
+                const token = createVerificationToken(user);
+                user.resetPasswordToken = token;
+                user.save();
+                const sendingMail = await sendResetMail(user,token);
+              return  res.render("resetPasswordLinkConfirmation");
+            }
         }
 }
 const resetPassword = async(req,res)=>{

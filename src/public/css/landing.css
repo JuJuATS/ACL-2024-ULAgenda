@@ -11,8 +11,6 @@
 }
 
 .section1 {
-    margin-top:70px;
-
     height:500px;
     display: flex;
     gap:15%;
@@ -20,7 +18,6 @@
     padding: 100px;
     background-color: #111828;
     color: #00BBEC;
-    
 }
 
 .content {
@@ -41,17 +38,14 @@
 }
 
 .section-image {
-    
-    mask-image: linear-gradient(to right, transparent, rgba(17, 24, 40, 0.808) 10%, rgba(17, 24, 40, 0.808) 90%, transparent); ;
 
-
+    mask-image: linear-gradient(to right, transparent, rgba(17, 24, 40, 0.808) 10%, rgba(17, 24, 40, 0.808) 90%, transparent); 
     height: 140%;
-
     width:46%;
     display: flex;
     overflow: hidden;
 
-    
+
 }
 
 .section-image img {
@@ -69,7 +63,7 @@
     padding: 200px 120px;
     background-color: #1e273d;
     color: #00BBEC;
-    
+
 }
 
 .features {

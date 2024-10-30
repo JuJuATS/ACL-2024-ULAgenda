@@ -25,6 +25,8 @@ const passport = require('./config/passport');
 const routes = require('./routes');
 const agendaRoutes = require('./routes/agendas/agendas');
 const rdvRoutes = require("./routes/agendas/rdvs")
+const planningRoute = require("./routes/planning/planning")
+const apiRoute = require("./routes/api/getAgenda")
 const apiRouter = require('./routes/apiRouter');
 
 // -- BBD --
@@ -121,6 +123,9 @@ app.get('/', async (req, res) => {
 
 app.use('/agendas', agendaRoutes);
 app.use('/rendezvous',rdvRoutes);
+
+app.use("/planning",planningRoute)
+app.use("/api",apiRoute)
 // Routes pour afficher le formulaire d'inscription
 app
   .get('/signup', (req, res) => {
@@ -146,6 +151,8 @@ app
   }));
 
 // Route pour récuperer son mot de passe
+
+app.get("/logout",routes.signin.logout)
 app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker);
 app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword);
 
@@ -158,7 +165,7 @@ app
   .delete('/presets/:id', isAuthentified, routes.presets.deletePreset)
   .put('/presets/:id', isAuthentified, routes.presets.updatePreset);
 
-app.get("/logout",routes.signin.logout);
+
 
 // Démarrage du serveur
 if (process.env.NODE_ENV !== 'test') {

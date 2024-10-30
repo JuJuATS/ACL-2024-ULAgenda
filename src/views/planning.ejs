@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8' />
+    <link rel="stylesheet" href="css/planning/style.css">
+    <%- include('./partials/head', {pageName: "planning"}); %>
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
+    
+  </head>
+  <body>
+    <header>
+      <%- include('./partials/header', {user: user}); %>
+  </header>
+  
+    <div class="container">
+      <div class="sideBar">
+        <p style="
+          font-size: 20px;
+          color: #00BBEC;
+          text-align: center;
+          margin-bottom: 20px;
+          border-bottom: 2px solid #00BBEC;
+          white-space:nowrap;
+          padding-bottom: 10px;">Agenda</p>
+        <ul class="listAgenda"></ul>
+      </div>
+      <div>
+        <input type="checkbox" role="button" aria-label="Display the menu" class="menu">
+      </div>
+      <div id='calendar'></div>
+    </div>
+    <script>
+      const agendas = []
+      const generateAgenda = (element,calendar)=>{
+        const agenda = document.createElement("li")
+         const checkbox = document.createElement("input");
+         checkbox.type = "checkbox"
+         checkbox.classList.add("checkAgenda");
+         checkbox.style ="width:30px"
+         checkbox.name = `${element.name}`
+         checkbox.addEventListener("change",(el)=>{
+          refetch(el)
+         })
+         const divcheckbox = document.createElement("div")
+         divcheckbox.style = "display:flex;flex-direction:row;padding-left:20px;gap:20px;width:50%;justify-content:space-between"
+         const label = document.createElement("label");
+         label.style = "font-size:1.2em"
+         label.for = `agenda-${element.name}`
+         label.innerText = `${element.name}`
+         divcheckbox.appendChild(label)
+         divcheckbox.appendChild(checkbox)
+         agenda.appendChild(divcheckbox)
+         listAgenda.appendChild(agenda) 
+      }
+      const refetch = (el)=>{
+        
+          let checkbox = document.querySelectorAll(".checkAgenda");
+          agendas.splice(0,agendas.length)
+          Array.from(checkbox).forEach(el=>{
+        
+            if(el.checked){
+              agendas.push(el.name)
+            }
+          })
+          console.log(`/getDate?agenda=${encodeURIComponent(JSON.stringify(agendas))}`)
+      }
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          eventSources:[
+            async(info,success,fail)=>{
+            await fetch(`/getDate?agenda=${encodeURIComponent(JSON.stringify(agendas))}`)
+            .then(res=>res.json())
+            .then(data=>success(data.event))
+            .catch(err=>fail(err))
+            }
+          ],
+          allDaySlot:false,
+          nowIndicator:true,
+          height:"100%",
+          initialView: 'timeGridWeek',
+          dayHeaderFormat:{ weekday: 'short'},
+           locale: 'fr',
+           firstDay:1,
+           headerToolbar:{
+            start:'title',
+            center:"timeGridWeek,dayGridMonth",
+            end:'today prev,next'
+           },
+           buttonText:{
+              today:"Aujourd'hui",
+              week:"semaine",
+              month:"mois"
+           },
+          
+          
+        });
+        const sideBar = document.querySelector(".sideBar");
+        calendar.render();
+        const menu = document.querySelector(".menu");
+        menu.addEventListener("click",()=>{
+          sideBar.classList.toggle("sideBar-open");
+          setTimeout(()=>{
+            calendar.updateSize();
+            
+          },1000)
+        })
+      });
+      const listAgenda = document.querySelector(".listAgenda");
+  
+      fetch("/api/getAgenda").then(res=>res.json()).then(data=>data.forEach(element => {
+         generateAgenda(element,calendar)
+      }))
+    </script>
+  </body>
+</html>

@@ -1,4 +1,4 @@
-*<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <%- include('./partials/head', {pageName: "ULAgenda"}); %>
@@ -36,12 +36,12 @@
                     <button id="annuler" onclick="closeConfirmDeleteModal()">Annuler</button>
                 </div>
             </div>
-        
+
             <div class="calendar new-agenda">
                 <h4>Créer un nouvel agenda</h4>
                 <button class="add-button">+</button> <!-- Bouton "+" -->
             </div>
-        
+
             <% if (agendas && agendas.length > 0) { %>
                 <% agendas.forEach(function(agenda, index) { %>
                     <div class="calendar">
@@ -52,7 +52,7 @@
                     </div>
                 <% }); %>
             <% } else { %>
-               
+
             <% } %>
         </div>
     </div>
@@ -169,8 +169,8 @@ document.getElementById("confirmDeleteButton").onclick = async function() {
 
             if (response.ok) {
                 agendaToDelete.remove(); // Supprime l'agenda du DOM
-                closeConfirmDeleteModal(); 
-                agendaToDelete = null; 
+                closeConfirmDeleteModal();
+                agendaToDelete = null;
             } else {
                 const errorData = await response.json();
                 alert('Erreur lors de la suppression de l\'agenda: ' + errorData.message);
