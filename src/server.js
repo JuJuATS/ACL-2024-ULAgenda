@@ -21,6 +21,7 @@ const routes = require('./routes');
 const agendaRoutes = require('./routes/agendas/agendas');
 const rdvRoutes = require("./routes/agendas/rdvs")
 const planningRoute = require("./routes/planning/planning")
+const apiRoute = require("./routes/api/getAgenda")
 // -- BBD --
 const connectDB = require('./database/db');
 const User = require('./database/models/user');
@@ -103,6 +104,7 @@ app.use('/agendas', agendaRoutes);
 app.use('/rendezvous',rdvRoutes);
 
 app.use("/planning",planningRoute)
+app.use("/api",apiRoute)
 // Routes pour afficher le formulaire d'inscription
 app
   .get('/signup', (req, res) => res.render('signup',{expressFlash:req.flash("error")}))
