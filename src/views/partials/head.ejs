@@ -3,4 +3,6 @@
 <link rel="stylesheet" href="./css/reset.css">
 <link rel="stylesheet" href="./css/partials/header.css">
 <link rel="stylesheet" href="./css/partials/footer.css">
-<title><%= pageName ? pageName : "Not Found" %></title>
+<% if (pageName) { %>
+    <title><%= pageName %></title>
+<% } %>

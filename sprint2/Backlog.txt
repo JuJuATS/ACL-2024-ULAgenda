@@ -1,5 +1,5 @@
 ========================================================================================
-									SPRINT 2
+					SPRINT 2
 ========================================================================================
 
 
@@ -20,10 +20,10 @@ Tableau des fonctionnalités du sprint :
 │ Ajouter des catégories de rendez-vous                 │     2     │      5     │
 │ Ajouter des rendez-vous récurrents                    │     1     │      8     │
 │ Modifier des catégories                               │     2     │      3     │
-│ Filtrer des rendez-vous / Recherche : 				│     4     │      3     │
-│	- Par nom 											│	    	│		 	 │
-│	- Par catégorie										│	    	│			 │
-│	- Par priorité                            			│  	 	    │			 │
+│ Filtrer des rendez-vous / Recherche : 		│     4     │      3     │
+│	- Par nom 					│	    │		 │
+│	- Par catégorie					│	    │		 │
+│	- Par priorité                            	│  	    │		 │
 │ Visualisation d'un calendrier de l'agenda             │     4     │      8     │
 └───────────────────────────────────────────────────────┴───────────┴────────────┘
 

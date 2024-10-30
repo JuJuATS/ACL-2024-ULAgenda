@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%- include('./partials/head', {pageName: ""}); %>
     <title>Agenda Rendez-vous</title>
     <link rel="stylesheet" href="css/rendezvous/styles.css">
 </head>
 <body>
+    <header>
+        <%- include('./partials/header', {user: user}); %>
+    </header>
     <div class="wrapper">
+
         <div class="container">
             <h1>Planifier un rendez-vous</h1>
             <form id="rendezvous-form" data-agendaId=<%= agenda %>>
@@ -41,30 +44,26 @@
                     <select id="rappel" name="rappel">
                         <option value="5">5 minutes avant</option>
                         <option value="10">10 minutes avant</option>
-                        <option value="30">30 minutes avant</option>
+                        <option value="25">25 minutes avant</option>
                         <option value="60">1 heure avant</option>
                         <option value="1440">1 jour avant</option>
                     </select>
                 </div>
+                <button type="button" class="form-button" id="btn-recurrence">Récurrence</button>
 
-                <div class="form-group">
-                    <button type="submit" class="btn-placer">Placer le rendez-vous</button>
-                </div>
+                <button type="submit" class="form-button" id="btn-placer">Placer le rendez-vous</button>
 
-                <!-- Bouton de récurrence -->
-                <div class="form-group">
-                    <button type="button" class="btn-recurrence">Récurrence</button>
-                </div>
+                <button type="button" class="form-button" id="btn-view-rdv">View Rdv List</button>
             </form>
         </div>
-       
-        <div id="agenda">
+
+        <div class="agenda">
             <h2>Rendez-vous</h2>
             <ul id="agenda-list">
                 <% if (rdvUser && rdvUser.length > 0) { %>
                     <% rdvUser.forEach(function(rendezvous, index) { %>
                         <li>
-                            <strong><%= rendezvous.name %></strong> - 
+                            <strong><%= rendezvous.name %></strong> -
                             du
                             <%= new Date(rendezvous.dateDebut).toLocaleString('fr-FR') %> au
                             <%= new Date(rendezvous.dateFin).toLocaleString('fr-FR') %><br>
@@ -77,6 +76,84 @@
             </ul>
         </div>
     </div>
+
+    <div class="wrapper-pop-up">
+        <div class="recurrence-form-container">
+            <h1>Ajoutez des Récurrences</h1>
+            <form id="recurrence-form">
+                <button type="button" class="closer"></button>
+                <div class="tabs-container">
+                    <div class="tab">
+                        <% ['week', 'month', 'year'].forEach((mode, i) => { %>
+                            <div>
+                                <% if (i > 0) { %>
+                                    <svg width="25" height="25" viewBox="0 0 25 25" style="left: -25px">
+                                        <rect x="0" y="0" width="25" height="25" fill="#cfbff7"/>
+                                        <path d="M 0 25 L 0 0 L 25 0 Q 25 25 0 25" fill="#111828"/>
+                                    </svg>
+                                <% } %>
+                                <button
+                                        type="button"
+                                        class="tablinks"
+                                        onclick="openMode(this, '<%= mode %>')">
+                                    <span><%= `${mode==='year'?
+                                                'Année':mode==='month'?
+                                                        'Mois':'Semaine'
+                                            }`
+                                    %>
+                                    </span>
+                                </button>
+                                <% if (i < 2) { %>
+                                    <svg width="25" height="25" viewBox="0 0 25 25" style="right: -25px">
+                                        <rect x="0" y="0" width="25" height="25" fill="#cfbff7"/>
+                                        <path d="M 0 0 L 25 0 L 25 25 Q 0 25 0 0" fill="#111828"/>
+                                    </svg>
+                                <% } %>
+                            </div>
+                        <% }); %>
+                    </div>
+
+                    <div class="common">
+                        <button type=button class="clear-selection" onclick="clearSelection()">Clear</button>
+                        <label>Jusqu'au : </label>
+                        <input type="date" id="dateUntilRecurrence" name="date">
+                    </div>
+
+
+                    <div id="week" class="tabcontent">
+                        <% ['Lundi',
+                            'Mardi',
+                            'Mercredi',
+                            'Jeudi',
+                            'Vendredi',
+                            'Samedi',
+                            'Dimanche'
+                        ].forEach((day, id) => { %>
+                            <button type=button class="wday" onclick="selectDay(this, <%= id %>)"><%= day %></button>
+                        <% }) %>
+                    </div>
+
+                    <div id="month" class="tabcontent">
+                        <% for (let i=1; i<=31; i++) { %>
+                            <button type=button class="mday" onclick="selectDay(this, <%= i %>)"><%= i %></button>
+                        <% } %>
+                    </div>
+
+                    <div id="year" class="tabcontent">
+                        <!--<label for="date">Date de la récurrence :</label>-->
+                        <ul class="yearList"></ul>
+                        <div class="selector-year-day">
+                            <input type="date" id="dateYearRecurrence" name="date" placeholder="DD/MM">
+                            <button type=button onclick="addYearDay()"></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!--<button type="submit" class="form-button" id="recurrence-placer">Retour</button>-->
+            </form>
+        </div>
+    </div>
+
 
     <script src="javascripts/rendezvous/script.js"></script>
 </body>
