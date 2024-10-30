@@ -7,7 +7,7 @@
 </head>
 <body>
     <header>
-        <%- include('./partials/header', {user: user}); %>
+        <%- include('./partials/header', {user: rdvUser}); %>
     </header>
     <div class="wrapper">
 
@@ -73,8 +73,8 @@
             </form>
         </div>
 
-        <div class="agenda">
-            <h2>Rendez-vous</h2>
+        <div class="agenda"style="overflow-x: hidden;">
+            <h2 style="white-space:nowrap;">Rendez-vous</h2>
             <ul id="agenda-list">
                 <% if (rdvUser && rdvUser.length > 0) { %>
                     <% rdvUser.forEach(function(rendezvous, index) { %>
@@ -160,7 +160,7 @@
                         <ul class="yearList"></ul>
                         <div class="selector-year-day">
                             <input type="date" id="dateYearRecurrence" name="date" placeholder="DD/MM">
-                            <button type=button onclick="addYearDay()"></button>
+                            <button type=button id="addButton"></button>
                         </div>
                     </div>
                 </div>
@@ -169,8 +169,6 @@
             </form>
         </div>
     </div>
-
-
     <script src="javascripts/rendezvous/script.js"></script>
 </body>
 </html>
