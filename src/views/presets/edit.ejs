@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modifier un préréglage</title>
+    <link rel="stylesheet" href="/css/partials/header.css">
+    <link rel="stylesheet" href="/css/partials/footer.css">
+    <link rel="stylesheet" href="/css/presets/edit.css">
     <script defer>
         document.addEventListener('DOMContentLoaded', () => {
             const presetForm = document.getElementById('presetForm');
@@ -56,66 +59,80 @@
     </script>
 </head>
 <body>
-    <h1>Modifier le préréglage</h1>
+    <header>
+        <%- include('../partials/header', {user: true}); %>
+    </header>
 
-    <%- include('../partials/flashMessages') %>
+    <div class="content">
+        <div class="presets-page">
+            <h1>Modifier le préréglage</h1>
 
-    <!-- Formulaire pour modifier le préréglage -->
-    <form id="presetForm" action="/presets/<%= id %>?_method=PUT" method="POST">
+            <%- include('../partials/flashMessages') %>
 
-        <label for="name">Nom du préréglage *:</label>
-        <input type="text" id="name" name="name" value="<%= name %>" required><br>
+            <!-- Formulaire pour modifier le préréglage -->
+            <form id="presetForm" action="/presets/<%= id %>?_method=PUT" method="POST">
 
-        <label for="eventName">Nom du rendez-vous :</label>
-        <input type="text" id="eventName" name="eventName" value="<%= eventName %>"><br>
+                <label for="name">Nom du préréglage *:</label>
+                <input type="text" id="name" name="name" value="<%= name %>" required><br>
 
-        <label for="color">Couleur *:</label>
-        <input type="color" id="color" name="color" value="<%= color %>" required><br>
+                <label for="eventName">Nom du rendez-vous :</label>
+                <input type="text" id="eventName" name="eventName" value="<%= eventName %>"><br>
 
-        <label for="startHour">Heure de début :</label>
-        <input type="time" id="startHour" name="startHour" value="<%= startHour %>">
-        <button type="button" id="clearStartHour">Effacer l'heure</button><br>
+                <label for="color">Couleur *:</label>
+                <input type="color" id="color" name="color" value="<%= color %>" required><br>
 
-        <label for="priority">Priorité *:</label>
-        <select id="priority" name="priority" required>
-            <option value="Haute" <%= priority === 'Haute' ? 'selected' : '' %>>Haute</option>
-            <option value="Moyenne" <%= priority === 'Moyenne' ? 'selected' : '' %>>Moyenne</option>
-            <option value="Basse" <%= priority === 'Basse' ? 'selected' : '' %>>Basse</option>
-        </select><br>
+                <label for="startHour">Heure de début :</label>
+                <div class="time-input-container">
+                    <input type="time" id="startHour" name="startHour" value="<%= startHour %>">
+                    <button type="button" id="clearStartHour">Effacer l'heure</button>
+                </div><br>
 
-        <label for="recurrence">Récurrence *:</label>
-        <select id="recurrence" name="recurrence" required>
-            <option value="Aucune" <%= recurrence === 'Aucune' ? 'selected' : '' %>>Aucune</option>
-            <option value="Quotidienne" <%= recurrence === 'Quotidienne' ? 'selected' : '' %>>Quotidienne</option>
-            <option value="Hebdomadaire" <%= recurrence === 'Hebdomadaire' ? 'selected' : '' %>>Hebdomadaire</option>
-            <option value="Mensuelle" <%= recurrence === 'Mensuelle' ? 'selected' : '' %>>Mensuelle</option>
-            <option value="Annuelle" <%= recurrence === 'Annuelle' ? 'selected' : '' %>>Annuelle</option>
-        </select><br>
+                <label for="priority">Priorité *:</label>
+                <select id="priority" name="priority" required>
+                    <option value="Haute" <%= priority === 'Haute' ? 'selected' : '' %>>Haute</option>
+                    <option value="Moyenne" <%= priority === 'Moyenne' ? 'selected' : '' %>>Moyenne</option>
+                    <option value="Basse" <%= priority === 'Basse' ? 'selected' : '' %>>Basse</option>
+                </select><br>
 
-        <label for="duration">Durée par défaut (en minutes) *:</label>
-        <input type="number" id="duration" name="duration" value="<%= duration %>" required><br>
+                <label for="recurrence">Récurrence *:</label>
+                <select id="recurrence" name="recurrence" required>
+                    <option value="Aucune" <%= recurrence === 'Aucune' ? 'selected' : '' %>>Aucune</option>
+                    <option value="Quotidienne" <%= recurrence === 'Quotidienne' ? 'selected' : '' %>>Quotidienne</option>
+                    <option value="Hebdomadaire" <%= recurrence === 'Hebdomadaire' ? 'selected' : '' %>>Hebdomadaire</option>
+                    <option value="Mensuelle" <%= recurrence === 'Mensuelle' ? 'selected' : '' %>>Mensuelle</option>
+                    <option value="Annuelle" <%= recurrence === 'Annuelle' ? 'selected' : '' %>>Annuelle</option>
+                </select><br>
 
-        <label for="reminder">Rappel (en minutes) *:</label>
-        <select id="reminder" name="reminder" required>
-            <option value="" <%= reminder === null ? 'selected' : '' %>>Aucun</option>
-            <option value="5" <%= reminder === 5 ? 'selected' : '' %>>5 minutes</option>
-            <option value="10" <%= reminder === 10 ? 'selected' : '' %>>10 minutes</option>
-            <option value="30" <%= reminder === 30 ? 'selected' : '' %>>30 minutes</option>
-            <option value="60" <%= reminder === 60 ? 'selected' : '' %>>1 heure</option>
-            <option value="1440" <%= reminder === 1440 ? 'selected' : '' %>>1 jour</option>
-        </select><br>
+                <label for="duration">Durée par défaut (en minutes) *:</label>
+                <input type="number" id="duration" name="duration" value="<%= duration %>" required><br>
 
-        <label for="description">Description :</label><br>
-        <textarea id="description" name="description"><%= description %></textarea><br>
+                <label for="reminder">Rappel (en minutes) *:</label>
+                <select id="reminder" name="reminder">
+                    <option value="" <%= reminder === null ? 'selected' : '' %>>Aucun</option>
+                    <option value="5" <%= reminder === 5 ? 'selected' : '' %>>5 minutes</option>
+                    <option value="10" <%= reminder === 10 ? 'selected' : '' %>>10 minutes</option>
+                    <option value="30" <%= reminder === 30 ? 'selected' : '' %>>30 minutes</option>
+                    <option value="60" <%= reminder === 60 ? 'selected' : '' %>>1 heure</option>
+                    <option value="1440" <%= reminder === 1440 ? 'selected' : '' %>>1 jour</option>
+                </select><br>
 
-        <button type="submit" disabled>Mettre à jour</button>
-    </form>
+                <label for="description">Description :</label><br>
+                <textarea id="description" name="description"><%= description %></textarea><br>
 
-    <form id="deletePresetForm" action="/presets/<%= id %>?_method=DELETE" method="POST" onsubmit="return confirmDelete()">
-        <button type="submit" class="delete-button">Supprimer le préréglage</button>
-    </form>
+                <button type="submit" disabled>Mettre à jour</button>
+            </form>
 
-    <a href="/presets">Retourner à la liste</a>
+            <form id="deletePresetForm" action="/presets/<%= id %>?_method=DELETE" method="POST" onsubmit="return confirmDelete()">
+                <button type="submit" class="delete-button">Supprimer le préréglage</button>
+            </form>
+
+            <a href="/presets">Retourner à la liste</a>
+        </div>
+    </div>
+
+    <footer>
+        <%- include('../partials/footer'); %>
+    </footer>
 
     <script>
         function confirmDelete() {

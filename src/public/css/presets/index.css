@@ -1,0 +1,49 @@
+@import url('/css/presets/common.css');
+
+.presets-page table {
+    width: 90%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.presets-page th, .presets-page td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.presets-page th {
+    background-color: #00BBEC;
+    color: white;
+}
+
+.presets-page tr:nth-child(even) {
+    background-color: #f7f9fc;
+}
+
+.presets-page .action-buttons {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.presets-page .action-buttons form button {
+    background-color: #ec0000;
+}
+
+.presets-page .action-buttons form button:hover {
+    background-color: #ff0000;
+}
+
+.presets-page .priority-high {
+    color: #ff0000; /* Rouge pour haute priorité */
+}
+
+.presets-page .priority-medium {
+    color: #ff9900; /* Orange pour moyenne priorité */
+}
+
+.presets-page .priority-low {
+    color: #00bbec; /* Bleu pour basse priorité */
+}

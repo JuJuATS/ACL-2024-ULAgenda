@@ -1,0 +1,68 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #eef2f3;
+    overflow-x: hidden; /* Désactiver le débordement horizontal */
+}
+
+.content {
+    flex: 1;
+    padding-top: 70px; /* Ajustement pour compenser la hauteur du header */
+}
+
+.presets-page * {
+    font-family: "Afacad Flux", sans-serif;
+    font-weight: 600;
+}
+
+.presets-page {
+    background-color: #eef2f3;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.presets-page h1 {
+    text-align: center;
+    color: #00BBEC;
+    margin-top: 20px;
+}
+
+.presets-page button {
+    background-color: #00BBEC;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.presets-page button:hover {
+    background-color: #357ab8;
+}
+
+.presets-page button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    color: #666666;
+}
+
+.presets-page a {
+    display: block;
+    width: fit-content;
+    margin: 20px auto;
+    background-color: #00BBEC;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 5px;
+    transition: background-color 0.3s;
+}
+
+.presets-page a:hover {
+    background-color: #357ab8;
+}
