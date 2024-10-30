@@ -6,7 +6,7 @@ const argon2 = require('argon2');
 
 const forgottenPassword = async (req,res)=>{
     if(req.isAuthenticated()){
-        res.redirect("/")
+        res.redirect("/");
     }
     else{
         res.render("forgottenPasswordForm");
