@@ -1,75 +1,187 @@
+/* Importation de la police depuis common.css */
+@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
+
+/* Styles globaux */
+body {
+    font-family: "Afacad Flux", sans-serif;
+    font-weight: 600;
+    background-color: #eef2f3;
+    overflow-x: hidden;
+}
+
+header {
+    position: fixed;
+    width: 100%;
+    left: 0;
+    right: 0;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    left: 0;
+    right: 0;
+}
+
+.content {
+    flex: 1;
+    padding-top: 90px;
+}
+
+/* Amélioration du conteneur principal */
 .search-container {
     margin: 20px auto;
     max-width: 800px;
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
+
+/* Styles des contrôles de recherche */
 .search-controls {
     margin-bottom: 20px;
-    padding: 15px;
-    background: #f5f5f5;
-    border-radius: 4px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 8px;
 }
+
+/* Champ de recherche */
 .search-input {
     width: 100%;
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     font-size: 16px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
 }
+
+/* Filtres de date */
 .date-filters {
     display: flex;
     gap: 10px;
     margin-bottom: 10px;
 }
+
+.date-filters label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.date-filters input[type="date"] {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+/* Contrôles de tri */
 .sort-controls {
     display: flex;
     gap: 10px;
     align-items: center;
 }
+
+.sort-controls label {
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.sort-controls input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+.sort-controls select {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 5px;
+}
+
+/* Styles pour la liste des rendez-vous */
 .rdv-list {
     list-style: none;
     padding: 0;
+    margin-top: 20px;
 }
+
 .rdv-item {
     padding: 15px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    margin-bottom: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background-color: #ffffff;
 }
+
 .rdv-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 10px;
 }
+
 .rdv-name {
     font-weight: bold;
     font-size: 18px;
+    color: #007bff;
 }
+
 .rdv-priority {
     padding: 3px 8px;
     border-radius: 12px;
     font-size: 12px;
     color: white;
+    font-weight: bold;
 }
-.priority-Haute { background-color: #dc3545; }
-.priority-Moyenne { background-color: #ffc107; }
-.priority-Basse { background-color: #28a745; }
+
+.priority-Haute {
+    background-color: #dc3545;
+}
+
+.priority-Moyenne {
+    background-color: #ffc107;
+}
+
+.priority-Basse {
+    background-color: #28a745;
+}
+
+/* Information du rendez-vous */
 .rdv-info {
-    color: #666;
+    color: #6c757d;
     font-size: 14px;
     margin: 5px 0;
 }
+
+/* Tags */
 .rdv-tags {
     margin-top: 5px;
 }
-.tag {
-    background: #eee;
+
+.rdv-tags .tag {
+    background-color: #e9ecef;
+    color: #495057;
     padding: 3px 8px;
     border-radius: 12px;
     font-size: 12px;
     margin-right: 5px;
 }
+
+/* Message "Aucun résultat" */
 .no-results {
     text-align: center;
     margin-top: 20px;
     font-size: 16px;
-    color: #666;
+    color: #6c757d;
+    font-weight: bold;
+}
+
+/* Conteneur de la page pour le footer en bas */
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content {
+    flex: 1;
 }

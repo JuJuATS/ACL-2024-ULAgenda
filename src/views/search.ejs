@@ -3,81 +3,92 @@
 <html>
 <head>
     <title>Rechercher des rendez-vous</title>
+    <link rel="stylesheet" type="text/css" href="/css/partials/header.css">
+    <link rel="stylesheet" type="text/css" href="/css/partials/footer.css">
     <link rel="stylesheet" type="text/css" href="/css/search/searchPage.css">
 </head>
 <body>
-    <div class="search-container">
-        <div class="search-controls">
-            <input type="text"
-                   class="search-input"
-                   placeholder="Rechercher un rendez-vous..."
-                   id="searchInput">
+    <div class="page-container">
+        <header>
+            <%- include('partials/header', {user: true}) %>
+        </header>
+        <main class="content">
+            <div class="search-container">
+                <div class="search-controls">
+                    <input type="text"
+                           class="search-input"
+                           placeholder="Rechercher un rendez-vous..."
+                           id="searchInput">
 
-            <div class="date-filters">
-                <div>
-                    <label for="dateDebut">À partir du:</label>
-                    <input type="date" id="dateDebut">
-                </div>
-                <div>
-                    <label for="dateFin">Jusqu'au:</label>
-                    <input type="date" id="dateFin">
-                </div>
-            </div>
+                    <div class="date-filters">
+                        <div>
+                            <label for="dateDebut">À partir du:</label>
+                            <input type="date" id="dateDebut">
+                        </div>
+                        <div>
+                            <label for="dateFin">Jusqu'au:</label>
+                            <input type="date" id="dateFin">
+                        </div>
+                    </div>
 
-            <div class="sort-controls">
-                <label>Trier par:</label>
-                <div>
-                    <input type="checkbox" id="sortPriority" value="priority">
-                    <label for="sortPriority">Priorité</label>
-                    <select id="sortPriorityOrder">
-                        <option value="asc">Ascendant</option>
-                        <option value="desc">Descendant</option>
-                    </select>
+                    <div class="sort-controls">
+                        <label>Trier par:</label>
+                        <div>
+                            <input type="checkbox" id="sortPriority" value="priority">
+                            <label for="sortPriority">Priorité</label>
+                            <select id="sortPriorityOrder">
+                                <option value="asc">Ascendant</option>
+                                <option value="desc">Descendant</option>
+                            </select>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="sortDuration" value="duration">
+                            <label for="sortDuration">Durée</label>
+                            <select id="sortDurationOrder">
+                                <option value="asc">Ascendant</option>
+                                <option value="desc">Descendant</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <input type="checkbox" id="sortDuration" value="duration">
-                    <label for="sortDuration">Durée</label>
-                    <select id="sortDurationOrder">
-                        <option value="asc">Ascendant</option>
-                        <option value="desc">Descendant</option>
-                    </select>
-                </div>
-            </div>
-        </div>
 
-        <% if (rdvs.length === 0) { %>
-            <div class="no-results">
-            Vous n'avez aucun rendez-vous.
-            </div>
-        <% } else { %>
-            <ul class="rdv-list" id="rdvList">
-            <% rdvs.forEach(function(rdv) { %>
-                <li class="rdv-item">
-                <div class="rdv-header">
-                    <div class="rdv-name"><%= rdv.name %></div>
-                    <span class="rdv-priority priority-<%= rdv.priority %>">
-                    <%= rdv.priority %>
-                    </span>
-                </div>
-                <div class="rdv-info">
-                    Agenda: <%= rdv.agendaName %> |
-                    Durée: <%= rdv.duration %> minutes
-                </div>
-                <div class="rdv-tags">
-                    <% rdv.tags.forEach(function(tag) { %>
-                    <span class="tag"><%= tag %></span>
+                <% if (rdvs.length === 0) { %>
+                    <div class="no-results">
+                    Vous n'avez aucun rendez-vous.
+                    </div>
+                <% } else { %>
+                    <ul class="rdv-list" id="rdvList">
+                    <% rdvs.forEach(function(rdv) { %>
+                        <li class="rdv-item">
+                        <div class="rdv-header">
+                            <div class="rdv-name"><%= rdv.name %></div>
+                            <span class="rdv-priority priority-<%= rdv.priority %>">
+                            <%= rdv.priority %>
+                            </span>
+                        </div>
+                        <div class="rdv-info">
+                            Agenda: <%= rdv.agendaName %> |
+                            Durée: <%= rdv.duration %> minutes
+                        </div>
+                        <div class="rdv-tags">
+                            <% rdv.tags.forEach(function(tag) { %>
+                            <span class="tag"><%= tag %></span>
+                            <% }); %>
+                        </div>
+                        </li>
                     <% }); %>
+                    </ul>
+                <% } %>
+
+                <div class="no-results" id="noResultsMessage" style="display: none;">
+                    Aucun rendez-vous ne correspond à la recherche.
                 </div>
-                </li>
-            <% }); %>
-            </ul>
-        <% } %>
-
-        <div class="no-results" id="noResultsMessage" style="display: none;">
-            Aucun rendez-vous ne correspond à la recherche.
-        </div>
+            </div>
+        </main>
+        <footer>
+            <%- include('partials/footer') %>
+        </footer>
     </div>
-
     <script>
         const searchInput = document.getElementById('searchInput');
         const dateDebutInput = document.getElementById('dateDebut');
