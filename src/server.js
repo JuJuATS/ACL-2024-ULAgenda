@@ -25,8 +25,6 @@ const passport = require('./config/passport');
 const routes = require('./routes');
 const agendaRoutes = require('./routes/agendas/agendas');
 const rdvRoutes = require("./routes/agendas/rdvs")
-const planningRoute = require("./routes/planning/planning")
-const apiRoute = require("./routes/api/getAgenda")
 const apiRouter = require('./routes/apiRouter');
 
 const planningRoute = require("./routes/planning/planning")
