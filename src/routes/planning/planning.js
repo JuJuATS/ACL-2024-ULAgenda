@@ -5,7 +5,8 @@ const router = express.Router();
 
 
 router.get("/",authMiddleware,(req,res)=>{
-    res.render("planning",{user:req.session.userId});
+
+    res.render("planning",{user:req.user.id});
     
 })
 

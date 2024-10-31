@@ -31,45 +31,13 @@
     </div>
     <script>
       const agendas = []
-      const generateAgenda = (element,calendar)=>{
-        const agenda = document.createElement("li")
-         const checkbox = document.createElement("input");
-         checkbox.type = "checkbox"
-         checkbox.classList.add("checkAgenda");
-         checkbox.style ="width:30px"
-         checkbox.name = `${element.name}`
-         checkbox.addEventListener("change",(el)=>{
-          refetch(el)
-         })
-         const divcheckbox = document.createElement("div")
-         divcheckbox.style = "display:flex;flex-direction:row;padding-left:20px;gap:20px;width:50%;justify-content:space-between"
-         const label = document.createElement("label");
-         label.style = "font-size:1.2em"
-         label.for = `agenda-${element.name}`
-         label.innerText = `${element.name}`
-         divcheckbox.appendChild(label)
-         divcheckbox.appendChild(checkbox)
-         agenda.appendChild(divcheckbox)
-         listAgenda.appendChild(agenda) 
-      }
-      const refetch = (el)=>{
-        
-          let checkbox = document.querySelectorAll(".checkAgenda");
-          agendas.splice(0,agendas.length)
-          Array.from(checkbox).forEach(el=>{
-        
-            if(el.checked){
-              agendas.push(el.name)
-            }
-          })
-          console.log(`/getDate?agenda=${encodeURIComponent(JSON.stringify(agendas))}`)
-      }
+     
       document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
           eventSources:[
             async(info,success,fail)=>{
-            await fetch(`/getDate?agenda=${encodeURIComponent(JSON.stringify(agendas))}`)
+            await fetch(`/api/getDate?agenda=${encodeURIComponent(JSON.stringify(agendas))}`)
             .then(res=>res.json())
             .then(data=>success(data.event))
             .catch(err=>fail(err))
@@ -95,6 +63,7 @@
           
           
         });
+        
         const sideBar = document.querySelector(".sideBar");
         calendar.render();
         const menu = document.querySelector(".menu");
@@ -105,12 +74,45 @@
             
           },1000)
         })
-      });
-      const listAgenda = document.querySelector(".listAgenda");
-  
+        const listAgenda = document.querySelector(".listAgenda");
+      const generateAgenda = (element,calendar)=>{
+          const agenda = document.createElement("li")
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox"
+          checkbox.classList.add("checkAgenda");
+          checkbox.style ="width:30px"
+          checkbox.name = `${element.name}`
+          checkbox.dataset.id = element._id
+          checkbox.addEventListener("change",(el)=>{
+            refetch(el,calendar)
+          })
+         const divcheckbox = document.createElement("div")
+         divcheckbox.style = "display:flex;flex-direction:row;padding-left:20px;gap:20px;width:50%;justify-content:space-between"
+         const label = document.createElement("label");
+         label.style = "font-size:1.2em"
+         label.for = `agenda-${element.name}`
+         label.innerText = `${element.name}`
+         divcheckbox.appendChild(label)
+         divcheckbox.appendChild(checkbox)
+         agenda.appendChild(divcheckbox)
+         listAgenda.appendChild(agenda) 
+      }
+      const refetch = (el,calendar)=>{
+          let checkbox = document.querySelectorAll(".checkAgenda");
+          agendas.splice(0,agendas.length)
+          Array.from(checkbox).forEach(el=>{
+            if(el.checked){
+              agendas.push(el.dataset.id)
+            }
+          })
+          console.log(agendas)
+          calendar.refetchEvents()
+      }
       fetch("/api/getAgenda").then(res=>res.json()).then(data=>data.forEach(element => {
-         generateAgenda(element,calendar)
+        generateAgenda(element,calendar)
       }))
+      });
+
     </script>
   </body>
 </html>

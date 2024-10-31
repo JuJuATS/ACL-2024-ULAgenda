@@ -150,20 +150,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const presetSelect = document.getElementById('preset-select');
   const form = document.getElementById('rendezvous-form');
 
-
-function selectDay(e, day) {
-
-    e.classList.toggle("selected")
-    const index = recurrences[currentTab].indexOf(day);
-
-    if (index===-1) {
-        recurrences[currentTab].push(day);
-    } else {
-        recurrences[currentTab].splice(index, 1);
-    }
-
+  function selectDay(e, day) {
+      
+      e.classList.toggle("selected")
+      const index = recurrences[currentTab].indexOf(day);
+      
+      if (index===-1) {
+          recurrences[currentTab].push(day);
+        } else {
+            recurrences[currentTab].splice(index, 1);
+        }
+        
+        
 }
-
+const addBoutton = document.querySelector("#addButton")
+addBoutton.addEventListener("click",addYearDay)
 function addYearDay() {
     const date = new Date(document.querySelector("#dateYearRecurrence").value)
 
