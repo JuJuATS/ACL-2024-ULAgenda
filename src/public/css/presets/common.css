@@ -6,7 +6,10 @@ body {
     min-height: 100vh;
     margin: 0;
     background-color: #eef2f3;
-    overflow-x: hidden; /* Désactiver le débordement horizontal */
+}
+
+header {
+    position: fixed; /* Fixer le header en haut de la page */
 }
 
 .content {
