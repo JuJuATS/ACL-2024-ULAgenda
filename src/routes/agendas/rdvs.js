@@ -30,7 +30,7 @@ router.post('/', authMiddleware, async (req, res) => {
 
     const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence } = req.body;
     console.log(name,description,dateDebut,dateFin,agendaId)
-    if (!name || !dateDebut || !dateFin || !agendaId || !(recurrences && finRecurrence)) {
+    if (!name || !dateDebut || !dateFin || !agendaId ) {
       console.log("il manque quelque chose")
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
     }

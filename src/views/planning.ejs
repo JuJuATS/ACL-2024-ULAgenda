@@ -105,6 +105,7 @@
               agendas.push(el.dataset.id)
             }
           })
+          console.log(agendas)
           calendar.refetchEvents()
       }
       fetch("/api/getAgenda").then(res=>res.json()).then(data=>data.forEach(element => {

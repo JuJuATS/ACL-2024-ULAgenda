@@ -9,7 +9,7 @@ const forgottenPassword = async (req,res)=>{
         res.redirect("/")
     }
     else{
-        res.render("forgottenPasswordForm");
+        res.render("forgottenPasswordForm",{expressFlash:req.flash("error")});
 
     }
 }

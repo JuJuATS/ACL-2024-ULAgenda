@@ -24,7 +24,7 @@ const createAccount = async (req, res) => {
             }
 
             return res.status(400).render('signup', {
-                errors,
+                error:errors,
                 formData: req.body,
             });
         }
@@ -48,7 +48,7 @@ const createAccount = async (req, res) => {
 
         // Sauvegarde de l'utilisateur dans la base de données
         await newUser.save();
-
+        console.log("je redirige")
         res.redirect('/');
     } catch (error) {
         console.error(error);
