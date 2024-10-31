@@ -68,7 +68,7 @@
                             du
                             <%= new Date(rendezvous.dateDebut).toLocaleString('fr-FR') %> au
                             <%= new Date(rendezvous.dateFin).toLocaleString('fr-FR') %><br>
-                            <%= rendezvous.description %>
+                            <%= rendezvous.description %><br><button class="edit-rdv" data-id="<%= rendezvous._id %>">Modifier</button> <button class="delete-rdv" data-id="<%= rendezvous._id %>">Supprimer</button>
                         </li>
                     <% }); %>
                 <% } else { %>

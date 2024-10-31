@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Rendez-vous</title>
+    <style>
+        /* Styles épurés pour la page de modification */
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+            background-color: #f9f9f9;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            background-color: #ffffff;
+        }
+
+        .btn-modifier {
+            background-color: #3498db;
+            color: #ffffff;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-modifier:hover {
+            background-color: #2980b9;
+        }
+
+        .btn-modifier:focus {
+            outline: none;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <h1>Modifier le rendez-vous</h1>
+            <form id="edit-rendezvous-form" data-id="<%= rendezvous._id %>">
+                <div class="form-group">
+                    <label for="nom">Nom du rendez-vous:</label>
+                    <input type="text" id="nom" name="nom" value="<%= rendezvous.name %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date du rendez-vous:</label>
+                    <input type="date" id="date" name="date" value="<%= rendezvous.dateDebut.toISOString().slice(0, 10) %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="heureDebut">Heure de début:</label>
+                    <input type="time" id="heureDebut" name="heureDebut" 
+                           value="<%= rendezvous.dateDebut.toISOString().slice(11, 16) %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="duree">Durée (en minutes):</label>
+                    <input type="number" id="duree" name="duree" 
+                           value="<%= Math.round((new Date(rendezvous.dateFin) - new Date(rendezvous.dateDebut)) / 60000) %>" min="0" step="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" rows="4" required><%= rendezvous.description %></textarea>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn-modifier">Modifier le rendez-vous</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const agendaId = "<%= rendezvous.agendaId %>";
+        document.getElementById('edit-rendezvous-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const rdvId = this.dataset.id;
+            const name = document.getElementById('nom').value;
+            const description = document.getElementById('description').value;
+            const dateDebut = document.getElementById('date').value + 'T' + document.getElementById('heureDebut').value;
+            const duree = parseInt(document.getElementById('duree').value, 10);
+            const dateFin = new Date(new Date(dateDebut).getTime() + duree * 60000).toISOString();
+
+            try {
+                const response = await fetch(`http://localhost:3000/rendezvous/${rdvId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({ name, description, dateDebut, dateFin })
+                });
+                if (response.ok) {
+                    alert("Rendez-vous modifié avec succès !");
+                    window.location.href = `/rendezvous?agendaId=${agendaId}`;
+                }
+            } catch (error) {
+                console.error('Erreur lors de la modification:', error);
+                alert("Une erreur s'est produite lors de la modification du rendez-vous.");
+            }
+        });
+    </script>
+</body>
+</html>

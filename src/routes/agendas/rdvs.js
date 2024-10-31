@@ -67,3 +67,64 @@ router.post('/', authMiddleware, async (req, res) => {
 });
 
 module.exports = router;
+
+// Route to update a specific rendezvous
+router.put('/:id', authMiddleware, async (req, res) => {
+    try {
+        const rdvId = req.params.id;
+        const { name, description, dateDebut, dateFin } = req.body;
+
+        if (!name || !dateDebut || !dateFin) {
+            return res.status(400).json({ message: "Fields 'name', 'dateDebut', 'dateFin' are required." });
+        }
+
+        const rdv = await Rdv.findById(rdvId);
+        if (!rdv) {
+            return res.status(404).json({ message: "Rendezvous not found" });
+        }
+
+        rdv.name = name;
+        rdv.description = description;
+        rdv.dateDebut = new Date(dateDebut);
+        rdv.dateFin = new Date(dateFin);
+
+        await rdv.save();
+        res.status(200).json({ ok: true, rdv });
+    } catch (error) {
+        console.error("Error updating rendezvous:", error);
+        res.status(500).json({ message: "Error updating rendezvous", error });
+    }
+});
+
+// Route to delete a specific rendezvous
+router.delete('/:id', authMiddleware, async (req, res) => {
+    try {
+        const rdvId = req.params.id;
+
+        const rdv = await Rdv.findByIdAndDelete(rdvId);
+        if (!rdv) {
+            return res.status(404).json({ message: "Rendezvous not found" });
+        }
+
+        res.status(200).json({ ok: true, message: "Rendezvous deleted successfully" });
+    } catch (error) {
+        console.error("Error deleting rendezvous:", error);
+        res.status(500).json({ message: "Error deleting rendezvous", error });
+    }
+});
+// Route to render the edit rendezvous page
+router.get('/edit/:id', authMiddleware, async (req, res) => {
+  try {
+      const rdvId = req.params.id;
+      const rendezvous = await Rdv.findById(rdvId);
+      
+      if (!rendezvous) {
+          return res.status(404).json({ message: "Rendez-vous non trouvé" });
+      }
+
+      res.render('modifier_rendezvous', { rendezvous });
+  } catch (error) {
+      console.error("Erreur lors de la récupération du rendez-vous:", error);
+      res.status(500).json({ message: "Erreur interne du serveur", error });
+  }
+});

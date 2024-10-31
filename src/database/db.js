@@ -3,6 +3,7 @@ const userCleanupTask = require('../tasks/userCleanupTask'); // Permet de lancer
 
 const connectDB = async () => {
   try {
+    console.log ('je suis connecter ',process.env.DB_URI);
     await mangoose.connect(process.env.DB_URI);
     console.log('Connected to the database');
   } catch (error) {
