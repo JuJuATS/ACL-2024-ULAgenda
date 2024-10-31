@@ -36,7 +36,7 @@ describe('Tests de la route POST /signup', () => {
   });
 
   // Cas 1: Succès de l'inscription
-  it('devrait créer un compte et rediriger vers /successfull-signup', async () => {
+  it('devrait créer un compte et rediriger vers /', async () => {
     const userData = {
       nom: 'Doe',
       prenom: 'John',
@@ -51,7 +51,7 @@ describe('Tests de la route POST /signup', () => {
 
     // Vérifier la redirection
     expect(response.statusCode).toBe(302); // Code 302 = redirection
-    expect(response.headers.location).toBe('/successfull-signup');
+    expect(response.headers.location).toBe('/');
 
     // Vérifier que l'utilisateur est bien dans la base de données
     const userInDb = await User.findOne({ email: 'john.doe@example.com' });
