@@ -3,8 +3,6 @@ const isAuthentified = require('../middlewares/authMiddleware');
 const Agenda = require('../database/models/agenda');
 const { getPresetInfosById } = require('../routes/presets');
 const Fuse = require('fuse.js');
-
-const Agenda = require("../database/models/agenda")
 const RDV = require("../database/models/rdv")
 const apiRouter = express.Router();
 
@@ -111,7 +109,7 @@ event.push({
 })
 }
 })
-router.get("/getAgenda",authMiddleware,async(req,res)=>{
+apiRouter.get("/getAgenda",isAuthentified,async(req,res)=>{
 
   let userId = req.session.userId;
 
