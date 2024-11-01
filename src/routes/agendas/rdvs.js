@@ -7,22 +7,48 @@ const Recurrence = require("../../database/models/recurrence");
 const Agenda = require("../../database/models/agenda.js");
 const Preset = require('../../database/models/preset.js');
 
-// Route pour afficher les rendez-vous avec le bon id.
+async function verifOwner(agendaId, userId) {
+  console.log("Testing ownership..");
 
+  const agenda = await Agenda.findById(agendaId);
+
+  if (!agenda) {
+    console.log("Agenda not found!")
+    return false;
+  }
+
+  if (!new ObjectId(userId).equals(agenda.userId)) {
+    console.log("Not agenda owner! ", userId, " != ", agenda.userId);
+    return false;
+  }
+
+  console.log("Success");
+
+  return true;
+}
+
+// Route pour afficher les rendez-vous avec le bon id.
 router.get('/', authMiddleware, async (req, res) => {
-  const {agendaId} = req.query
-  const rdvUser = await Rdv.find({agendaId:agendaId})
+  const {agendaId} = req.query;
+
+  const isOwner = await verifOwner(agendaId, req.user.id);
+
+  if (!isOwner) {
+    return res.redirect('/agendas');
+  }
+
+  const rdvUser = await Rdv.find({ agendaId: agendaId });
+
   rdvUser.sort((a, b) => {
     const dateA = new Date(`${a.dateDebut}`);
     const dateB = new Date(`${b.dateDebut}`);
-    return dateA - dateB;  // Sort ascending by date and start time
-});
+
+    return dateA - dateB;
+  });
 
   const presets = await Preset.find({ userId: req.user.id });
   res.render('rendezvous', { rdvUser: rdvUser, agenda: agendaId, presets });
 });
-
-
 
 // Route pour créer un nouveau rendez-vous.
 router.post('/', authMiddleware, async (req, res) => {
@@ -44,12 +70,10 @@ router.post('/', authMiddleware, async (req, res) => {
     const debut = new Date(dateDebut);
     const fin = new Date(dateFin);
 
-
     if (fin <= debut) {
       console.log("date pas valide")
       return res.status(400).json({ message: "La date de fin doit être après la date de début." });
     }
-
 
     const recurrence = new Recurrence({
       yearDay: recurrences["year"] ,
