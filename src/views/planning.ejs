@@ -39,7 +39,10 @@
             async(info,success,fail)=>{
             await fetch(`/api/getDate?agenda=${encodeURIComponent(JSON.stringify(agendas))}`)
             .then(res=>res.json())
-            .then(data=>success(data.event))
+            .then(data=>{
+              
+              success(data.event)
+            })
             .catch(err=>fail(err))
             }
           ],
@@ -96,6 +99,7 @@
          divcheckbox.appendChild(checkbox)
          agenda.appendChild(divcheckbox)
          listAgenda.appendChild(agenda) 
+         console.log("yo")
       }
       const refetch = (el,calendar)=>{
           let checkbox = document.querySelectorAll(".checkAgenda");
@@ -109,6 +113,7 @@
           calendar.refetchEvents()
       }
       fetch("/api/getAgenda").then(res=>res.json()).then(data=>data.forEach(element => {
+        console.log("wesh")
         generateAgenda(element,calendar)
       }))
       });

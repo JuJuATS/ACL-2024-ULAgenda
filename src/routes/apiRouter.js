@@ -5,11 +5,10 @@ const { getPresetInfosById } = require('../routes/presets');
 const Fuse = require('fuse.js');
 const RDV = require("../database/models/rdv")
 const apiRouter = express.Router();
-
+const mongoose = require("mongoose")
+const recurrence = require("../database/models/recurrence")
 // Route pour récupérer les informations d'un preset à partir de son id
 apiRouter.get('/presets/:id', isAuthentified, getPresetInfosById);
-apiRouter.get("/getAgenda",isAuthentified,async(req,res)=>{
-
 apiRouter.get('/search', isAuthentified, async (req, res) => {
     try {
         const searchTerm = req.query.term?.toLowerCase() || '';
@@ -80,41 +79,138 @@ apiRouter.get('/search', isAuthentified, async (req, res) => {
                 return 0;
             });
         }
-
         res.json(filteredRdvs);
     } catch (error) {
         console.error('Erreur lors de la recherche:', error);
         res.status(500).json({ error: 'Erreur serveur' });
     }
 });
-});
 
-
-apiRouter.get("/getDate",isAuthentified,async(req,res)=>{
-  const userId = req.user?.id
-
-  const {agenda} = req.query
-  console.log(agenda)
-  const stringAgenda = decodeURIComponent(agenda)
-  console.log(JSON.parse(stringAgenda))
-  if(stringAgenda === ""){  
-    res.send({event:[]})
-  }
-  const Rdvs = await RDV.find({_id:{$in:JSON.parse(stringAgenda)}}).select('name _id dateDebut dateFin recurrences description').cursor();
-  
-const event = []
-for (let document = await cursor.next(); document != null; document = await cursor.next()) {
-event.push({
-  id:document._id
-})
-}
-})
 apiRouter.get("/getAgenda",isAuthentified,async(req,res)=>{
-
-  let userId = req.session.userId;
-
+  let userId = req.user.id;
   const agendas = await Agenda.find({userId:userId});
-    
-    res.status(200).send(agendas);
+  res.status(200).send(agendas);
 })
+
+
+const getAgendaEvents = async (req, res, next) => {
+  const { agenda } = req.query;
+  if (!agenda) {
+    return res.status(400).json({ 
+      error: 'Le paramètre agenda est requis',
+      event: []
+    });
+  }
+  const decodedAgenda = decodeURIComponent(agenda);
+  // Décodage et parsing de l'agenda
+  if (decodedAgenda === "") {
+    return res.status(200).json({ event: [] });
+  }
+  const parsedAgenda = JSON.parse(decodedAgenda);
+  if (!Array.isArray(parsedAgenda)) {
+    throw new Error('Format invalide');
+  }
+
+  try {
+    // Vérification de l'authentification
+    const userId = req.user?.id;
+    if (!userId) {
+      return res.status(401).json({ 
+        error: 'Utilisateur non authentifié',
+        event: []
+      });
+    }
+    // Récupération des rendez-vous avec projection optimisée
+   
+    const events = await RDV.aggregate([
+      {
+        $match: {
+          agendaId: { $in: parsedAgenda.map(el=>new mongoose.Types.ObjectId(el)) }
+        }
+      }
+    ]).exec();
+    const event = []
+    events.forEach(el=>{
+      
+      let rdv = {
+        id:el._id,
+        start:el.dateDebut,
+        fin:el.dateFin,
+        description:el.description,
+        title:el.name,
+        duration:el.dateFin-el.dateDebut
+      }
+      event.push(rdv);
+      if(el.recurrences){
+          const recurrenceRdv = recurrence.findById(el.recurrences);
+          let dateDebut = new Date(recurrenceRdv.dateDebut)
+          dateDebut.setDate(dateDebut.getDate() + 1)
+          if(recurrenceRdv.yearDay){
+            let rdv = {
+              id:el._id,
+              fin:el.dateFin,
+              description:el.description,
+              title:el.name,
+              duration:el.dateFin-el.dateDebut,
+              rrule:{
+              freq:YEARLY,
+              byyearday:recurrenceRdv.yearDay,
+              dtstart:el.dateDebut,
+              until:recurrenceRdv.dateFin
+            }
+          }
+        }
+          if(recurrenceRdv.monthDay){
+            let rdv = {
+              id:el._id,
+              fin:el.dateFin,
+              description:el.description,
+              title:el.name,
+              duration:el.dateFin-el.dateDebut,
+              rrule:{
+                freq:MONTHLY,
+                bymonth:recurrenceRdv.monthDay,
+                dtstart:el.dateDebut,
+                until:recurrenceRdv.dateFin
+              }
+            }
+            event.push(rdv)
+          }
+          if(recurrenceRdv.weekDay){
+            let rdv = {
+              id:el._id,
+              fin:el.dateFin,
+              description:el.description,
+              title:el.name,
+              duration:el.dateFin-el.dateDebut,
+              rrule:{
+                freq:weekDay,
+                bymonth:recurrenceRdv.weekDay,
+                dtstart:el.dateDebut,
+                until:el.dateFin
+              }
+            }
+            event.push(rdv)
+          }
+        }
+       
+      }
+    )
+    
+   
+    // Envoi de la réponse
+    res.status(200).json({ 
+      event: events
+    });
+
+  } catch (error) {
+    // Log de l'erreur pour monitoring
+    console.error('Erreur lors de la récupération des événements:', error);
+    
+    next(error);
+  }
+};
+apiRouter.get("/getDate",isAuthentified,getAgendaEvents)
+
+
 module.exports = apiRouter;

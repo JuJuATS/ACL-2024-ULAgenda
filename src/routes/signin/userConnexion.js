@@ -1,4 +1,4 @@
-onst User = require('../../database/models/user');
+const User = require('../../database/models/user');
 const argon2 = require('argon2');
 
 const userConnexion = async (req,res)=>{
