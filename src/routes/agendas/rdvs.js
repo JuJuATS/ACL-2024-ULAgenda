@@ -50,13 +50,13 @@ router.get('/api/recurrence', authMiddleware, async (req, res) => {
     const dateB = new Date(`${b.dateDebut}`);
     return dateA - dateB;  // Sort ascending by date and start time
   });
-  console.log(typeof rdvUser[0])
   const rdvs = await Promise.all(rdvUser.map(async (rdv) => {
     const rec = await Recurrence.findById(rdv.recurrences);
     return {"recurrence": rec, ...rdv.toObject()};
   }))
   res.status(201).json({rdvs:rdvs});
 });
+
 
 
 // Route pour créer un nouveau rendez-vous.
@@ -79,12 +79,10 @@ router.post('/', authMiddleware, async (req, res) => {
     const debut = new Date(dateDebut);
     const fin = new Date(dateFin);
 
-
     if (fin <= debut) {
       console.log("date pas valide")
       return res.status(400).json({ message: "La date de fin doit être après la date de début." });
     }
-
 
     const recurrence = new Recurrence({
       yearDay: recurrences["year"] ,
