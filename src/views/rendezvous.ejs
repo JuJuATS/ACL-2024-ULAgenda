@@ -4,6 +4,7 @@
     <%- include('./partials/head', {pageName: ""}); %>
     <title>Agenda Rendez-vous</title>
     <link rel="stylesheet" href="css/rendezvous/styles.css">
+
 </head>
 <body>
     <header>
@@ -73,22 +74,15 @@
             </form>
         </div>
 
-        <div class="agenda"style="overflow-x: hidden;">
-            <h2 style="white-space:nowrap;">Rendez-vous</h2>
+        <div class="agenda">
+            <h2>Rendez-vous</h2>
             <ul id="agenda-list">
-                <% if (rdvUser && rdvUser.length > 0) { %>
-                    <% rdvUser.forEach(function(rendezvous, index) { %>
-                        <li>
-                            <strong><%= rendezvous.name %></strong> -
-                            du
-                            <%= new Date(rendezvous.dateDebut).toLocaleString('fr-FR') %> au
-                            <%= new Date(rendezvous.dateFin).toLocaleString('fr-FR') %><br>
-                            <%= rendezvous.description %>
-                        </li>
+                <!--<% if (rdvUser && rdvUser.length > 0) { %>
+                    <% rdvUser.forEach(function(rendezvous) { %>
                     <% }); %>
                 <% } else { %>
-                    <li>Aucun rendez-vous trouvé.</li>
-                <% } %>
+                    <li id="first">Aucun rendez-vous trouvé.</li>
+                <% } %>-->
             </ul>
         </div>
     </div>
@@ -169,6 +163,9 @@
             </form>
         </div>
     </div>
+    <script>
+        const agendaid = "<%= agenda %>";
+    </script>
     <script src="javascripts/rendezvous/script.js"></script>
 </body>
 </html>

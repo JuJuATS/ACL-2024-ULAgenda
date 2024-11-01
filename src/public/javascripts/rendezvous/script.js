@@ -44,14 +44,14 @@ document.querySelector("#btn-view-rdv").addEventListener('click', function(event
     for (let i = 0; i < document.querySelector("#agenda-list").children.length; i++) {
         document.querySelector("#agenda-list").children[i].classList.toggle('rdv-open');
     }
-    if (document.querySelector(".agenda").classList.contains("agenda-open")) {
+    /*--if (document.querySelector(".agenda").classList.contains("agenda-open")) {
         const texts = []
         for (let i = 0; i < document.querySelector("#agenda-list").children.length; i++) {
             texts.push(" "+document.querySelector("#agenda-list").children[i].innerText);
             document.querySelector("#agenda-list").children[i].innerHTML = '';
             showText(document.querySelector("#agenda-list").children[i], texts[i], 0, 1000);
         }
-    }
+    }*/
 })
 
 document.querySelector("#btn-recurrence").addEventListener('click', function(event) {
@@ -117,191 +117,152 @@ async function saveRendezVous(rendezvous) {
 
     try {
         const response = await fetch(`http://localhost:3000/rendezvous?agendaId=${form.dataset.agendaid}`, {
-          method: 'POST',
-          headers: {
+            method: 'POST',
+            headers: {
             'Content-Type': 'application/json'
-          },
-          credentials: 'include',
-          body: JSON.stringify(rendezvous)
+            },
+            credentials: 'include',
+            body: JSON.stringify(rendezvous)
         });
         const json = await response.json()
         if (json.ok) {
-          const li = document.createElement("li");
-          li.innerHTML =  `<strong> ${rendezvous.name} </strong> - 
-          du
-           ${new Date(rendezvous.dateDebut).toLocaleString('fr-FR')} au
-          ${new Date(rendezvous.dateFin).toLocaleString('fr-FR')} <br>
-          ${rendezvous.description}`
-
-
-          // Ajouter le nouvel agenda au conteneur principal
-            li.classList.add('rdv-open');
-          agendaList.appendChild(li);
+            if (agendaList.children[0].id === 'first') agendaList.innerHTML = ''
+            agendaList.appendChild(createLiRdv(rendezvous));
         }
       } catch (error) {
         console.error('Erreur:', error);
         alert('Une erreur s\'est produite lors de la création de l\'agenda');
       }
 
-  };
+};
 
- 
-document.addEventListener('DOMContentLoaded', () => {
-  const presetSelect = document.getElementById('preset-select');
-  const form = document.getElementById('rendezvous-form');
+function createLiRdv(rendezvous) {
+    const li = document.createElement('li');
+    const title = document.createElement('h3');
+    title.textContent = rendezvous.name;
+    li.appendChild(title);
 
-  function selectDay(e, day) {
-      
-      e.classList.toggle("selected")
-      const index = recurrences[currentTab].indexOf(day);
-      
-      if (index===-1) {
-          recurrences[currentTab].push(day);
-        } else {
-            recurrences[currentTab].splice(index, 1);
-        }
-        
-        
+    const dateDiv = document.createElement('div');
+
+    const startDate = document.createElement('p');
+    startDate.innerHTML = `Date de début : <span>${new Date(rendezvous.dateDebut).toLocaleString('fr-FR')}</span>`;
+    dateDiv.appendChild(startDate);
+    const endDate = document.createElement('p');
+    endDate.innerHTML = `Date de fin : <span>${new Date(rendezvous.dateFin).toLocaleString('fr-FR')}</span>`;
+    dateDiv.appendChild(endDate);
+
+    li.appendChild(dateDiv);
+    const descriptionDiv = document.createElement('div');
+    const descriptionLabel = document.createElement('label');
+    descriptionLabel.textContent = 'Description : ';
+    descriptionDiv.appendChild(descriptionLabel);
+
+    const descriptionText = document.createElement('p');
+    descriptionText.textContent = rendezvous.description;
+    descriptionDiv.appendChild(descriptionText);
+
+    li.appendChild(descriptionDiv);
+
+    const recurrenceDiv = document.createElement('div');
+    recurrenceDiv.classList.add('recurrence-list-rdv');
+
+    const recurrenceTitle = document.createElement('h4');
+    recurrenceTitle.textContent = 'Récurrence';
+    recurrenceDiv.appendChild(recurrenceTitle);
+
+    ['Semaine', 'Mois', 'Année'].forEach(name => {
+        let div = document.createElement('div');
+        let title = document.createElement('h5');
+        title.textContent = name;
+        div.appendChild(title);
+
+        let ul = document.createElement('ul');
+        rendezvous.recurrence[name === "Année" ? 'yearDay' : name === "Mois" ? 'monthDay' : 'weekDay'].forEach((recurrence) => {
+            const weekLi = document.createElement('li');
+            weekLi.textContent = recurrence;
+            ul.appendChild(weekLi);
+        });
+        div.appendChild(ul);
+        recurrenceDiv.appendChild(div);
+    })
+
+    li.appendChild(recurrenceDiv);
+
+    return li;
 }
-const addBoutton = document.querySelector("#addButton")
-addBoutton.addEventListener("click",addYearDay)
-function addYearDay() {
-    const date = new Date(document.querySelector("#dateYearRecurrence").value)
 
-    if (date.getDate()) {
-        const index = recurrences.year.findIndex(e => e.toString() === date.toString());
-        if (index === -1) {
-            const li = document.createElement("li");
-            li.textContent = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
 
-            const button = document.createElement("button");
-            button.type = "button"
-            button.addEventListener('click', function(e) {
-                recurrences.year.splice(index, 1);
-                e.currentTarget.parentNode.remove()
-            })
 
-            li.appendChild(button)
-            document.querySelector(".yearList").appendChild(li)
-            recurrences.year.push(date);
-        } else {
-            console.log("Date déjà ajoutés")
+document.addEventListener('DOMContentLoaded', async() => {
+    const presetSelect = document.getElementById('preset-select');
+    const form = document.getElementById('rendezvous-form');
+    presetSelect.addEventListener('change', async () => {
+        const presetId = presetSelect.value;
+        if (!presetId) return;
+
+        const confirmApply = confirm("Voulez-vous vraiment appliquer ce préréglage ? Cela remplacera les valeurs actuelles du formulaire.");
+        if (!confirmApply) {
+            presetSelect.value = "";
+            return;
         }
-        document.querySelector("#dateYearRecurrence").value = ''
+        try {
+            const response = await fetch(`/api/presets/${presetId}`);
+            if (!response.ok) throw new Error("Erreur lors de la récupération du préréglage");
+
+            const presetData = await response.json();
+            // Remplit les champs du formulaire avec les données du préréglage sélectionné
+            form.nom.value = presetData.eventName || '';
+            form.duree.value = presetData.duration;
+            form.description.value = presetData.description || '';
+            form.rappel.value = presetData.reminder || '';
+            form.heureDebut.value = presetData.startHour || '';
+        } catch (error) {
+            console.error("Erreur:", error);
+            alert("Impossible d'appliquer le préréglage.");
+        }
+    });
+    const ul = document.querySelector("#agenda-list")
+
+    const response = await fetch(`http://localhost:3000/rendezvous/api/recurrence?agendaId=${agendaid}`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+    });
+    const resp = await response.json()
+    const rdvs = resp.rdvs
+    if (rdvs && rdvs.length === 0) {
+        let l = document.createElement("li")
+        l.id = "first"
+        l.innerText = "Aucun rendez-vous trouvé."
+        ul.appendChild(l);
     }
-
-}
-
-  presetSelect.addEventListener('change', async () => {
-      const presetId = presetSelect.value;
-      if (!presetId) return;
-
-      const confirmApply = confirm("Voulez-vous vraiment appliquer ce préréglage ? Cela remplacera les valeurs actuelles du formulaire.");
-      if (!confirmApply) {
-          presetSelect.value = "";
-          return;
-      }
-
-      try {
-          const response = await fetch(`/api/presets/${presetId}`);
-          if (!response.ok) throw new Error("Erreur lors de la récupération du préréglage");
-          
-          const presetData = await response.json();
-
-          // Remplit les champs du formulaire avec les données du préréglage sélectionné
-          form.nom.value = presetData.eventName || '';
-          form.duree.value = presetData.duration;
-          form.description.value = presetData.description || '';
-          form.rappel.value = presetData.reminder || '';
-          form.heureDebut.value = presetData.startHour || '';
-      } catch (error) {
-          console.error("Erreur:", error);
-          alert("Impossible d'appliquer le préréglage.");
-      }
-  });
+    else {
+        rdvs.forEach(rdv => {
+            ul.appendChild(createLiRdv(rdv))
+        })
+    }
 });
 
-function selectDay(e, day) {
+/*function addRdv() {
+    console.log(agendaid)
+    const ul = document.querySelector("#agenda-list")
 
-    e.classList.toggle("selected")
-    const index = recurrences[currentTab].indexOf(day);
+    const response = await fetch(`http://localhost:3000/rendezvous?rdvId=${rdvs.id}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(rendezvous)
+    });
+    const resp = await response.json()
+    console.log(rdvs)
+}*/
 
-    if (index===-1) {
-        recurrences[currentTab].push(day);
-    } else {
-        recurrences[currentTab].splice(index, 1);
-    }
-
-}
-
-function addYearDay() {
-    const date = new Date(document.querySelector("#dateYearRecurrence").value)
-
-    if (date.getDate()) {
-        const index = recurrences.year.findIndex(e => e.toString() === date.toString());
-        if (index === -1) {
-            const li = document.createElement("li");
-            li.textContent = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
-
-            const button = document.createElement("button");
-            button.type = "button"
-            button.addEventListener('click', function(e) {
-                recurrences.year.splice(index, 1);
-                e.currentTarget.parentNode.remove()
-            })
-
-            li.appendChild(button)
-            document.querySelector(".yearList").appendChild(li)
-            recurrences.year.push(date);
-        } else {
-            console.log("Date déjà ajoutés")
-        }
-        document.querySelector("#dateYearRecurrence").value = ''
-    }
-
-}
-
-
-function selectDay(e, day) {
-
-    e.classList.toggle("selected")
-    const index = recurrences[currentTab].indexOf(day);
-
-    if (index===-1) {
-        recurrences[currentTab].push(day);
-    } else {
-        recurrences[currentTab].splice(index, 1);
-    }
-
-}
-
-function addYearDay() {
-    const date = new Date(document.querySelector("#dateYearRecurrence").value)
-
-    if (date.getDate()) {
-        const index = recurrences.year.findIndex(e => e.toString() === date.toString());
-        if (index === -1) {
-            const li = document.createElement("li");
-            li.textContent = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
-
-            const button = document.createElement("button");
-            button.type = "button"
-            button.addEventListener('click', function(e) {
-                recurrences.year.splice(index, 1);
-                e.currentTarget.parentNode.remove()
-            })
-
-            li.appendChild(button)
-            document.querySelector(".yearList").appendChild(li)
-            recurrences.year.push(date);
-        } else {
-            console.log("Date déjà ajoutés")
-        }
-        document.querySelector("#dateYearRecurrence").value = ''
-    }
-
-}
-
+const addBoutton = document.querySelector("#addButton")
+addBoutton.addEventListener("click",addYearDay)
 
 function selectDay(e, day) {
 

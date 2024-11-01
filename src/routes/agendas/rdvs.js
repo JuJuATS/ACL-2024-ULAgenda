@@ -2,6 +2,7 @@ const express = require('express');
 const Rdv = require('../../database/models/rdv.js');
 const authMiddleware = require('../../middlewares/authMiddleware.js');
 const ObjectId = require('mongodb').ObjectId;
+const mongoose = require('mongoose');
 const router = express.Router();
 const Recurrence = require("../../database/models/recurrence");
 const Agenda = require("../../database/models/agenda.js");
@@ -17,11 +18,30 @@ router.get('/', authMiddleware, async (req, res) => {
     const dateB = new Date(`${b.dateDebut}`);
     return dateA - dateB;  // Sort ascending by date and start time
 });
+  rdvUser.map(async rdv => {
+    rdv.rec = await Recurrence.findById(rdv.recurrences)
+  })
 
   const presets = await Preset.find({ userId: req.user.id });
   res.render('rendezvous', { rdvUser: rdvUser, agenda: agendaId, presets });
 });
 
+
+router.get('/api/recurrence', authMiddleware, async (req, res) => {
+  const {agendaId} = req.query
+  const rdvUser = await Rdv.find({agendaId:agendaId})
+  rdvUser.sort((a, b) => {
+    const dateA = new Date(`${a.dateDebut}`);
+    const dateB = new Date(`${b.dateDebut}`);
+    return dateA - dateB;  // Sort ascending by date and start time
+  });
+  console.log(typeof rdvUser[0])
+  const rdvs = await Promise.all(rdvUser.map(async (rdv) => {
+    const rec = await Recurrence.findById(rdv.recurrences);
+    return {"recurrence": rec, ...rdv.toObject()};
+  }))
+  res.status(201).json({rdvs:rdvs});
+});
 
 
 // Route pour créer un nouveau rendez-vous.
@@ -35,7 +55,7 @@ router.post('/', authMiddleware, async (req, res) => {
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
     }
     const agenda = await Agenda.findById(agendaId);
-    
+
     if (!agenda) {
       console.log("pas d'agenda")
       return res.status(404).json({ message: 'Agenda non trouvé' });
@@ -68,8 +88,10 @@ router.post('/', authMiddleware, async (req, res) => {
       recurrences: recurrence
     });
 
+    await recurrence.save();
+
     await newRdv.save();
-   
+
     agenda.rdvs.push(newRdv._id);
 
     await agenda.save();
