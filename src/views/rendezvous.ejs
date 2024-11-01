@@ -8,7 +8,7 @@
 </head>
 <body>
     <header>
-        <%- include('./partials/header', {user: rdvUser}); %>
+        <%- include('./partials/header', {user: user}); %>
     </header>
     <div class="wrapper">
 
@@ -76,14 +76,7 @@
 
         <div class="agenda">
             <h2>Rendez-vous</h2>
-            <ul id="agenda-list">
-                <!--<% if (rdvUser && rdvUser.length > 0) { %>
-                    <% rdvUser.forEach(function(rendezvous) { %>
-                    <% }); %>
-                <% } else { %>
-                    <li id="first">Aucun rendez-vous trouvé.</li>
-                <% } %>-->
-            </ul>
+            <ul id="agenda-list"></ul>
         </div>
     </div>
 

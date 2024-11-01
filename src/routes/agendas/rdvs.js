@@ -38,7 +38,7 @@ router.get('/', authMiddleware, async (req, res) => {
   }
 
   const presets = await Preset.find({ userId: req.user.id });
-  res.render('rendezvous', { agenda: agendaId, presets });
+  res.render('rendezvous', { user: req.user.id, agenda: agendaId, presets });
 });
 
 
@@ -52,6 +52,9 @@ router.get('/api/recurrence', authMiddleware, async (req, res) => {
   });
   const rdvs = await Promise.all(rdvUser.map(async (rdv) => {
     const rec = await Recurrence.findById(rdv.recurrences);
+/*    rec.yearDay = rec.yearDay.map(date => {
+      console.log(date); date.toLocaleString('fr-FR')})
+    console.log(rec)*/
     return {"recurrence": rec, ...rdv.toObject()};
   }))
   res.status(201).json({rdvs:rdvs});
@@ -64,6 +67,7 @@ router.post('/', authMiddleware, async (req, res) => {
   try {
 
     const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence } = req.body;
+    console.log(recurrences)
     console.log(name,description,dateDebut,dateFin,agendaId)
     if (!name || !dateDebut || !dateFin || !agendaId ) {
       console.log("il manque quelque chose")
@@ -85,7 +89,7 @@ router.post('/', authMiddleware, async (req, res) => {
     }
 
     const recurrence = new Recurrence({
-      yearDay: recurrences["year"] ,
+      yearDay: recurrences["year"],
       monthDay: recurrences["month"],
       weekDay: recurrences["week"],
       dateDebut: debut,
