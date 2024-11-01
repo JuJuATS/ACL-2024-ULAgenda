@@ -2,28 +2,43 @@ const express = require('express');
 const Rdv = require('../../database/models/rdv.js');
 const authMiddleware = require('../../middlewares/authMiddleware.js');
 const ObjectId = require('mongodb').ObjectId;
-const mongoose = require('mongoose');
 const router = express.Router();
 const Recurrence = require("../../database/models/recurrence");
 const Agenda = require("../../database/models/agenda.js");
 const Preset = require('../../database/models/preset.js');
 
-// Route pour afficher les rendez-vous avec le bon id.
+async function verifOwner(agendaId, userId) {
+  console.log("Testing ownership..");
 
+  const agenda = await Agenda.findById(agendaId);
+
+  if (!agenda) {
+    console.log("Agenda not found!")
+    return false;
+  }
+
+  if (!new ObjectId(userId).equals(agenda.userId)) {
+    console.log("Not agenda owner! ", userId, " != ", agenda.userId);
+    return false;
+  }
+
+    console.log("Success");
+
+    return true;
+}
+
+// Route pour afficher les rendez-vous avec le bon id.
 router.get('/', authMiddleware, async (req, res) => {
-  const {agendaId} = req.query
-  const rdvUser = await Rdv.find({agendaId:agendaId})
-  rdvUser.sort((a, b) => {
-    const dateA = new Date(`${a.dateDebut}`);
-    const dateB = new Date(`${b.dateDebut}`);
-    return dateA - dateB;  // Sort ascending by date and start time
-});
-  rdvUser.map(async rdv => {
-    rdv.rec = await Recurrence.findById(rdv.recurrences)
-  })
+  const {agendaId} = req.query;
+
+  const isOwner = await verifOwner(agendaId, req.user.id);
+
+  if (!isOwner) {
+    return res.redirect('/agendas');
+  }
 
   const presets = await Preset.find({ userId: req.user.id });
-  res.render('rendezvous', { rdvUser: rdvUser, agenda: agendaId, presets });
+  res.render('rendezvous', { agenda: agendaId, presets });
 });
 
 
