@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifier Rendez-vous</title>
+    <style>
+        /* Styles épurés pour la page de modification */
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 500px;
+            background-color: #ffffff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 500;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
+
+        label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        input[type="text"],
+        input[type="date"],
+        input[type="time"],
+        input[type="number"],
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            margin-top: 5px;
+            background-color: #f9f9f9;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #3498db;
+            background-color: #ffffff;
+        }
+
+        .btn-modifier {
+            color: #000000;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            transition: background-color 0.3s ease;
+        }
+
+
+        .btn-modifier:focus {
+            outline: none;
+        }
+
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .recurrence-form-container {
+            height:fit-content;
+            padding: 20px;
+            width: 400px;
+            border-radius: 10px;
+            position:relative;
+        }
+
+        .closer {
+            display:block;
+            width:15px;
+            height:15px;
+            position:absolute;
+            background:red;
+            border:none;
+            cursor:pointer;
+            top:5px;
+            right:5px;
+            clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+        }
+
+
+        .recurrence-form-container * {
+            color:#000000 !important;
+        }
+
+        .tabs-container {
+            display:flex;
+            flex-direction: column;
+            border-radius: 15px 15px 0 0;
+            transition: height 0.5s ease, width 0.5s ease;
+        }
+
+        .tab {
+            overflow: hidden;
+            border-radius: 15px 15px 0 0;
+            border: 1px solid #000000;
+            border-bottom:none;
+            display:flex;
+            justify-content: flex-start;
+        }
+
+        .tab button {
+
+            cursor: pointer;
+            padding: 9px 16px;
+
+            border-radius: 15px 15px 0 0;
+            border:none;
+        }
+        .tab button span {
+            z-index: 100;
+            position: relative;
+        }
+
+
+        .tab .active button {
+            background-color: #aca5c4;
+        }
+        .tab .active button span {
+            color: #1e273d !important;
+        }
+        .tab .active svg {
+            display:block;
+            z-index: 50;
+        }
+        .tab > div {
+            position:relative;
+        }
+
+        .tab svg {
+            display:none;
+            bottom:0;
+            right:0;
+            position:absolute;
+        }
+
+        .tabcontent {
+            display: none;
+            padding: 30px;
+            flex-wrap: wrap;
+            border-top: none;
+            gap:5px;
+            justify-content: flex-start;
+        }
+
+        .tabcontent label {
+            padding:5px 10px;
+        }
+
+        .tabcontent * {
+            border-radius: 10px;
+            border: #00BBEC 1px solid;
+        }
+
+        .tabcontent button {
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .tabcontent button.selected {
+            border:none;
+            background-color: #92d7d7;
+        }
+
+        .wday {
+            padding: 5px 15px;
+            font-size:1.2em;
+            text-align: center;
+        }
+        .mday {
+            width:45px;
+            height:45px;
+            padding: 5px;
+            text-align: center;
+        }
+
+
+        .recurrence-list {
+            display: none;
+            padding: 30px;
+            border: 1px solid #000000;
+            background: #1e273d;
+            flex-wrap: wrap;
+            gap:5px;
+            justify-content: flex-start;
+        }
+
+        .recurrence-list ul {
+            list-style-type: none;
+            display:flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap:10px;
+            width:100%;
+            padding:5px;
+            border:none;
+            overflow-y:scroll;
+            max-height:200px;
+
+        }
+        .recurrence-list ul li {
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            transition: width .7s ease-in-out;
+            position:relative;
+        }
+
+        .common {
+            width:100%;
+            padding:10px;
+            display:flex;
+            border: #000000 1px solid;
+            border-top: none;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        #dateUntilRecurrence {
+            cursor:pointer;
+            width: 50%;
+            border-radius: 10px;
+            border: #000000 1px solid;
+        }
+
+        .clear-selection {
+            border-radius: 10px;
+            border: #000000 1px solid;
+            cursor: pointer;
+            padding: 0 15px;
+            font-size:1.2em;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+
+        #Année {
+            align-items: center;
+            flex-wrap: nowrap;
+            padding: 10px;
+            flex-direction: column;
+        }
+        .tabcontent label {
+            padding:5px 10px;
+        }
+
+        .tabcontent .yearList {
+            list-style-type: none;
+            display:flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap:10px;
+            width:100%;
+            padding:5px;
+            border:none;
+            overflow-y:scroll;
+            max-height:200px;
+
+        }
+        .tabcontent .yearList  li {
+            width: 90%;
+            padding: 10px;
+            border-radius: 5px;
+            transition: width .7s ease-in-out;
+            position:relative;
+        }
+        .tabcontent .yearList li button {
+            display:block;
+            width:10px;
+            height:10px;
+            position:absolute;
+            background:red;
+            border:none;
+            cursor:pointer;
+            top:5px;
+            right:5px;
+            clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+        }
+        .tabcontent .yearList::-webkit-scrollbar {
+            display: none;
+        }
+
+        .selector-year-day {
+            border:none !important;
+            background:none;
+
+            width:100%;
+            display:flex;
+            align-items: center;
+            padding: 0 5px;
+            gap:5px;
+        }
+
+        .selector-year-day input::-webkit-calendar-picker-indicator, #dateUntilRecurrence::-webkit-calendar-picker-indicator {
+            filter: brightness(0) saturate(100%) invert(50%) sepia(97%) saturate(1443%) hue-rotate(154deg) brightness(98%) contrast(106%);
+        }
+
+        .selector-year-day input {
+            cursor:pointer;
+
+        }
+
+        .selector-year-day button {
+            width:45px;
+            height:40px;
+            border:none;
+            clip-path: polygon(35% 0%,65% 0%,65% 35%,100% 35%,100% 60%,65% 60%,65% 100%,35% 100%,35% 60%,0% 60%,0% 35%,35% 35%);
+            background: #00BBEC;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <div class="container">
+            <h1>Modifier le rendez-vous</h1>
+            <form id="edit-rendezvous-form" data-id="<%= rendezvous._id %>">
+                <div class="form-group">
+                    <label for="nom">Nom du rendez-vous:</label>
+                    <input type="text" id="nom" name="nom" value="<%= rendezvous.name %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date du rendez-vous:</label>
+                    <input type="date" id="date" name="date" value="<%= rendezvous.dateDebut.toISOString().slice(0, 10) %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="heureDebut">Heure de début:</label>
+                    <input type="time" id="heureDebut" name="heureDebut"
+                           value="<%= rendezvous.dateDebut.toISOString().slice(11, 16) %>" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="duree">Durée (en minutes):</label>
+                    <input type="number" id="duree" name="duree"
+                           value="<%= Math.round((new Date(rendezvous.dateFin) - new Date(rendezvous.dateDebut)) / 60000) %>" min="0" step="1" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <textarea id="description" name="description" rows="4" required><%= rendezvous.description %></textarea>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn-modifier">Modifier le rendez-vous</button>
+                </div>
+                <div class="recurrence-form-container">
+                    <h1>Ajoutez des Récurrences</h1>
+                    <form id="recurrence-form">
+                        <div class="tabs-container">
+                            <div class="tab">
+                                <% ['week', 'month', 'year'].forEach((mode, i) => { %>
+                                    <div>
+                                        <button
+                                                type="button"
+                                                class="tablinks"
+                                                onclick="openMode(this, '<%= mode %>')">
+                                            <span><%= `${mode==='year'?
+                                                        'Année':mode==='month'?
+                                                                'Mois':'Semaine'
+                                                }`
+                                                %>
+                                            </span>
+                                        </button>
+                                    </div>
+                                <% }); %>
+                            </div>
+
+                            <div class="common">
+                                <button type=button class="clear-selection" onclick="clearSelection()">Clear</button>
+                                <label>Jusqu'au : </label>
+                                <input type="date" id="dateUntilRecurrence" name="date" value="<%= rec.dateFin.toISOString().slice(0, 10) %>" required>
+                            </div>
+
+
+                            <div id="week" class="tabcontent">
+                                <% ['Lundi',
+                                    'Mardi',
+                                    'Mercredi',
+                                    'Jeudi',
+                                    'Vendredi',
+                                    'Samedi',
+                                    'Dimanche'
+                                ].forEach((day, id) => { %>
+                                    <% if (rec.weekDay.includes(id)) { %>
+                                        <button type=button class="wday selected" onclick="selectDay(this, <%= id %>)"><%= day %></button>
+                                    <% } else { %>
+                                        <button type=button class="wday" onclick="selectDay(this, <%= id %>)"><%= day %></button>
+                                    <% } %>
+                                <% }) %>
+                            </div>
+
+                            <div id="month" class="tabcontent">
+                                <% for (let i=1; i<=31; i++) { %>
+                                    <% if (rec.monthDay.includes(i)) { %>
+                                        <button type=button class="mday selected" onclick="selectDay(this, <%= i %>)"><%= i %></button>
+                                    <% } else { %>
+                                        <button type=button class="mday" onclick="selectDay(this, <%= i %>)"><%= i %></button>
+                                    <% } %>
+
+                                <% } %>
+                            </div>
+
+                            <div id="year" class="tabcontent">
+                                <!--<label for="date">Date de la récurrence :</label>-->
+                                <ul class="yearList">
+                                    <% rec.yearDay.forEach((date, index) => { %>
+                                        <li data-index="<%= index %>">
+                                            <%= new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' }) %>
+                                            <button type="button" onclick="removeDate(<%= index %>)"></button>
+                                        </li>
+                                    <% }) %>
+                                </ul>
+                                <div class="selector-year-day">
+                                    <input type="date" id="dateYearRecurrence" name="date" placeholder="DD/MM">
+                                    <button type=button id="addButton"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const agendaId = "<%= rendezvous.agendaId %>";
+        const recId = "<%= recIdd %>";
+        const ya = <%- JSON.stringify(rec.yearDay) %>;
+        const recurrencesD = {"week": [<%= rec.weekDay %>] ,"month":[<%= rec.monthDay %>],"year":ya}
+        const addBoutton = document.querySelector("#addButton")
+        addBoutton.addEventListener("click",addYearDay)
+        function clearSelection() {
+            recurrencesD[currentTab] = []
+            Array.from(document.querySelector(`#${currentTab}`).children).forEach(c => {
+                c.classList.remove('selected')
+            })
+        }
+        function selectDay(e, day) {
+
+            e.classList.toggle("selected")
+            const index = recurrencesD[currentTab].indexOf(day);
+
+            if (index===-1) {
+                recurrencesD[currentTab].push(day);
+            } else {
+                recurrencesD[currentTab].splice(index, 1);
+            }
+        }
+        function removeDate(index) {
+            recurrencesD.year.splice(index, 1);
+            document.querySelector(`.yearList li[data-index="${index}"]`).remove();
+        }
+        function addYearDay() {
+            const date = new Date(document.querySelector("#dateYearRecurrence").value)
+            if (date.getDate()) {
+                const index = recurrencesD.year.findIndex(e => e.toString() === date.toString());
+                if (index === -1) {
+                    const li = document.createElement("li");
+                    li.textContent = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
+
+                    const button = document.createElement("button");
+                    button.type = "button"
+                    button.addEventListener('click', function(e) {
+                        recurrencesD.year.splice(index, 1);
+                        e.currentTarget.parentNode.remove()
+                    })
+
+                    li.appendChild(button)
+                    document.querySelector(".yearList").appendChild(li)
+                    recurrencesD.year.push(date);
+                } else {
+                    console.log("Date déjà ajoutés")
+                }
+                document.querySelector("#dateYearRecurrence").value = ''
+            }
+        }
+        function calculerHeureFin(dateDebut,heureDebut, duree) {
+
+
+            const dateString = `${dateDebut}T${heureDebut}:00`; // ajoute les secondes, format ISO 8601
+            const durationInMilliseconds = duree * 60 * 1000;
+            const date = new Date(dateString);
+            const [heures, minutes] = heureDebut.split(':').map(Number);
+
+            return new Date(date.getTime()+durationInMilliseconds);
+        }
+        function openMode(e, mode) {
+
+            document.querySelectorAll(".tabcontent").forEach(tab => {
+                if (tab.id === mode) {
+                    tab.style.display = 'flex';
+                } else {
+                    tab.style.display = 'none';
+                }
+            })
+            currentTab = mode
+
+            document.querySelectorAll(".tablinks").forEach(b => {
+                b.parentElement.classList.remove("active");
+            })
+            e.parentElement.classList.add("active");
+            document.querySelectorAll(".tabcontent").forEach(b => {
+                b.style.border = '1px solid #cfbff7';
+                b.style.borderTop = 'none'
+            })
+            document.querySelector(".common").style.removeProperty('border-top')
+            document.querySelector(".common").style.border = '1px solid #cfbff7'
+        }
+        document.getElementById('edit-rendezvous-form').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            const rdvId = this.dataset.id;
+
+            const nom = document.getElementById('nom').value;
+            const date = document.getElementById('date').value;
+            const heureDebut = document.getElementById('heureDebut').value;
+            const duree = parseFloat(document.getElementById('duree').value); // Lire la durée en heures
+            const description = document.getElementById('description').value;
+
+            const finRecurrence = document.getElementById('dateUntilRecurrence').value;
+
+            if (nom && date && heureDebut && duree && description){
+                const dateString = `${date}T${heureDebut}:00`; // ajoute les secondes, format ISO 8601
+                const dateDebut = new Date(dateString);
+                // Calculer l'heure de fin à partir de l'heure de début et de la durée en heures
+                const dateFin = calculerHeureFin(date,heureDebut, duree);
+
+                if (dateDebut <= new Date(finRecurrence)){
+                    const rendezvous  = {
+                        name:nom,
+                        dateDebut:dateDebut,
+                        dateFin:dateFin,
+                        description:description,
+                        recId: recId,
+                        recurrences: recurrencesD,
+                        finRecurrence: new Date(finRecurrence),
+                    }
+                    try {
+                        const response = await fetch(`http://localhost:3000/rendezvous/${rdvId}`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            credentials: 'include',
+                            body: JSON.stringify(rendezvous)
+                        });
+                        if (response.ok) {
+                            alert("Rendez-vous modifié avec succès !");
+                            window.location.href = `/rendezvous?agendaId=${agendaId}`;
+                        }
+                    } catch (error) {
+                        console.error('Erreur lors de la modification:', error);
+                        alert("Une erreur s'est produite lors de la modification du rendez-vous.");
+                    }
+                }
+
+            }
+
+        });
+    </script>
+</body>
+</html>

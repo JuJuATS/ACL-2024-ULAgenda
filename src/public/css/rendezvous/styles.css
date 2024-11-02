@@ -8,11 +8,42 @@ body {
     font-family: Arial, sans-serif;
     background-color: #CFB1B7; /* Arrière-plan de la page */
     display: flex;
-    height:100%;
-    max-height: 100vh;
+    height:100vh;
+    max-height: 100%;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+
+
+.pop-up-info {
+    display:flex;
+    z-index:10000;
+    position: absolute;
+    background:mediumpurple;
+    left:50%;
+    top:100px;
+    padding: 15px 0;
+
+    border-radius:10px;
+    transform:translateX(-50%) translateY(-500px);
+    justify-content: center;
+    align-items: center;
+
+    transition: transform 0.7s ease;
+}
+
+.display-pop-up {
+    transform:translateX(-50%) translateY(-50px);
+}
+
+.pop-up-info svg {
+    width: 50px;
+}
+.pop-up-info span {
+    width:80%;
+    text-align: center;
 }
 
 .wrapper {
@@ -26,11 +57,19 @@ body {
 }
 
 .container {
-    background-color: white;
+    position:relative;
+
+    background-color: #111828;
     padding: 20px;
     width: 400px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.container  * {
+    color:white;
+}
+.container input, select, textarea {
+    background: #1e273d;
 }
 
 .agenda {
@@ -43,13 +82,14 @@ body {
     flex-direction: column;
     visibility: hidden;
     gap:10px;
-    background-color: white;
+    background-color: #111828;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     transition: width .7s ease-in-out;
 }
-.agenda * {white-space:nowrap;}
+
+.agenda * {white-space:nowrap;color: white;}
 
 .agenda-open {
     width: 400px;
@@ -85,9 +125,9 @@ input, textarea, select {
     border: 1px solid #CFB1B7;
     border-radius: 5px;
     font-size: 16px;
-    color: #595959;
-    background-color: #ffffff;
+    color: white;
 }
+option {color:white;}
 
 input:focus, textarea:focus, select:focus {
     border-color: #595959;
@@ -98,8 +138,31 @@ textarea {
     resize: vertical;
 }
 
+#btn-recurrence {
+
+    position:absolute;
+    max-width:30px;
+    padding:8px 8px;
+    word-wrap: break-word;
+    left:-30px;
+    top:50%;
+    transform: translateY(-50%);
+    border-radius: 5px 0 0 5px;
+}
+#btn-view-rdv {
+    position:absolute;
+    max-width:30px;
+    padding:8px 8px;
+    word-wrap: break-word;
+    right:-30px;
+    top:50%;
+    transform: translateY(-50%);
+    border-radius: 0 5px 5px 0;
+
+}
+
 .form-button {
-    background-color: #595959; /* Bouton en #595959 */
+    background-color: #334469; /* Bouton en #595959 */
     color: white;
     padding: 10px;
     border: none;
@@ -111,7 +174,7 @@ textarea {
 }
 
 .form-button:hover {
-    background: #333333;
+    background: #1c52d0;
 }
 
 
@@ -136,7 +199,7 @@ textarea {
 
 #agenda-list > li {
     width:0;
-    background-color: #CFBFF7; /* Fond des rendez-vous */
+    background-color: #1e273d; /* Fond des rendez-vous */
     padding: 10px;
     border-radius: 5px;
     color: #595959;
@@ -145,7 +208,9 @@ textarea {
     display:flex;
     flex-direction: column;
 }
+.rdv-open > h3,h4,p {
 
+}
 .rdv-open > h3,h4,h5, span {
     color:white;
     border-radius:15px;
@@ -157,21 +222,21 @@ textarea {
     margin: 0 auto;
     text-align: center;
     font-size: 1.3em;
-    background: #cb2a62;
+    background: #cb2a62a0;
 }
 .rdv-open div > p:first-child span {
     font-size: 1em;
-    background: #20b2ad;
+    background: #20b2ada0;
 }
 .rdv-open div > p:last-child span {
     font-size: 1em;
-    background: #b25820;
+    background: #b22042a0;
 }
 
 .rdv-open > p {
     text-align: center;
-    background: #00B8EC;
-    border-radius: 15px;
+    background: #00B8ECa0;
+    border-radius: 10px;
     padding:8px;
     width: 100%;
     float: left;
@@ -183,19 +248,20 @@ textarea {
 .recurrence-list-rdv {
     display: table;
     width: 100%;
-    border-collapse: collapse;
-    border: 1px solid #000000;
+
+    border-spacing: 5px;
 }
 .recurrence-list-rdv * {
     padding:5px;
+
 }
 
 .recurrence-list-rdv h4 {
     display: table-caption;
-    margin:0 auto;
+    margin:5px auto;
     caption-side: top;
     font-size: 1.2em;
-    background: #2033b2;
+    background: #cb2a62a0;
     color: white;
     width:50%;
     text-align: center;
@@ -205,8 +271,9 @@ textarea {
 
 .recurrence-list-rdv div {
     display: table-row;
+    background: #2c3e50;
     min-height: 10px;
-    border: 1px solid #000000;
+    border-radius: 10px;
 }
 
 .recurrence-list-rdv div h5 {
@@ -215,8 +282,7 @@ textarea {
     width:10%;
     color: white;
     padding: 1px 5px;
-    border: 1px solid #000000;
-
+    border-radius: 10px;
 }
 
 .recurrence-list-rdv div ul {
@@ -227,10 +293,10 @@ textarea {
 
 .recurrence-list-rdv div ul li {
     display: inline-block;
-    background: #b99393;
+    background: #2033b2;
     margin-right: 10px;
     color:white;
-    padding: 0 5px;
+    padding: 3px 10px;
     border-radius: 15px;
 }
 
@@ -433,11 +499,10 @@ form {
 }
 
 .selector-year-day button {
-    width:40px;
+    width:45px;
     height:40px;
     border:none;
-    transform:rotate(45deg);
-    clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+    clip-path: polygon(35% 0%,65% 0%,65% 35%,100% 35%,100% 60%,65% 60%,65% 100%,35% 100%,35% 60%,0% 60%,0% 35%,35% 35%);
     background: #00BBEC;
 }
 .selector-year-day button:hover {
@@ -547,3 +612,31 @@ form {
     color: #cfbff7 !important;
     border: 1px solid #cfbff7;
 }
+
+.modif-container {
+    display:flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.modif-container svg {
+    width: 30px;
+    height: 30px;
+    filter: brightness(0) saturate(100%) invert(100%) sepia(0%) saturate(0%) hue-rotate(103deg) brightness(102%) contrast(102%);
+}
+
+.modif-container button {
+    border: none;
+    cursor: pointer;
+    background:none;
+}
+
+.edit-rdv:hover svg {
+    filter: brightness(0) saturate(100%) invert(31%) sepia(86%) saturate(3066%) hue-rotate(200deg) brightness(103%) contrast(105%);
+}
+
+.delete-rdv:hover svg {
+    filter: brightness(0) saturate(100%) invert(40%) sepia(95%) saturate(5137%) hue-rotate(338deg) brightness(91%) contrast(88%);
+}
+
+

@@ -52,9 +52,7 @@ router.get('/api/recurrence', authMiddleware, async (req, res) => {
   });
   const rdvs = await Promise.all(rdvUser.map(async (rdv) => {
     const rec = await Recurrence.findById(rdv.recurrences);
-/*    rec.yearDay = rec.yearDay.map(date => {
-      console.log(date); date.toLocaleString('fr-FR')})
-    console.log(rec)*/
+
     return {"recurrence": rec, ...rdv.toObject()};
   }))
   res.status(201).json({rdvs:rdvs});
@@ -113,12 +111,86 @@ router.post('/', authMiddleware, async (req, res) => {
 
     await agenda.save();
 
-    res.status(201).json({ok:true,rdv:newRdv});
+    res.status(201).json({ok:true, rdv:newRdv});
   } catch (error) {
     console.log("il y a une erreur")
     console.log(error)
     res.status(500).json({ message: "Erreur lors de la création du rendez-vous.", error });
   }
 });
+
+
+router.put('/:id', authMiddleware, async (req, res) => {
+    try {
+        const rdvId = req.params.id;
+        const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence } = req.body;
+        console.log("haaaaa", recurrences, finRecurrence)
+        if (!name || !dateDebut || !dateFin) {
+            return res.status(400).json({ message: "Fields 'name', 'dateDebut', 'dateFin' are required." });
+        }
+
+        const rdv = await Rdv.findById(rdvId);
+        if (!rdv) {
+            return res.status(404).json({ message: "Rendezvous not found" });
+        }
+
+        const rec = await Recurrence.findById(recId);
+        if (!rec) {
+            return res.status(404).json({ message: "Recurrence not found" });
+        }
+
+        rdv.name = name;
+        rdv.description = description;
+        rdv.dateDebut = new Date(dateDebut);
+        rdv.dateFin = new Date(dateFin);
+
+        rec.yearDay = recurrences.year
+        rec.monthDay = recurrences.month
+        rec.weekDay = recurrences.week
+        rec.dateDebut = finRecurrence
+        rec.dateFin = new Date(dateDebut)
+        await rec.save();
+
+        await rdv.save();
+        res.status(200).json({ ok: true, rdv });
+    } catch (error) {
+        console.error("Error updating rendezvous:", error);
+        res.status(500).json({ message: "Error updating rendezvous", error });
+    }
+});
+
+router.delete('/:id', authMiddleware, async (req, res) => {
+    try {
+        const rdvId = req.params.id;
+        const rdv = await Rdv.findByIdAndDelete(rdvId);
+        if (!rdv) {
+            return res.status(404).json({ message: "Rendezvous not found" });
+        }
+
+        res.status(200).json({ ok: true, message: "Rendez-vous supprimé correctement" });
+    } catch (error) {
+        console.error("Error deleting rendezvous:", error);
+        res.status(500).json({ message: "Error deleting rendezvous", error });
+    }
+});
+
+router.get('/edit/:id', authMiddleware, async (req, res) => {
+  try {
+      const rdvId = req.params.id;
+      const rendezvous = await Rdv.findById(rdvId);
+
+      if (!rendezvous) {
+          return res.status(404).json({ message: "Rendez-vous non trouvé" });
+      }
+      const rec = await Recurrence.findById(rendezvous.recurrences);
+      const {yearDay, weekDay, monthDay, dateFin} = rec
+      yearDay.map(d => console.log(typeof d))
+      res.render('modifier_rendezvous', { rendezvous: rendezvous, rec: {yearDay, weekDay, monthDay, dateFin}, recIdd: rec.id });
+  } catch (error) {
+      console.error("Erreur lors de la récupération du rendez-vous:", error);
+      res.status(500).json({ message: "Erreur interne du serveur", error });
+  }
+});
+
 
 module.exports = router;
