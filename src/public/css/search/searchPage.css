@@ -75,6 +75,28 @@ footer {
     padding: 5px;
 }
 
+/* Filtres de durée */
+.duration-filters {
+    margin-bottom: 10px;
+}
+
+.duration-filters label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+#durationRange {
+    margin-top: 5px;
+}
+
+#durationRangeValueContainer {
+    margin-top: 5px;
+}
+
+#durationRangeValue {
+    font-weight: bold;
+}
+
 /* Contrôles de tri */
 .sort-controls {
     display: flex;
