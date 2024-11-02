@@ -1,4 +1,3 @@
-<!-- views/search.ejs -->
 <!DOCTYPE html>
 <html>
 <head>
@@ -66,146 +65,29 @@
                     </div>
                 </div>
 
-                <% if (rdvs.length === 0) { %>
-                    <div class="no-results">
-                    Vous n'avez aucun rendez-vous.
+                <ul class="rdv-list" id="rdvList">
+                    <!-- Les RDVs seront ajoutés ici dynamiquement -->
+                </ul>
+
+                <div class="error-container" id="errorContainer" style="display: none;">
+                    <div class="error-message">
+                        <span id="errorText"></span>
+                        <button class="error-close" onclick="hideError()">×</button>
                     </div>
-                <% } else { %>
-                    <ul class="rdv-list" id="rdvList">
-                    <% rdvs.forEach(function(rdv) { %>
-                        <li class="rdv-item">
-                        <div class="rdv-header">
-                            <div class="rdv-name"><%= rdv.name %></div>
-                            <span class="rdv-priority priority-<%= rdv.priority %>">
-                            <%= rdv.priority %>
-                            </span>
-                        </div>
-                        <div class="rdv-info">
-                            Agenda: <%= rdv.agendaName %> |
-                            Durée: <%= rdv.duration %> minutes
-                        </div>
-                        <div class="rdv-tags">
-                            <% rdv.tags.forEach(function(tag) { %>
-                            <span class="tag"><%= tag %></span>
-                            <% }); %>
-                        </div>
-                        </li>
-                    <% }); %>
-                    </ul>
-                <% } %>
+                </div>
 
                 <div class="no-results" id="noResultsMessage" style="display: none;">
                     Aucun rendez-vous ne correspond à la recherche.
+                </div>
+
+                <!-- Indicateur de chargement -->
+                <div class="loader" style="display: none;">
+                    <div class="loader-spinner"></div>
                 </div>
             </div>
         </main>
     </div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
-    <script>
-        const searchInput = document.getElementById('searchInput');
-        const dateDebutInput = document.getElementById('dateDebut');
-        const dateFinInput = document.getElementById('dateFin');
-        const sortPriorityCheckbox = document.getElementById('sortPriority');
-        const sortPriorityOrder = document.getElementById('sortPriorityOrder');
-        const sortDurationCheckbox = document.getElementById('sortDuration');
-        const sortDurationOrder = document.getElementById('sortDurationOrder');
-        const includeDescriptionCheckbox = document.getElementById('includeDescription');
-        const durationRange = document.getElementById('durationRange');
-        const durationRangeValue = document.getElementById('durationRangeValue');
-        const rdvList = document.getElementById('rdvList');
-        const noResultsMessage = document.getElementById('noResultsMessage');
-        let debounceTimeout;
-
-        noUiSlider.create(durationRange, {
-            start: [0, 241],
-            connect: true,
-            range: {
-                'min': 0,
-                'max': 241
-            },
-            tooltips: [false, false],
-            format: {
-                to: value => Math.round(value),
-                from: value => Math.round(value)
-            }
-        });
-
-        durationRange.noUiSlider.on('update', (values, handle) => {
-            const [min, max] = values.map(Number);
-            durationRangeValue.textContent = `${min} - ${max === 241 ? '∞' : max} minutes`;
-        });
-
-        function updateSearch() {
-            clearTimeout(debounceTimeout);
-            debounceTimeout = setTimeout(() => {
-                const searchTerm = searchInput.value;
-                const dateDebut = dateDebutInput.value;
-                const dateFin = dateFinInput.value;
-                const includeDescription = includeDescriptionCheckbox.checked;
-                const [durationMin, durationMax] = durationRange.noUiSlider.get().map(Number);
-
-                // Construire le tableau de tri
-                const sortBy = [];
-                if (sortPriorityCheckbox.checked) sortBy.push(`priority:${sortPriorityOrder.value}`);
-                if (sortDurationCheckbox.checked) sortBy.push(`duration:${sortDurationOrder.value}`);
-
-                // Construire l'URL avec les paramètres
-                const params = new URLSearchParams({
-                    term: searchTerm,
-                    includeDescription: includeDescription
-                });
-
-                if (dateDebut) params.append('dateDebut', dateDebut);
-                if (dateFin) params.append('dateFin', dateFin);
-                if (durationMin) params.append('durationMin', durationMin);
-                if (durationMax < 241) params.append('durationMax', durationMax); // Ne pas ajouter si max est 241 (infini)
-                if (sortBy.length > 0) params.append('sortBy', sortBy.join(','));
-
-                fetch(`/api/search?${params.toString()}`)
-                    .then(response => response.json())
-                    .then(rdvs => {
-                        if (rdvs.length === 0) {
-                            rdvList.innerHTML = '';
-                            noResultsMessage.style.display = 'block';
-                        } else {
-                            noResultsMessage.style.display = 'none';
-                            rdvList.innerHTML = rdvs.map(rdv => `
-                                <li class="rdv-item">
-                                    <div class="rdv-header">
-                                        <div class="rdv-name">${rdv.name}</div>
-                                        <span class="rdv-priority priority-${rdv.priority}">
-                                            ${rdv.priority}
-                                        </span>
-                                    </div>
-                                    <div class="rdv-info">
-                                        Agenda: ${rdv.agendaName} |
-                                        Durée: ${rdv.duration} minutes
-                                    </div>
-                                    <div class="rdv-tags">
-                                        ${rdv.tags.map(tag =>
-                                            `<span class="tag">${tag}</span>`
-                                        ).join('')}
-                                    </div>
-                                </li>
-                            `).join('');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Erreur lors de la recherche:', error);
-                    });
-            }, 300);
-        }
-
-        // Attacher les événements
-        searchInput.addEventListener('input', updateSearch);
-        dateDebutInput.addEventListener('change', updateSearch);
-        dateFinInput.addEventListener('change', updateSearch);
-        sortPriorityCheckbox.addEventListener('change', updateSearch);
-        sortPriorityOrder.addEventListener('change', updateSearch);
-        sortDurationCheckbox.addEventListener('change', updateSearch);
-        sortDurationOrder.addEventListener('change', updateSearch);
-        includeDescriptionCheckbox.addEventListener('change', updateSearch);
-        durationRange.noUiSlider.on('change', updateSearch);
-    </script>
+    <script src="/javascripts/search/searchPage.js"></script>
 </body>
 </html>
