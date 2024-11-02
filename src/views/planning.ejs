@@ -4,8 +4,14 @@
     <meta charset='utf-8' />
     <link rel="stylesheet" href="css/planning/style.css">
     <%- include('./partials/head', {pageName: "planning"}); %>
+    
+    <!-- fullcalendar bundle -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
     
+    <!-- rrule lib -->
+    <script src='https://cdn.jsdelivr.net/npm/rrule@2.6.4/dist/es5/rrule.min.js'></script>
+    <!-- the rrule-to-fullcalendar connector. must go AFTER the rrule lib -->
+    <script src='https://cdn.jsdelivr.net/npm/@fullcalendar/rrule@6.1.15/index.global.min.js'></script>
   </head>
   <body>
     <header>
@@ -40,12 +46,13 @@
             await fetch(`/api/getDate?agenda=${encodeURIComponent(JSON.stringify(agendas))}`)
             .then(res=>res.json())
             .then(data=>{
-              
+              console.log(data)
               success(data.event)
             })
             .catch(err=>fail(err))
             }
           ],
+          timeZone:"UTC",
           allDaySlot:false,
           nowIndicator:true,
           height:"100%",
@@ -63,6 +70,42 @@
               week:"semaine",
               month:"mois"
            },
+           displayEventEnd:true,
+           eventMouseEnter:(mouseInfo)=>{
+            let rect = mouseInfo.el.getBoundingClientRect();
+            console.log(mouseInfo);
+            const divInfo = document.createElement("div");
+            divInfo.classList.add("popupEvent")
+            divInfo.style = `
+              position:absolute;
+              top:${rect.top}px;
+              left:${rect.left}px;
+              width:${mouseInfo.el.offsetWidth}px;
+              
+              border:2px solid black;
+              background:#3788d8;
+              z-index:999999
+            `
+            const startHour = (mouseInfo.event.start.getHours() <10 ? "0":"") + mouseInfo.event.start.getHours()
+            const startMinutes = (mouseInfo.event.start.getMinutes() <10 ? "0":"") + mouseInfo.event.start.getMinutes()
+            const startSecondes = (mouseInfo.event.start.getSeconds() <10 ? "0":"") + mouseInfo.event.start.getSeconds()
+            const endHour = (mouseInfo.event.end.getHours() <10 ? "0":"") + mouseInfo.event.end.getHours()
+            const endMinutes = (mouseInfo.event.end.getMinutes() <10 ? "0":"") + mouseInfo.event.end.getMinutes()
+            const endSecondes = (mouseInfo.event.end.getSeconds() <10 ? "0":"") + mouseInfo.event.end.getSeconds()
+            divInfo.innerText = `${mouseInfo.event.title}
+              ${startHour}:${startMinutes}:${startSecondes} - ${endHour}:${endMinutes}:${endSecondes}
+              ${mouseInfo.event.extendedProps.description}
+            `
+            const container = document.querySelector(".container")
+            container.appendChild(divInfo)
+
+           },
+           eventMouseLeave:(mouseLeaveInfo)=>{
+              const popup = document.querySelector(".popupEvent")
+              popup.remove()
+           }
+
+           
           
           
         });
@@ -74,7 +117,6 @@
           sideBar.classList.toggle("sideBar-open");
           setTimeout(()=>{
             calendar.updateSize();
-            
           },1000)
         })
         const listAgenda = document.querySelector(".listAgenda");
@@ -99,7 +141,7 @@
          divcheckbox.appendChild(checkbox)
          agenda.appendChild(divcheckbox)
          listAgenda.appendChild(agenda) 
-         console.log("yo")
+         
       }
       const refetch = (el,calendar)=>{
           let checkbox = document.querySelectorAll(".checkAgenda");
@@ -109,11 +151,11 @@
               agendas.push(el.dataset.id)
             }
           })
-          console.log(agendas)
+          
           calendar.refetchEvents()
       }
       fetch("/api/getAgenda").then(res=>res.json()).then(data=>data.forEach(element => {
-        console.log("wesh")
+        
         generateAgenda(element,calendar)
       }))
       });

@@ -135,72 +135,53 @@ const getAgendaEvents = async (req, res, next) => {
       let rdv = {
         id:el._id,
         start:el.dateDebut,
-        fin:el.dateFin,
-        description:el.description,
+        end:el.dateFin,
+        extendedProps: {
+          description: el.description
+      },
         title:el.name,
         duration:el.dateFin-el.dateDebut
       }
-      event.push(rdv);
+      
       if(el.recurrences){
           const recurrenceRdv = recurrence.findById(el.recurrences);
           let dateDebut = new Date(recurrenceRdv.dateDebut)
           dateDebut.setDate(dateDebut.getDate() + 1)
           if(recurrenceRdv.yearDay){
-            let rdv = {
-              id:el._id,
-              fin:el.dateFin,
-              description:el.description,
-              title:el.name,
-              duration:el.dateFin-el.dateDebut,
-              rrule:{
+             rdv.rrule={
               freq:YEARLY,
               byyearday:recurrenceRdv.yearDay,
               dtstart:el.dateDebut,
               until:recurrenceRdv.dateFin
             }
-          }
-        }
+          } 
           if(recurrenceRdv.monthDay){
-            let rdv = {
-              id:el._id,
-              fin:el.dateFin,
-              description:el.description,
-              title:el.name,
-              duration:el.dateFin-el.dateDebut,
-              rrule:{
+              rdv.rrule={
                 freq:MONTHLY,
                 bymonth:recurrenceRdv.monthDay,
                 dtstart:el.dateDebut,
                 until:recurrenceRdv.dateFin
               }
-            }
-            event.push(rdv)
-          }
+            } 
           if(recurrenceRdv.weekDay){
-            let rdv = {
-              id:el._id,
-              fin:el.dateFin,
-              description:el.description,
-              title:el.name,
-              duration:el.dateFin-el.dateDebut,
-              rrule:{
+            
+              rdv.rrule={
                 freq:weekDay,
                 bymonth:recurrenceRdv.weekDay,
                 dtstart:el.dateDebut,
                 until:el.dateFin
               }
+            
             }
-            event.push(rdv)
           }
-        }
+          event.push(rdv)
        
       }
     )
-    
    
     // Envoi de la réponse
     res.status(200).json({ 
-      event: events
+      event: event
     });
 
   } catch (error) {
