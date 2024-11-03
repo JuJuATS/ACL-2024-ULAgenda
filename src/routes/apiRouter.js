@@ -17,7 +17,6 @@ apiRouter.get('/search', isAuthentified, async (req, res) => {
         const durationMin = req.query.durationMin ? parseInt(req.query.durationMin) : null;
         const durationMax = req.query.durationMax ? parseInt(req.query.durationMax) : null;
         const sortBy = req.query.sortBy ? req.query.sortBy.split(',') : [];
-        const includeDescription = req.query.includeDescription === 'true';
         const page = parseInt(req.query.page) || 1;
         const limit = parseInt(req.query.limit) || 20;
 
@@ -38,13 +37,10 @@ apiRouter.get('/search', isAuthentified, async (req, res) => {
 
         if (searchTerm) {
             const options = {
-                keys: ['name', 'tags'],
+                keys: ['name', 'tags', 'description'],
                 threshold: 0.3,
                 includeScore: true
             };
-            if (includeDescription) {
-                options.keys.push('description');
-            }
             const fuse = new Fuse(allRdvs, options);
             filteredRdvs = fuse.search(searchTerm).map(result => result.item);
         }

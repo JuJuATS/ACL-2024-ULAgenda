@@ -5,7 +5,6 @@ const sortPriorityCheckbox = document.getElementById('sortPriority');
 const sortPriorityOrder = document.getElementById('sortPriorityOrder');
 const sortDurationCheckbox = document.getElementById('sortDuration');
 const sortDurationOrder = document.getElementById('sortDurationOrder');
-const includeDescriptionCheckbox = document.getElementById('includeDescription');
 const durationRange = document.getElementById('durationRange');
 const durationRangeValue = document.getElementById('durationRangeValue');
 const rdvList = document.getElementById('rdvList');
@@ -137,7 +136,6 @@ async function loadMoreRdvs(resetPage = false) {
     const searchTerm = searchInput.value;
     const dateDebut = dateDebutInput.value;
     const dateFin = dateFinInput.value;
-    const includeDescription = includeDescriptionCheckbox.checked;
     const [durationMin, durationMax] = durationRange.noUiSlider.get().map(Number);
 
     const sortBy = [];
@@ -146,7 +144,6 @@ async function loadMoreRdvs(resetPage = false) {
 
     const params = new URLSearchParams({
         term: searchTerm,
-        includeDescription: includeDescription,
         page: currentPage,
         limit: 20
     });
@@ -220,7 +217,7 @@ function appendRdvs(rdvs) {
             li.style.animationDelay = `${index * 0.1}s`;
         } else {
             // Pour le chargement infini, utiliser un délai basé sur la position dans la page
-            const baseIndex = (currentPage - 1) * 20; // Supposant 20 éléments par page
+            const baseIndex = (currentPage - 1) * 20; // On a 20 éléments par page
             li.style.animationDelay = `${(baseIndex + index) * 0.1}s`;
         }
         
@@ -295,11 +292,6 @@ sortDurationOrder.addEventListener('change', () => {
     }
 });
 
-includeDescriptionCheckbox.addEventListener('change', () => {
-    if (searchInput.value) {
-        updateSearch();
-    }
-});
 
 sortPriorityCheckbox.addEventListener('change', updateSearch);
 sortDurationCheckbox.addEventListener('change', updateSearch);
