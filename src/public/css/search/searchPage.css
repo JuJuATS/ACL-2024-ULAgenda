@@ -197,24 +197,103 @@ header {
 }
 
 
-.loader {
-    text-align: center;
-    padding: 20px;
+/* Animation de base pour le skeleton */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
 }
 
-.loader-spinner {
-    width: 50px;
-    height: 50px;
-    border: 5px solid #f3f3f3;
-    border-top: 5px solid #3498db;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
+.skeleton-container {
+    padding: 10px 0;
 }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+.skeleton-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+/* Style de base pour tous les éléments skeleton */
+.skeleton-name,
+.skeleton-priority,
+.skeleton-info,
+.skeleton-tag {
+    background: linear-gradient(90deg, 
+        #f0f0f0 25%, 
+        #f8f8f8 50%, 
+        #f0f0f0 75%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+}
+
+/* Header du skeleton */
+.skeleton-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.skeleton-name {
+    height: 24px;
+    width: 200px;
+    border-radius: 4px;
+}
+
+.skeleton-priority {
+    height: 24px;
+    width: 80px;
+    border-radius: 12px;
+}
+
+/* Info du skeleton */
+.skeleton-info {
+    height: 18px;
+    width: 60%;
+    margin: 10px 0;
+    border-radius: 4px;
+}
+
+/* Tags du skeleton */
+.skeleton-tags {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.skeleton-tag {
+    height: 20px;
+    width: 80px;
+    border-radius: 12px;
+}
+
+/* Animation d'entrée pour les skeletons */
+.skeleton-item {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+.skeleton-item:nth-child(1) { animation-delay: 0s; }
+.skeleton-item:nth-child(2) { animation-delay: 0.1s; }
+.skeleton-item:nth-child(3) { animation-delay: 0.2s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 

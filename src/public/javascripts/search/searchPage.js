@@ -46,7 +46,7 @@ function handleScroll() {
     const clientHeight = window.innerHeight || document.documentElement.clientHeight;
 
     // Si on est proche du bas de la page (200px avant la fin)
-    if (scrollHeight - scrollTop - clientHeight < 200 && !isLoading && hasMore) {
+    if (scrollHeight - scrollTop - clientHeight < 100 && !isLoading && hasMore) {
         loadMoreRdvs();
     }
 }
@@ -212,15 +212,8 @@ function appendRdvs(rdvs) {
             </div>
         `;
         
-        // Réinitialiser l'animation si c'est un nouveau chargement
-        if (currentPage === 1) {
-            li.style.animationDelay = `${index * 0.1}s`;
-        } else {
-            // Pour le chargement infini, utiliser un délai basé sur la position dans la page
-            const baseIndex = (currentPage - 1) * 20; // On a 20 éléments par page
-            li.style.animationDelay = `${(baseIndex + index) * 0.1}s`;
-        }
-        
+
+        li.style.animationDelay = `${index * 0.1}s`;
         fragment.appendChild(li);
     });
 
@@ -231,26 +224,48 @@ function updateSearch() {
     clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
         loadMoreRdvs(true);
-    }, 300);
+    }, 500);
 }
 
 
 
-// Ajout des éléments de loading
-const loader = document.createElement('div');
-loader.className = 'loader';
-loader.style.display = 'none';
-loader.innerHTML = '<div class="loader-spinner"></div>';
-document.querySelector('.search-container').appendChild(loader);
-
 function showLoader() {
-    loader.style.display = 'block';
+    // Créer 3 skeletons pour simuler le chargement
+    const skeletons = Array.from({ length: 3 }, () => createSkeletonItem());
+    const skeletonContainer = document.createElement('div');
+    skeletonContainer.className = 'skeleton-container';
+    skeletonContainer.append(...skeletons);
+    
+    document.querySelector('.rdv-list').appendChild(skeletonContainer);
+}
+
+function createSkeletonItem() {
+    const skeletonHtml = `
+        <div class="skeleton-item">
+            <div class="skeleton-header">
+                <div class="skeleton-name"></div>
+                <div class="skeleton-priority"></div>
+            </div>
+            <div class="skeleton-info"></div>
+            <div class="skeleton-tags">
+                <div class="skeleton-tag"></div>
+                <div class="skeleton-tag"></div>
+                <div class="skeleton-tag"></div>
+            </div>
+        </div>
+    `;
+    
+    const container = document.createElement('div');
+    container.innerHTML = skeletonHtml;
+    return container.firstElementChild;
 }
 
 function hideLoader() {
-    loader.style.display = 'none';
+    const skeletonContainer = document.querySelector('.skeleton-container');
+    if (skeletonContainer) {
+        skeletonContainer.remove();
+    }
 }
-
 
 
 // Gestion des erreurs de validation des dates
