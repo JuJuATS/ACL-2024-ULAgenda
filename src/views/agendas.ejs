@@ -18,6 +18,13 @@
                 <a href="./signin" class="connect-button">Connection</a>
             <% } %>
             <a href="./app" class="app-button">Agenda App</a>
+
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch">
+                    <input type="checkbox" id="darkModeToggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
         </nav>
     </header>
     <div class="container">
@@ -56,13 +63,7 @@
         
             <% if (agendas && agendas.length > 0) { %>
                 <% agendas.forEach(function(agenda, index) { %>
-<<<<<<< Updated upstream
-
-                    <div class="calendar">
-
-=======
-                    <div class="calendar">
->>>>>>> Stashed changes
+                    <div class="calendar" data-id="<%= agenda._id %>" >
                         <button class="close-agenda" onclick="removeAgenda(this)">×</button>
                         <h3><a href="/rendezvous?agendaId=<%= agenda._id%>"><%= agenda.name %></a></h3>
 
@@ -141,6 +142,9 @@
             agendaNameInput.value = "";
             // Fermer la modal
             modal.style.display = "none";
+            setTimeout(() => {
+        window.location.reload();
+    }, 1);
           } else {
             const errorData = await response.json();
             alert(errorData.message + ' : ' + JSON.stringify(errorData.error));
@@ -198,6 +202,32 @@ document.getElementById("confirmDeleteButton").onclick = async function() {
         }
     }
 };
+
+
+// Bascule du mode sombre
+const toggleSwitch = document.getElementById('darkModeToggle');
+const body = document.body;
+
+// Vérifie si l'utilisateur a déjà un mode préféré
+const currentTheme = localStorage.getItem('theme');
+if (currentTheme) {
+    if (currentTheme === 'dark') {
+        body.classList.add('dark-mode');
+        toggleSwitch.checked = true;
+    }
+}
+
+// Gère la bascule
+toggleSwitch.addEventListener('change', () => {
+    if (toggleSwitch.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+    }
+
+});
 
 
 
