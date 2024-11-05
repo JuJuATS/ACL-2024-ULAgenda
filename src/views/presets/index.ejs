@@ -48,7 +48,7 @@
                                 <td class="<%= preset.priority === 'Haute' ? 'priority-high' : (preset.priority === 'Moyenne' ? 'priority-medium' : 'priority-low') %>">
                                     <%= preset.priority %>
                                 </td>
-                                <td><%= preset.recurrence %></td>
+                                <td><%- preset.recurrence ? preset.recurrence.summary : '<i>Aucune</i>' %></td>
                                 <td><%= preset.duration %> min</td>
                                 <td><%= preset.reminder ? preset.reminder + ' min' : 'Aucun' %></td>
                                 <td colspan="2">

@@ -1,4 +1,5 @@
 const Preset = require("../../database/models/preset");
+const Recurrence = require("../../database/models/recurrence");
 
 const updatePreset = async (req, res) => {
     try {
@@ -8,11 +9,13 @@ const updatePreset = async (req, res) => {
             eventName,
             color,
             priority,
-            recurrence,
             duration,
             startHour,
             reminder,
-            description
+            description,
+            weekDays,
+            monthDays,
+            yearDays
         } = req.body;
 
         const preset = await Preset.findById(presetId);
@@ -42,11 +45,28 @@ const updatePreset = async (req, res) => {
             }
         }
 
+
+        let recurrenceData = {
+            weekDay: JSON.parse(weekDays || '[]'),
+            monthDay: JSON.parse(monthDays || '[]'),
+            yearDay: JSON.parse(yearDays || '[]'),
+        };
+
+        // Si le preset a déjà une récurrence, la mettre à jour
+        if (preset.recurrence) {
+            await Recurrence.findByIdAndUpdate(preset.recurrence, recurrenceData);
+        } else {
+            // Sinon, en créer une nouvelle
+            const newRecurrence = new Recurrence(recurrenceData);
+            await newRecurrence.save();
+            preset.recurrence = newRecurrence._id;
+        }
+
+
         preset.name = name || preset.name;
         preset.eventName = eventName !== undefined ? eventName : preset.eventName;
         preset.color = color || preset.color;
         preset.priority = priority || preset.priority;
-        preset.recurrence = recurrence || preset.recurrence;
         preset.duration = duration || preset.duration;
         preset.startHour = startHour !== undefined ? startHour : preset.startHour;
         preset.reminder = reminder ? parseInt(reminder) : null;

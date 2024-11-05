@@ -7,56 +7,6 @@
     <link rel="stylesheet" href="/css/partials/header.css">
     <link rel="stylesheet" href="/css/partials/footer.css">
     <link rel="stylesheet" href="/css/presets/edit.css">
-    <script defer>
-        document.addEventListener('DOMContentLoaded', () => {
-            const presetForm = document.getElementById('presetForm');
-            const submitButton = presetForm.querySelector('button[type="submit"]');
-            const originalValues = {
-                name: '<%= name %>',
-                color: '<%= color %>',
-                priority: '<%= priority %>',
-                recurrence: '<%= recurrence %>',
-                duration: '<%= duration %>',
-                description: '<%= description %>',
-                eventName: '<%= eventName %>',
-                startHour: '<%= startHour %>',
-                reminder: '<%= reminder %>'
-            };
-
-            // Le bouton d'envoie est désactivé par défaut 
-            submitButton.disabled = true;
-
-            // Fonction pour vérifier si un champ a été modifié
-            function checkIfModified() {
-                const currentValues = {
-                    name: document.getElementById('name').value,
-                    color: document.getElementById('color').value,
-                    priority: document.getElementById('priority').value,
-                    recurrence: document.getElementById('recurrence').value,
-                    duration: document.getElementById('duration').value,
-                    description: document.getElementById('description').value,
-                    eventName: document.getElementById('eventName').value,
-                    startHour: document.getElementById('startHour').value,
-                    reminder: document.getElementById('reminder').value
-                };
-
-                // Activer le bouton d'envoie si un champ a été modifié
-                const modified = Object.keys(originalValues).some(key => currentValues[key] !== originalValues[key]);
-                submitButton.disabled = !modified;
-            }
-
-            // Ajouter les écouteurs d'événements pour chaque champ du formulaire
-            presetForm.querySelectorAll('input, select, textarea').forEach(field => {
-                field.addEventListener('input', checkIfModified);
-                field.addEventListener('change', checkIfModified);
-            });
-
-            document.getElementById('clearStartHour').addEventListener('click', () => {
-                document.getElementById('startHour').value = '';
-                checkIfModified();
-            });
-        });
-    </script>
 </head>
 <body>
     <header>
@@ -69,17 +19,87 @@
 
             <%- include('../partials/flashMessages') %>
 
-            <!-- Formulaire pour modifier le préréglage -->
             <form id="presetForm" action="/presets/<%= id %>?_method=PUT" method="POST">
-
                 <label for="name">Nom du préréglage *:</label>
-                <input type="text" id="name" name="name" value="<%= name %>" required><br>
+                <input type="text" id="name" name="name" value="<%= name %>" required>
 
                 <label for="eventName">Nom du rendez-vous :</label>
-                <input type="text" id="eventName" name="eventName" value="<%= eventName %>"><br>
+                <input type="text" id="eventName" name="eventName" value="<%= eventName %>">
 
                 <label for="color">Couleur *:</label>
-                <input type="color" id="color" name="color" value="<%= color %>" required><br>
+                <input type="color" id="color" name="color" value="<%= color %>" required>
+
+                <!-- Bouton pour ouvrir le modal avec indicateur de récurrence -->
+                <div>
+                    <button type="button" id="recurrence-button" class="btn-standard">
+                        Définir les récurrences
+                    </button>
+                    <div id="recurrence-indicator" class="hide">
+                        <span id="recurrence-summary">Aucune récurrence définie</span>
+                    </div>
+                </div>
+
+                <input type="hidden" name="weekDays" id="weekDays">
+                <input type="hidden" name="monthDays" id="monthDays">
+                <input type="hidden" name="yearDays" id="yearDays">
+
+                <!-- Modal de récurrence -->
+                <div class="modal-overlay" id="recurrence-modal">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <h2 class="modal-title">Configuration des récurrences</h2>
+                        </div>
+
+                        <div class="recurrence-types">
+                            <button type="button" class="recurrence-type active" data-type="weekly">Hebdomadaire</button>
+                            <button type="button" class="recurrence-type" data-type="monthly">Mensuelle</button>
+                            <button type="button" class="recurrence-type" data-type="yearly">Annuelle</button>
+                        </div>
+
+                        <div class="recurrence-content">
+                            <!-- Section hebdomadaire -->
+                            <div id="weekly-section">
+                                <h3>Sélectionnez les jours de la semaine</h3>
+                                <div class="pattern-selection">
+                                    <div class="pattern-item" data-day="1">Lundi</div>
+                                    <div class="pattern-item" data-day="2">Mardi</div>
+                                    <div class="pattern-item" data-day="3">Mercredi</div>
+                                    <div class="pattern-item" data-day="4">Jeudi</div>
+                                    <div class="pattern-item" data-day="5">Vendredi</div>
+                                    <div class="pattern-item" data-day="6">Samedi</div>
+                                    <div class="pattern-item" data-day="0">Dimanche</div>
+                                </div>
+                            </div>
+
+                            <!-- Section Mensuelle -->
+                            <div id="monthly-section" class="hide">
+                                <h3>Sélectionnez les jours du mois</h3>
+                                <div class="pattern-selection">
+                                    <% for(let i = 1; i <= 31; i++) { %>
+                                        <div class="pattern-item" data-day="<%= i %>"><%= i %></div>
+                                    <% } %>
+                                </div>
+                            </div>
+
+                            <!-- Section Annuelle -->
+                            <div id="yearly-section" class="hide">
+                                <h3>Sélectionnez des dates spécifiques</h3>
+                                <div class="date-selection">
+                                    <ul class="date-list" id="year-dates"></ul>
+                                    <div class="date-input-group">
+                                        <input type="date" id="yearly-date-input">
+                                        <button type="button" id="add-yearly-date">Ajouter</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn-cancel">Annuler</button>
+                            <button type="button" class="btn-save">Enregistrer</button>
+                        </div>
+                    </div>
+                </div>
 
                 <label for="startHour">Heure de début :</label>
                 <div class="time-input-container">
@@ -92,19 +112,10 @@
                     <option value="Haute" <%= priority === 'Haute' ? 'selected' : '' %>>Haute</option>
                     <option value="Moyenne" <%= priority === 'Moyenne' ? 'selected' : '' %>>Moyenne</option>
                     <option value="Basse" <%= priority === 'Basse' ? 'selected' : '' %>>Basse</option>
-                </select><br>
-
-                <label for="recurrence">Récurrence *:</label>
-                <select id="recurrence" name="recurrence" required>
-                    <option value="Aucune" <%= recurrence === 'Aucune' ? 'selected' : '' %>>Aucune</option>
-                    <option value="Quotidienne" <%= recurrence === 'Quotidienne' ? 'selected' : '' %>>Quotidienne</option>
-                    <option value="Hebdomadaire" <%= recurrence === 'Hebdomadaire' ? 'selected' : '' %>>Hebdomadaire</option>
-                    <option value="Mensuelle" <%= recurrence === 'Mensuelle' ? 'selected' : '' %>>Mensuelle</option>
-                    <option value="Annuelle" <%= recurrence === 'Annuelle' ? 'selected' : '' %>>Annuelle</option>
-                </select><br>
+                </select>
 
                 <label for="duration">Durée par défaut (en minutes) *:</label>
-                <input type="number" id="duration" name="duration" value="<%= duration %>" required><br>
+                <input type="number" id="duration" name="duration" value="<%= duration %>" required>
 
                 <label for="reminder">Rappel (en minutes) *:</label>
                 <select id="reminder" name="reminder">
@@ -114,26 +125,40 @@
                     <option value="30" <%= reminder === 30 ? 'selected' : '' %>>30 minutes</option>
                     <option value="60" <%= reminder === 60 ? 'selected' : '' %>>1 heure</option>
                     <option value="1440" <%= reminder === 1440 ? 'selected' : '' %>>1 jour</option>
-                </select><br>
+                </select>
 
-                <label for="description">Description :</label><br>
-                <textarea id="description" name="description"><%= description %></textarea><br>
+                <label for="description">Description :</label>
+                <textarea id="description" name="description"><%= description %></textarea>
 
-                <button type="submit" disabled>Mettre à jour</button>
+                <button type="submit">Mettre à jour</button>
             </form>
 
-            <form id="deletePresetForm" action="/presets/<%= id %>?_method=DELETE" method="POST" onsubmit="return confirmDelete()">
+            <form id="deletePresetForm" action="/presets/<%= id %>?_method=DELETE" method="POST">
                 <button type="submit" class="delete-button">Supprimer le préréglage</button>
             </form>
 
-            <a href="/presets">Retourner à la liste</a>
+            <a href="/presets" id="returnLink">Retourner à la liste</a>
         </div>
     </div>
 
-    <script>
-        function confirmDelete() {
-            return confirm('Êtes-vous sûr de vouloir supprimer ce préréglage ? Cette action est irréversible.');
-        }
-    </script>
+
+    <!-- Données du préréglage pour les scripts -->
+    <div id="preset-data" 
+        data-name="<%= name %>"
+        data-color="<%= color %>"
+        data-priority="<%= priority %>"
+        data-duration="<%= duration %>"
+        data-description="<%= description %>"
+        data-event-name="<%= eventName %>"
+        data-start-hour="<%= startHour %>"
+        data-reminder="<%= reminder %>"
+        data-recurrence='<%- JSON.stringify(recurrence) %>'
+        style="display: none;">
+    </div>
+
+    <script type="module" src="/javascripts/presets/form-validation.js"></script>
+    <script type="module" src="/javascripts/presets/recurrence-handlers.js"></script>
+    <script type="module" src="/javascripts/presets/modal-handlers.js"></script>
+    <script type="module" src="/javascripts/presets/main.js"></script>
 </body>
 </html>

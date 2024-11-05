@@ -17,7 +17,7 @@ router.get('/', isAuthenticated, async (req, res) => {
             })));
         }, []);
 
-        res.render('search', { rdvs });
+        res.render('search');
     } catch (error) {
         console.error('Erreur lors de la recherche:', error);
         res.status(500).send('Erreur serveur');
