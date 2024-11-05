@@ -183,9 +183,15 @@ router.get('/edit/:id', authMiddleware, async (req, res) => {
           return res.status(404).json({ message: "Rendez-vous non trouvé" });
       }
       const rec = await Recurrence.findById(rendezvous.recurrences);
-      const {yearDay, weekDay, monthDay, dateFin} = rec
-      yearDay.map(d => console.log(typeof d))
-      res.render('modifier_rendezvous', { rendezvous: rendezvous, rec: {yearDay, weekDay, monthDay, dateFin}, recIdd: rec.id });
+      if(rec!==null){
+        const {yearDay, weekDay, monthDay, dateFin} = rec
+        yearDay.map(d => console.log(typeof d))
+        res.render('modifier_rendezvous', { rendezvous: rendezvous, rec: {yearDay, weekDay, monthDay, dateFin}, recIdd: rec.id });
+      }
+      else{
+        const yearDay = [], weekDay = [], monthDay = [], dateFin = "";
+        res.render('modifier_rendezvous', { rendezvous: rendezvous,rec:{yearDay, weekDay, monthDay, dateFin},recIdd:null});
+      }
   } catch (error) {
       console.error("Erreur lors de la récupération du rendez-vous:", error);
       res.status(500).json({ message: "Erreur interne du serveur", error });

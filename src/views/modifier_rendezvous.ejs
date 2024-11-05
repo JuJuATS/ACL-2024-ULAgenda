@@ -385,6 +385,9 @@
                 <div class="form-group">
                     <button type="submit" class="btn-modifier">Modifier le rendez-vous</button>
                 </div>
+             
+                    
+                    
                 <div class="recurrence-form-container">
                     <h1>Ajoutez des Récurrences</h1>
                     <form id="recurrence-form">
@@ -410,48 +413,58 @@
                             <div class="common">
                                 <button type=button class="clear-selection" onclick="clearSelection()">Clear</button>
                                 <label>Jusqu'au : </label>
-                                <input type="date" id="dateUntilRecurrence" name="date" value="<%= rec.dateFin.toISOString().slice(0, 10) %>" required>
+                                <% if(rec){ %>
+                                    <input type="date" id="dateUntilRecurrence" name="date" value="<%= rec.dateFin.toISOString().slice(0, 10) %>" required>
+                                  <% } else{ %>  
+                                    <input type="date" id="dateUntilRecurrence" name="date"  required>
+                                 <% } %>
                             </div>
 
-
-                            <div id="week" class="tabcontent">
-                                <% ['Lundi',
-                                    'Mardi',
-                                    'Mercredi',
-                                    'Jeudi',
-                                    'Vendredi',
-                                    'Samedi',
-                                    'Dimanche'
-                                ].forEach((day, id) => { %>
-                                    <% if (rec.weekDay.includes(id)) { %>
-                                        <button type=button class="wday selected" onclick="selectDay(this, <%= id %>)"><%= day %></button>
-                                    <% } else { %>
-                                        <button type=button class="wday" onclick="selectDay(this, <%= id %>)"><%= day %></button>
-                                    <% } %>
-                                <% }) %>
-                            </div>
-
-                            <div id="month" class="tabcontent">
-                                <% for (let i=1; i<=31; i++) { %>
-                                    <% if (rec.monthDay.includes(i)) { %>
-                                        <button type=button class="mday selected" onclick="selectDay(this, <%= i %>)"><%= i %></button>
-                                    <% } else { %>
-                                        <button type=button class="mday" onclick="selectDay(this, <%= i %>)"><%= i %></button>
-                                    <% } %>
-
-                                <% } %>
-                            </div>
-
-                            <div id="year" class="tabcontent">
-                                <!--<label for="date">Date de la récurrence :</label>-->
-                                <ul class="yearList">
-                                    <% rec.yearDay.forEach((date, index) => { %>
-                                        <li data-index="<%= index %>">
-                                            <%= new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' }) %>
-                                            <button type="button" onclick="removeDate(<%= index %>)"></button>
-                                        </li>
+                            
+                                <div id="week" class="tabcontent">
+                                    <% ['Lundi',
+                                        'Mardi',
+                                        'Mercredi',
+                                        'Jeudi',
+                                        'Vendredi',
+                                        'Samedi',
+                                        'Dimanche'
+                                    ].forEach((day, id) => { %>
+                                        
+                                        <% if (rec.weekDay.includes(id)) { %>
+                                            <button type=button class="wday selected" onclick="selectDay(this, <%= id %>)"><%= day %></button>
+                                        <% } else { %>
+                                            <button type=button class="wday" onclick="selectDay(this, <%= id %>)"><%= day %></button>
+                                        <% } %>
                                     <% }) %>
-                                </ul>
+                                </div>
+                             
+                           
+                           
+                                <div id="month" class="tabcontent">
+                                    <% for (let i=1; i<=31; i++) { %>
+                                        <% if (rec.monthDay.includes(i)) { %>
+                                            <button type=button class="mday selected" onclick="selectDay(this, <%= i %>)"><%= i %></button>
+                                        <% } else { %>
+                                            <button type=button class="mday" onclick="selectDay(this, <%= i %>)"><%= i %></button>
+                                        <% } %>
+    
+                                    <% } %>
+                                </div>
+                                
+                            
+                                <div id="year" class="tabcontent">
+                                    <!--<label for="date">Date de la récurrence :</label>-->
+                                    <ul class="yearList">
+                                        <% rec.yearDay.forEach((date, index) => { %>
+                                            <li data-index="<%= index %>">
+                                                <%= new Date(date).toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' }) %>
+                                                <button type="button" onclick="removeDate(<%= index %>)"></button>
+                                            </li>
+                                        <% }) %>
+                                    </ul>
+                               
+                            
                                 <div class="selector-year-day">
                                     <input type="date" id="dateYearRecurrence" name="date" placeholder="DD/MM">
                                     <button type=button id="addButton"></button>
@@ -463,12 +476,14 @@
             </form>
         </div>
     </div>
-
+ 
     <script>
+       
         const agendaId = "<%= rendezvous.agendaId %>";
         const recId = "<%= recIdd %>";
+        
         const ya = <%- JSON.stringify(rec.yearDay) %>;
-        const recurrencesD = {"week": [<%= rec.weekDay %>] ,"month":[<%= rec.monthDay %>],"year":ya}
+        const recurrencesD = {"week": <%= rec.weekDay %> ,"month":<%= rec.monthDay %>,"year":ya}
         const addBoutton = document.querySelector("#addButton")
         addBoutton.addEventListener("click",addYearDay)
         function clearSelection() {
@@ -478,7 +493,7 @@
             })
         }
         function selectDay(e, day) {
-
+            
             e.classList.toggle("selected")
             const index = recurrencesD[currentTab].indexOf(day);
 
@@ -499,7 +514,7 @@
                 if (index === -1) {
                     const li = document.createElement("li");
                     li.textContent = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
-
+                    
                     const button = document.createElement("button");
                     button.type = "button"
                     button.addEventListener('click', function(e) {
@@ -516,6 +531,7 @@
                 document.querySelector("#dateYearRecurrence").value = ''
             }
         }
+      
         function calculerHeureFin(dateDebut,heureDebut, duree) {
 
 
