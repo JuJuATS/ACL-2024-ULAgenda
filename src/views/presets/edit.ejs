@@ -7,56 +7,6 @@
     <link rel="stylesheet" href="/css/partials/header.css">
     <link rel="stylesheet" href="/css/partials/footer.css">
     <link rel="stylesheet" href="/css/presets/edit.css">
-    <script defer>
-        document.addEventListener('DOMContentLoaded', () => {
-            const presetForm = document.getElementById('presetForm');
-            const submitButton = presetForm.querySelector('button[type="submit"]');
-            const originalValues = {
-                name: '<%= name %>',
-                color: '<%= color %>',
-                priority: '<%= priority %>',
-                recurrence: '<%= recurrence %>',
-                duration: '<%= duration %>',
-                description: '<%= description %>',
-                eventName: '<%= eventName %>',
-                startHour: '<%= startHour %>',
-                reminder: '<%= reminder %>'
-            };
-
-            // Le bouton d'envoie est désactivé par défaut 
-            submitButton.disabled = true;
-
-            // Fonction pour vérifier si un champ a été modifié
-            function checkIfModified() {
-                const currentValues = {
-                    name: document.getElementById('name').value,
-                    color: document.getElementById('color').value,
-                    priority: document.getElementById('priority').value,
-                    recurrence: document.getElementById('recurrence').value,
-                    duration: document.getElementById('duration').value,
-                    description: document.getElementById('description').value,
-                    eventName: document.getElementById('eventName').value,
-                    startHour: document.getElementById('startHour').value,
-                    reminder: document.getElementById('reminder').value
-                };
-
-                // Activer le bouton d'envoie si un champ a été modifié
-                const modified = Object.keys(originalValues).some(key => currentValues[key] !== originalValues[key]);
-                submitButton.disabled = !modified;
-            }
-
-            // Ajouter les écouteurs d'événements pour chaque champ du formulaire
-            presetForm.querySelectorAll('input, select, textarea').forEach(field => {
-                field.addEventListener('input', checkIfModified);
-                field.addEventListener('change', checkIfModified);
-            });
-
-            document.getElementById('clearStartHour').addEventListener('click', () => {
-                document.getElementById('startHour').value = '';
-                checkIfModified();
-            });
-        });
-    </script>
 </head>
 <body>
     <header>
@@ -69,17 +19,87 @@
 
             <%- include('../partials/flashMessages') %>
 
-            <!-- Formulaire pour modifier le préréglage -->
             <form id="presetForm" action="/presets/<%= id %>?_method=PUT" method="POST">
-
                 <label for="name">Nom du préréglage *:</label>
-                <input type="text" id="name" name="name" value="<%= name %>" required><br>
+                <input type="text" id="name" name="name" value="<%= name %>" required>
 
                 <label for="eventName">Nom du rendez-vous :</label>
-                <input type="text" id="eventName" name="eventName" value="<%= eventName %>"><br>
+                <input type="text" id="eventName" name="eventName" value="<%= eventName %>">
 
                 <label for="color">Couleur *:</label>
-                <input type="color" id="color" name="color" value="<%= color %>" required><br>
+                <input type="color" id="color" name="color" value="<%= color %>" required>
+
+                <!-- Bouton pour ouvrir le modal avec indicateur de récurrence -->
+                <div>
+                    <button type="button" id="recurrence-button" class="btn-standard">
+                        Définir les récurrences
+                    </button>
+                    <div id="recurrence-indicator" class="hide">
+                        <span id="recurrence-summary">Aucune récurrence définie</span>
+                    </div>
+                </div>
+
+                <input type="hidden" name="weekDays" id="weekDays">
+                <input type="hidden" name="monthDays" id="monthDays">
+                <input type="hidden" name="yearDays" id="yearDays">
+
+                <!-- Modal de récurrence -->
+                <div class="modal-overlay" id="recurrence-modal">
+                    <div class="modal">
+                        <div class="modal-header">
+                            <h2 class="modal-title">Configuration des récurrences</h2>
+                        </div>
+
+                        <div class="recurrence-types">
+                            <button type="button" class="recurrence-type active" data-type="weekly">Hebdomadaire</button>
+                            <button type="button" class="recurrence-type" data-type="monthly">Mensuelle</button>
+                            <button type="button" class="recurrence-type" data-type="yearly">Annuelle</button>
+                        </div>
+
+                        <div class="recurrence-content">
+                            <!-- Section hebdomadaire -->
+                            <div id="weekly-section">
+                                <h3>Sélectionnez les jours de la semaine</h3>
+                                <div class="pattern-selection">
+                                    <div class="pattern-item" data-day="1">Lundi</div>
+                                    <div class="pattern-item" data-day="2">Mardi</div>
+                                    <div class="pattern-item" data-day="3">Mercredi</div>
+                                    <div class="pattern-item" data-day="4">Jeudi</div>
+                                    <div class="pattern-item" data-day="5">Vendredi</div>
+                                    <div class="pattern-item" data-day="6">Samedi</div>
+                                    <div class="pattern-item" data-day="0">Dimanche</div>
+                                </div>
+                            </div>
+
+                            <!-- Section Mensuelle -->
+                            <div id="monthly-section" class="hide">
+                                <h3>Sélectionnez les jours du mois</h3>
+                                <div class="pattern-selection">
+                                    <% for(let i = 1; i <= 31; i++) { %>
+                                        <div class="pattern-item" data-day="<%= i %>"><%= i %></div>
+                                    <% } %>
+                                </div>
+                            </div>
+
+                            <!-- Section Annuelle -->
+                            <div id="yearly-section" class="hide">
+                                <h3>Sélectionnez des dates spécifiques</h3>
+                                <div class="date-selection">
+                                    <ul class="date-list" id="year-dates"></ul>
+                                    <div class="date-input-group">
+                                        <input type="date" id="yearly-date-input">
+                                        <button type="button" id="add-yearly-date">Ajouter</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer">
+                            <button type="button" class="btn-cancel">Annuler</button>
+                            <button type="button" class="btn-save">Enregistrer</button>
+                        </div>
+                    </div>
+                </div>
 
                 <label for="startHour">Heure de début :</label>
                 <div class="time-input-container">
@@ -92,19 +112,10 @@
                     <option value="Haute" <%= priority === 'Haute' ? 'selected' : '' %>>Haute</option>
                     <option value="Moyenne" <%= priority === 'Moyenne' ? 'selected' : '' %>>Moyenne</option>
                     <option value="Basse" <%= priority === 'Basse' ? 'selected' : '' %>>Basse</option>
-                </select><br>
-
-                <label for="recurrence">Récurrence *:</label>
-                <select id="recurrence" name="recurrence" required>
-                    <option value="Aucune" <%= recurrence === 'Aucune' ? 'selected' : '' %>>Aucune</option>
-                    <option value="Quotidienne" <%= recurrence === 'Quotidienne' ? 'selected' : '' %>>Quotidienne</option>
-                    <option value="Hebdomadaire" <%= recurrence === 'Hebdomadaire' ? 'selected' : '' %>>Hebdomadaire</option>
-                    <option value="Mensuelle" <%= recurrence === 'Mensuelle' ? 'selected' : '' %>>Mensuelle</option>
-                    <option value="Annuelle" <%= recurrence === 'Annuelle' ? 'selected' : '' %>>Annuelle</option>
-                </select><br>
+                </select>
 
                 <label for="duration">Durée par défaut (en minutes) *:</label>
-                <input type="number" id="duration" name="duration" value="<%= duration %>" required><br>
+                <input type="number" id="duration" name="duration" value="<%= duration %>" required>
 
                 <label for="reminder">Rappel (en minutes) *:</label>
                 <select id="reminder" name="reminder">
@@ -114,26 +125,337 @@
                     <option value="30" <%= reminder === 30 ? 'selected' : '' %>>30 minutes</option>
                     <option value="60" <%= reminder === 60 ? 'selected' : '' %>>1 heure</option>
                     <option value="1440" <%= reminder === 1440 ? 'selected' : '' %>>1 jour</option>
-                </select><br>
+                </select>
 
-                <label for="description">Description :</label><br>
-                <textarea id="description" name="description"><%= description %></textarea><br>
+                <label for="description">Description :</label>
+                <textarea id="description" name="description"><%= description %></textarea>
 
-                <button type="submit" disabled>Mettre à jour</button>
+                <button type="submit">Mettre à jour</button>
             </form>
 
             <form id="deletePresetForm" action="/presets/<%= id %>?_method=DELETE" method="POST" onsubmit="return confirmDelete()">
                 <button type="submit" class="delete-button">Supprimer le préréglage</button>
             </form>
 
-            <a href="/presets">Retourner à la liste</a>
+            <a href="/presets" id="returnLink">Retourner à la liste</a>
         </div>
     </div>
 
     <script>
-        function confirmDelete() {
-            return confirm('Êtes-vous sûr de vouloir supprimer ce préréglage ? Cette action est irréversible.');
+        const recurrenceData = {
+            weekly: new Set(),
+            monthly: new Set(),
+            yearly: new Set()
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initialisation des champs cachés avec des tableaux vides
+            updateHiddenFields();
+
+            const modal = document.getElementById('recurrence-modal');
+            const recurrenceButton = document.getElementById('recurrence-button');
+            const cancelButton = modal.querySelector('.btn-cancel');
+            const saveButton = modal.querySelector('.btn-save');
+            const typeButtons = document.querySelectorAll('.recurrence-type');
+            const sections = {
+                weekly: document.getElementById('weekly-section'),
+                monthly: document.getElementById('monthly-section'),
+                yearly: document.getElementById('yearly-section')
+            };
+
+            // Si une récurrence existe déjà, la charger
+            <% if (locals.recurrence) { %>
+                Object.assign(recurrenceData, {
+                    weekly: new Set(<%- JSON.stringify(recurrence.weekDays) %>),
+                    monthly: new Set(<%- JSON.stringify(recurrence.monthDays) %>),
+                    yearly: new Set(<%- JSON.stringify(recurrence.yearDays) %>)
+                });
+                
+                // Mettre à jour l'interface
+                if (recurrenceData.weekly.size > 0) {
+                    recurrenceData.weekly.forEach(day => {
+                        const element = document.querySelector(`#weekly-section .pattern-item[data-day="${day}"]`);
+                        if (element) element.classList.add('selected');
+                    });
+                }
+                if (recurrenceData.monthly.size > 0) {
+                    recurrenceData.monthly.forEach(day => {
+                        const element = document.querySelector(`#monthly-section .pattern-item[data-day="${day}"]`);
+                        if (element) element.classList.add('selected');
+                    });
+                }
+                if (recurrenceData.yearly.size > 0) {
+                    updateYearlyDatesList();
+                }
+                
+                // Mettre à jour le résumé
+                updateRecurrenceSummary();
+
+                // Mettre à jour les champs cachés
+                updateHiddenFields();
+            <% } %>
+
+            // Gestion de l'ouverture/fermeture du modal
+            recurrenceButton.addEventListener('click', () => {
+                // Créer une sauvegarde avant d'ouvrir le modal
+                recurrenceBackup = {
+                    weekly: new Set(Array.from(recurrenceData.weekly)),
+                    monthly: new Set(Array.from(recurrenceData.monthly)),
+                    yearly: new Set(Array.from(recurrenceData.yearly))
+                };
+                modal.style.display = 'flex';
+            });
+
+            cancelButton.addEventListener('click', () => {
+                restoreBackup();
+                modal.style.display = 'none';
+            });
+
+
+            // Fonction pour restaurer la sauvegarde
+        function restoreBackup() {
+            if (recurrenceBackup) {
+                // Restaurer les données
+                recurrenceData.weekly = new Set(Array.from(recurrenceBackup.weekly));
+                recurrenceData.monthly = new Set(Array.from(recurrenceBackup.monthly));
+                recurrenceData.yearly = new Set(Array.from(recurrenceBackup.yearly));
+
+                // Restaurer l'interface visuelle
+                // Réinitialiser tous les éléments sélectionnables
+                document.querySelectorAll('.pattern-item').forEach(item => {
+                    item.classList.remove('selected');
+                });
+
+                // Restaurer les sélections hebdomadaires
+                if (recurrenceData.weekly.size > 0) {
+                    recurrenceData.weekly.forEach(day => {
+                        const element = document.querySelector(`#weekly-section .pattern-item[data-day="${day}"]`);
+                        if (element) element.classList.add('selected');
+                    });
+                }
+
+                // Restaurer les sélections Mensuelleles
+                if (recurrenceData.monthly.size > 0) {
+                    recurrenceData.monthly.forEach(day => {
+                        const element = document.querySelector(`#monthly-section .pattern-item[data-day="${day}"]`);
+                        if (element) element.classList.add('selected');
+                    });
+                }
+
+                // Restaurer les dates Annuelleles
+                updateYearlyDatesList();
+
+                // Mettre à jour le résumé
+                updateRecurrenceSummary();
+
+                // Mettre à jour les champs cachés
+                updateHiddenFields();
+            }
         }
+
+
+            // Gestion des types de récurrence
+            typeButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const type = button.dataset.type;
+                    typeButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    
+                    Object.entries(sections).forEach(([key, section]) => {
+                        section.classList.toggle('hide', key !== type);
+                    });
+                });
+            });
+
+            // Gestion de la sélection des patterns
+            document.querySelectorAll('.pattern-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    item.classList.toggle('selected');
+                    const type = document.querySelector('.recurrence-type.active').dataset.type;
+                    const day = parseInt(item.dataset.day);
+                    
+                    if (item.classList.contains('selected')) {
+                        recurrenceData[type].add(day);
+                    } else {
+                        recurrenceData[type].delete(day);
+                    }
+                });
+            });
+
+            // Gestion des dates Annuelleles
+            const yearlyDateInput = document.getElementById('yearly-date-input');
+            const addYearlyDateButton = document.getElementById('add-yearly-date');
+
+            addYearlyDateButton.addEventListener('click', () => {
+                const date = yearlyDateInput.value;
+                if (date && !recurrenceData.yearly.has(date)) {
+                    recurrenceData.yearly.add(date);
+                    updateYearlyDatesList();
+                    yearlyDateInput.value = '';
+                }
+            });
+
+            // Sauvegarde des récurrences
+            saveButton.addEventListener('click', () => {
+                updateRecurrenceSummary();
+                modal.style.display = 'none';
+                
+                // Mise à jour des champs cachés pour le formulaire
+                updateHiddenFields();
+            });
+        });
+
+        // Fonction pour mettre à jour les champs cachés
+        function updateHiddenFields() {
+            document.getElementById('weekDays').value = JSON.stringify(Array.from(recurrenceData.weekly));
+            document.getElementById('monthDays').value = JSON.stringify(Array.from(recurrenceData.monthly));
+            document.getElementById('yearDays').value = JSON.stringify(Array.from(recurrenceData.yearly));
+            checkIfModified();
+        }
+
+        function updateYearlyDatesList() {
+            const datesList = document.getElementById('year-dates');
+            datesList.innerHTML = '';
+            
+            recurrenceData.yearly.forEach(date => {
+                const li = document.createElement('li');
+                li.className = 'date-item';
+                const formattedDate = new Date(date).toLocaleDateString();
+                li.innerHTML = `
+                    <span>${formattedDate}</span>
+                    <button type="button" onclick="removeYearlyDate('${date}')" aria-label="Supprimer cette date"></button>
+                `;
+                datesList.appendChild(li);
+            });
+        }
+
+        function removeYearlyDate(date) {
+            recurrenceData.yearly.delete(date);
+            updateYearlyDatesList();
+        }
+
+        function updateRecurrenceSummary() {
+            const indicator = document.getElementById('recurrence-indicator');
+            const summary = document.getElementById('recurrence-summary');
+            let text = [];
+
+            if (recurrenceData.weekly.size) {
+                text.push(`${recurrenceData.weekly.size} jour${recurrenceData.weekly.size > 1 ? 's' : ''}/semaine`);
+            }
+            if (recurrenceData.monthly.size) {
+                text.push(`${recurrenceData.monthly.size} jour${recurrenceData.monthly.size > 1 ? 's' : ''}/mois`);
+            }
+            if (recurrenceData.yearly.size) {
+                text.push(`${recurrenceData.yearly.size} date${recurrenceData.yearly.size > 1 ? 's' : ''}/an`);
+            }
+
+            if (text.length) {
+                summary.textContent = text.join(', ');
+                indicator.classList.remove('hide');
+            } else {
+                summary.textContent = 'Aucune récurrence définie';
+                indicator.classList.add('hide');
+            }
+        }
+
+        function confirmDelete() {
+            return confirm("Êtes-vous sûr de vouloir supprimer ce préréglage ?");
+        }
+
+
+
+        const presetForm = document.getElementById('presetForm');
+        const submitButton = presetForm.querySelector('button[type="submit"]');
+        const returnLink = document.getElementById('returnLink');
+        
+        // Structure pour stocker les valeurs originales
+        const originalValues = {
+            name: '<%= name %>',
+            color: '<%= color %>',
+            priority: '<%= priority %>',
+            duration: '<%= duration %>',
+            description: '<%= description %>',
+            eventName: '<%= eventName %>',
+            startHour: '<%= startHour %>',
+            reminder: '<%= reminder %>',
+            recurrence: {
+                weekly: new Set(<%- JSON.stringify(recurrence.weekDays) %>),
+                monthly: new Set(<%- JSON.stringify(recurrence.monthDays) %>),
+                yearly: new Set(<%- JSON.stringify(recurrence.yearDays) %>)
+            }
+        };
+
+        // Désactiver le bouton par défaut
+        submitButton.disabled = true;
+
+        // Fonction pour vérifier si un champ a été modifié
+        function checkIfModified() {
+            const currentValues = {
+                name: document.getElementById('name').value,
+                color: document.getElementById('color').value,
+                priority: document.getElementById('priority').value,
+                duration: document.getElementById('duration').value,
+                description: document.getElementById('description').value,
+                eventName: document.getElementById('eventName').value,
+                startHour: document.getElementById('startHour').value,
+                reminder: document.getElementById('reminder').value,
+                recurrence: {
+                    weekly: new Set(JSON.parse(document.getElementById('weekDays').value || '[]')),
+                    monthly: new Set(JSON.parse(document.getElementById('monthDays').value || '[]')),
+                    yearly: new Set(JSON.parse(document.getElementById('yearDays').value || '[]'))
+                }
+            };
+
+            // Vérifier les champs simples
+            const basicFieldsModified = Object.keys(originalValues).some(key => {
+                if (key === 'recurrence') return false; // On traite les récurrences séparément
+                return currentValues[key] !== originalValues[key];
+            });
+
+            // Vérifier les récurrences
+            const recurrenceModified = ['weekly', 'monthly', 'yearly'].some(type => {
+                const original = originalValues.recurrence[type];
+                const current = currentValues.recurrence[type];
+                return !areSetsEqual(original, current);
+            });
+
+            // Activer le bouton si au moins un changement est détecté
+            submitButton.disabled = !basicFieldsModified && !recurrenceModified;
+        }
+
+        // Fonction utilitaire pour tester l'égalité entre deux Sets
+        function areSetsEqual(setA, setB) {
+            if (setA.size !== setB.size) return false;
+            return setA.size === 0 || [...setA].every(element => setB.has(element));
+        }
+
+        // Ajouter les écouteurs d'événements pour tous les champs
+        presetForm.querySelectorAll('input, select, textarea').forEach(field => {
+            field.addEventListener('input', checkIfModified);
+            field.addEventListener('change', checkIfModified);
+        });
+
+        // Ajouter un écouteur pour le bouton de sauvegarde des récurrences
+        const saveRecurrenceButton = document.querySelector('.modal .btn-save');
+        if (saveRecurrenceButton) {
+            saveRecurrenceButton.addEventListener('click', checkIfModified);
+        }
+
+        // Gérer le bouton d'effacement de l'heure
+        document.getElementById('clearStartHour').addEventListener('click', () => {
+            document.getElementById('startHour').value = '';
+            checkIfModified();
+        });
+
+
+        returnLink.addEventListener('click', (event) => {
+            if (!submitButton.disabled) { // Si des modifications ont été faites
+                event.preventDefault();
+                if (confirm('Des modifications non sauvegardées ont été détectées. Voulez-vous vraiment quitter la page ? Les modifications seront perdues.')) {
+                    window.location.href = returnLink.href;
+                }
+            }
+        });
     </script>
 </body>
 </html>

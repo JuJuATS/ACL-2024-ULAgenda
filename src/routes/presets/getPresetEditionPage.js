@@ -5,7 +5,9 @@ const getPresetEditionPage = async (req, res) => {
         const presetId = req.params.id;
         const userId = req.user.id;
 
-        const preset = await Preset.findById(presetId);
+        const preset = await Preset.findById(presetId)
+            .populate('recurrence')
+            .exec();
 
         if (!preset) {
             req.flash('error', 'Préréglage non trouvé.');
@@ -17,13 +19,18 @@ const getPresetEditionPage = async (req, res) => {
             return res.redirect('/presets');
         }
 
+        
         res.render('presets/edit', {
             id: preset._id,
             name: preset.name,
             eventName: preset.eventName || '',
             color: preset.color,
             priority: preset.priority,
-            recurrence: preset.recurrence,
+            recurrence: {
+                weekDays: preset.recurrence?.weekDay || [],
+                monthDays: preset.recurrence?.monthDay || [],
+                yearDays: preset.recurrence?.yearDay || [],
+            },
             startHour: preset.startHour || '',
             duration: preset.duration,
             reminder: preset.reminder || '',

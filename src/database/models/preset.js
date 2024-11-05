@@ -30,9 +30,8 @@ const presetSchema = new mongoose.Schema({
         default: 'Moyenne',
     },
     recurrence: {
-        type: String,
-        enum: ['Aucune', 'Quotidienne', 'Hebdomadaire', 'Mensuelle', 'Annuelle'],
-        default: 'Aucune', // Pas de récurrence par défaut
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Recurrence',
     },
     duration: {
         type: Number,

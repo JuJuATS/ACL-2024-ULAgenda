@@ -87,3 +87,227 @@ body {
 .presets-page .delete-button:hover {
     background-color: #ff0000;
 }
+
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    backdrop-filter: blur(3px);
+}
+
+.modal {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-title {
+    font-size: 1.5rem;
+    color: #00BBEC;
+    margin: 0;
+}
+
+.recurrence-types {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.recurrence-type {
+    padding: 8px 16px;
+    background: #f5f5f5;
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.recurrence-type.active {
+    background: #e6f7ff;
+    border-color: #00BBEC;
+    color: #00BBEC;
+}
+
+.recurrence-content {
+    margin-bottom: 20px;
+}
+
+.pattern-selection {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    margin-top: 15px;
+}
+
+.pattern-item {
+    padding: 8px;
+    text-align: center;
+    background: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.pattern-item.selected {
+    background: #00BBEC;
+    color: white;
+    border-color: #00BBEC;
+}
+
+.date-selection {
+    margin-top: 15px;
+}
+
+.date-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+    padding: 0;
+    list-style: none;
+}
+
+.date-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px;
+    background: #f5f5f5;
+    border-radius: 6px;
+    margin-bottom: 5px;
+}
+
+.date-item button {
+    background: none;
+    border: none;
+    color: #ff4444;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.date-input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.date-input-group input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.date-input-group button {
+    padding: 8px 16px;
+    background: #00BBEC;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+
+.modal-footer button {
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+}
+
+.btn-cancel {
+    background: #f5f5f5;
+    color: #666;
+}
+
+.btn-save {
+    background: #00BBEC;
+    color: white;
+}
+
+#recurrence-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    background: #e6f7ff;
+    border-radius: 4px;
+    margin-top: 8px;
+    font-size: 0.9em;
+    color: #00BBEC;
+}
+
+.hide {
+    display: none;
+}
+
+/* Pour les boutons de suppression dans date-item */
+.date-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    margin-bottom: 5px;
+}
+
+.date-item button {
+    width: 16px;
+    height: 16px;
+    padding: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0.6;
+    transition: opacity 0.2s;
+}
+
+.date-item button::before,
+.date-item button::after {
+    content: '';
+    position: absolute;
+    width: 12px;
+    height: 2px;
+    background-color: #ff4444;
+}
+
+.date-item button::before {
+    transform: rotate(45deg);
+}
+
+.date-item button::after {
+    transform: rotate(-45deg);
+}
+
+.date-item button:hover {
+    opacity: 1;
+}
