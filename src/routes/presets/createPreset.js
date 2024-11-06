@@ -27,7 +27,7 @@ const createPreset = async (req, res) => {
         await newPreset.save();
 
         // Rediriger l'utilisateur vers la page d'édition du préréglage nouvellement créé
-        res.redirect(`/presets/${newPreset._id}`);
+        res.redirect(`/presets/${newPreset._id}?new=true`);
     } catch (err) {
         console.error(err);
         res.status(500).send('Erreur lors de la création du préréglage.');

@@ -33,6 +33,12 @@ nav a {
 }
 
 .right {
+    width:30%;
+    display:flex;
+    justify-content: space-around;
+}
+
+.disconnect {
     position:relative;
     width:20%;
     display:flex;
@@ -77,8 +83,6 @@ nav a {
 }
 
 .app-button {
-
-
     min-width:fit-content;
     padding: 10px 15px;
     border-radius: 5px;

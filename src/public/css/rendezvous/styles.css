@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #CFB1B7; /* Arrière-plan de la page */
+    background-color: #ffffff;
     display: flex;
     height:100vh;
     max-height: 100%;
@@ -609,4 +609,34 @@ form {
     filter: brightness(0) saturate(100%) invert(40%) sepia(95%) saturate(5137%) hue-rotate(338deg) brightness(91%) contrast(88%);
 }
 
+.preset-group {
+    margin-bottom: 20px;
+}
 
+.preset-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.preset-container select {
+    flex: 1;
+}
+
+.new-preset-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 35px;
+    height: 35px;
+    background-color: #00BBEC;
+    color: white;
+    border-radius: 5px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.new-preset-link:hover {
+    background-color: #357ab8;
+    transform: scale(1.05);
+}

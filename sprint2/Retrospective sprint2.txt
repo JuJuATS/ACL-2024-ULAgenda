@@ -1,0 +1,45 @@
+=======================================================================================================================
+					                        RETROSPECTIVE SPRINT 2
+=======================================================================================================================
+
+Objectif du Sprint :
+---------------------
+Avoir une première version utilisable, qui contient toutes les fonctionnalités importantes.
+
+Tableau des fonctionnalités du sprint :
+---------------------------------------
+┌───────────────────────────────────────────────────────┬───────────┬────────────┐
+│ Fonctionnalité                                        │ Statut    │ Estimation │
+├───────────────────────────────────────────────────────┼───────────┼────────────┤
+│ Modifier un rendez-vous                               │ Complétée │     1      │
+│ Supprimer un rendez-vous                              │ Complétée │     3      │
+│ Modifier un agenda                                    │ Complétée │     1      │
+│ Supprimer un agenda                                   │ Complétée │     3      │
+│ Ajouter des catégories de rendez-vous                 │ Complétée │     5      │
+│ Ajouter des rendez-vous récurrents                    │ Complétée │     8      │
+│ Modifier des catégories                               │ Complétée │     3      │
+│ Filtrer des rendez-vous / Recherche                   │ Complétée │     3      │
+│ Visualisation d'un calendrier de l'agenda             │ Complétée │     8      │
+└───────────────────────────────────────────────────────┴───────────┴────────────┘
+
+Points forts :
+--------------
+    - Fonctionnalités prioritaires réalisées à temps.
+
+Points faibles:
+---------------
+    - Mauvaise gestion du temps qui nous a empêché de bien finaliser.
+    - Mauvaise répartition du travail.
+    - Mauvaise communication.
+    - Manque croissant de pull requests.
+
+Ce qu'il y a à améliorer :
+--------------------------
+    - Augmenter la communication entre les membres.
+    - Mieux répartir le travail.
+    - Faire plus de pull requests.
+
+Obstacles rencontrés :
+----------------------
+    - Difficulté à merge certaines parties.
+    - Le code n'est pas parfaitement adapté pour ajouter certaines nouvelles fonctionnalités (ex : ajout de récurrence).

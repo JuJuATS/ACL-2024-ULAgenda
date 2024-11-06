@@ -30,7 +30,9 @@ async function verifOwner(agendaId, userId) {
 // Route pour afficher les rendez-vous avec le bon id.
 router.get('/', authMiddleware, async (req, res) => {
   const {agendaId} = req.query;
+
   const isOwner = await verifOwner(agendaId, req.user.id);
+
   if (!isOwner) {
     return res.redirect('/agendas');
   }
@@ -50,6 +52,7 @@ router.get('/api/recurrence', authMiddleware, async (req, res) => {
   });
   const rdvs = await Promise.all(rdvUser.map(async (rdv) => {
     const rec = await Recurrence.findById(rdv.recurrences);
+
     return {"recurrence": rec, ...rdv.toObject()};
   }))
   res.status(201).json({rdvs:rdvs});
@@ -62,8 +65,6 @@ router.post('/', authMiddleware, async (req, res) => {
   try {
 
     const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence } = req.body;
-    console.log(recurrences)
-    console.log(name,description,dateDebut,dateFin,agendaId)
     if (!name || !dateDebut || !dateFin || !agendaId ) {
       console.log("il manque quelque chose")
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
@@ -162,6 +163,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
         if (!rdv) {
             return res.status(404).json({ message: "Rendezvous not found" });
         }
+
         res.status(200).json({ ok: true, message: "Rendez-vous supprimé correctement" });
     } catch (error) {
         console.error("Error deleting rendezvous:", error);
@@ -178,7 +180,7 @@ router.get('/edit/:id', authMiddleware, async (req, res) => {
           return res.status(404).json({ message: "Rendez-vous non trouvé" });
       }
       const rec = await Recurrence.findById(rendezvous.recurrences);
-      if(rec!==null){
+      if(rec !== null){
         const {yearDay, weekDay, monthDay, dateFin} = rec
         yearDay.map(d => console.log(typeof d))
         res.render('modifier_rendezvous', { rendezvous: rendezvous, rec: {yearDay, weekDay, monthDay, dateFin}, recIdd: rec.id });

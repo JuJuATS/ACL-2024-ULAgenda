@@ -1,4 +1,3 @@
-
 const form = document.getElementById('rendezvous-form');
 const agendaList = document.getElementById('agenda-list');
 const recurrences = {"week":[],"month":[],"year":[]}
@@ -38,12 +37,11 @@ form.addEventListener('submit', async function(event) {
         }
 
     } else {
-        afficherPopUp('Certaines informations du rendez-vous sont incorrect ou manquantes.', true)
+        afficherPopUp('Certaines informations du rendez-vous sont incorrect ou manquantes.', false)
     }
 });
 
 function afficherPopUp(text, good) {
-
     popUp.innerHTML = ''
     popUp.innerHTML = good ? `
         <svg viewBox="0 0 512 512">
@@ -105,6 +103,7 @@ function clearSelection() {
 }
 
 function openMode(e, mode) {
+
     document.querySelectorAll(".tabcontent").forEach(tab => {
         if (tab.id === mode) {
             tab.style.display = 'flex';
@@ -141,7 +140,6 @@ function calculerHeureFin(dateDebut,heureDebut, duree) {
 async function saveRendezVous(rendezvous) {
 
     try {
-        console.log(rendezvous)
         const response = await fetch(`http://localhost:3000/rendezvous?agendaId=${form.dataset.agendaid}`, {
             method: 'POST',
             headers: {
@@ -190,6 +188,7 @@ async function updateRdvList(opened) {
     }
 }
 function createLiRdv(rendezvous, opened) {
+
 
     const li = document.createElement('li');
     if (opened) {

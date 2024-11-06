@@ -2,220 +2,77 @@
 <html lang="en">
 <head>
     <%- include('./partials/head', {pageName: "ULAgenda"}); %>
-    <link rel="stylesheet" href="/css/agendas.css"> <!-- Lien vers le fichier CSS externe -->
+    <link rel="stylesheet" href="/css/agendas/agendas.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
 </head>
 <body>
-    <header style="padding: 10px 10px !important;">
-        <%- include('./partials/header', {user: true}); %>
-    </header>
-    <div class="container">
-        <!-- Sidebar Gauche -->
-        <div class="left-sidebar">
-            <h2>Filtres</h2>
-            <!-- Vous pouvez ajouter les filtres ici -->
-        </div>
 
-        <!-- Contenu principal : les autres agendas -->
-        <div class="main-content">
-            <!-- Pop-up pour ajouter un nouvel agenda -->
-            <div id="agendaModal" class="modal" style="display:none;">
-                <div class="modal-content">
+<header>
+    <%- include('./partials/header', {user: true}); %>
+</header>
+
+<div class="container">
+    <!-- Sidebar Gauche -->
+    <div class="left-sidebar">
+        <h2>Filtres</h2>
+        <a href="/search" class="search-link">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Rechercher des rendez-vous
+        </a>
+    </div>
+
+    <!-- Contenu principal : les autres agendas -->
+    <div class="main-content">
+        <!-- Pop-up pour ajouter un nouvel agenda -->
+        <div id="agendaModal" class="modal" style="display:none;">
+            <div class="modal-content">
                 <span class="close-button">&times;</span>
                 <h2>Créer un nouvel agenda</h2>
                 <input type="text" id="agendaName" placeholder="Nom de l'agenda" required>
                 <button id="addAgendaButton">Ajouter Agenda</button>
-                </div>
             </div>
-
-            <div id="confirmDeleteModal" class="modal">
-                <div class="modal-content">
-                    <span class="close-button" onclick="closeConfirmDeleteModal()">&times;</span>
-                    <h2>Confirmer la suppression</h2>
-                    <p>Voulez-vous vraiment supprimer cet agenda ?</p>
-                    <button id="confirmDeleteButton">Supprimer</button>
-                    <button id="annuler" onclick="closeConfirmDeleteModal()">Annuler</button>
-                </div>
-            </div>
-
-            <div class="calendar new-agenda">
-                <h4>Créer un nouvel agenda</h4>
-                <button class="add-button">+</button> <!-- Bouton "+" -->
-            </div>
-
-            <% if (agendas && agendas.length > 0) { %>
-                <% agendas.forEach(function(agenda, index) { %>
-                    <div class="calendar" data-id="<%= agenda._id %>" >
-                        <button class="close-agenda" onclick="removeAgenda(this)">×</button>
-                        <h3><a href="/rendezvous?agendaId=<%= agenda._id%>"><%= agenda.name %></a></h3>
-
-                        <!-- Contenu de l'agenda -->
-                    </div>
-                <% }); %>
-            <% } else { %>
-
-            <% } %>
         </div>
+
+        <div id="confirmDeleteModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeConfirmDeleteModal()">&times;</span>
+                <h2>Confirmer la suppression</h2>
+                <p>Voulez-vous vraiment supprimer cet agenda ?</p>
+                <button id="confirmDeleteButton">Supprimer</button>
+                <button id="annuler" onclick="closeConfirmDeleteModal()">Annuler</button>
+            </div>
+        </div>
+
+        <div id="new-agenda" class="calendar">
+            <h4 id="new-agenda-title">Nouvel Agenda</h4>
+            <button class="add-button">+</button>
+        </div>
+
+        <% if (agendas && agendas.length > 0) { %>
+            <% agendas.forEach(function(agenda) { %>
+                <div class="calendar" data-id="<%= agenda._id %>" onclick="redirectToAgenda('<%= agenda._id %>')">
+                    <div class="header-calendar">
+                        <button class="edit-button" onclick="toggleEditMode(this, event)">Modifier</button>
+                        <button class="close-agenda" onclick="removeAgenda(this, event)">x</button>
+                    </div>
+                    <div class="content-calendar">
+                        <a class="title-view"> <%= agenda.name %> </a>
+                        <span class="edit-title" style="display: none;" onclick="stopEventPropagation(event)">
+                            <input type="text" value="<%= agenda.name %>" />
+                        </span>
+                    </div>
+                </div>
+            <% }); %>
+        <% } %>
     </div>
-    <footer>
-        <%- include('./partials/footer', {user: {}}); %>
-    </footer>
+</div>
+
+<footer>
+    <%- include('./partials/footer', {user: {}}); %>
+</footer>
+
+<script src="/javascripts/agendas/agendas.js"></script>
+
 </body>
-
-<script>
-    // Récupérer les éléments de la modal et du bouton
-    const modal = document.getElementById("agendaModal");
-    const addButton = document.querySelector(".add-button");
-    const closeButton = document.querySelector(".close-button");
-    const addAgendaButton = document.getElementById("addAgendaButton");
-    const agendaNameInput = document.getElementById("agendaName");
-    const mainContent = document.querySelector(".main-content"); // Conteneur des agendas
-
-    // Ouvrir la modal quand le bouton "+" est cliqué
-    addButton.onclick = function() {
-        modal.style.display = "block";
-    }
-
-    // Fermer la modal quand l'utilisateur clique sur le "x"
-    closeButton.onclick = function() {
-        modal.style.display = "none";
-    }
-
-    // Fermer la modal quand l'utilisateur clique à l'extérieur de la modal
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            modal.style.display = "none";
-        }
-    }
-    
-
-    // Fonction pour ajouter l'agenda à la liste
-    addAgendaButton.onclick = async () => {
-        const agendaName = agendaNameInput.value;
-
-        if (!agendaName) {
-          alert("Veuillez entrer un nom d'agenda.");
-          return;
-        }
-
-        try {
-          const response = await fetch('http://localhost:3000/agendas', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({ name: agendaName })
-          });
-
-          if (response.ok) {
-            const newAgenda = await response.json();
-
-            // Créer un nouvel élément agenda
-            const agendaDiv = document.createElement("div");
-            agendaDiv.className = "calendar"; // Assurez-vous que le style est appliqué
-            agendaDiv.innerHTML = `
-              <button class="close-agenda" onclick="removeAgenda(this)">×</button>
-              <h3><a href="/rendezvous?agendaId=${newAgenda._id}">${newAgenda.name}</a></h3>
-            `;
-
-            // Ajouter le nouvel agenda au conteneur principal
-            mainContent.appendChild(agendaDiv);
-
-            // Réinitialiser l'input
-            agendaNameInput.value = "";
-            // Fermer la modal
-            modal.style.display = "none";
-            setTimeout(() => {
-        window.location.reload();
-    }, 1);
-          } else {
-            const errorData = await response.json();
-            alert(errorData.message + ' : ' + JSON.stringify(errorData.error));
-          }
-        } catch (error) {
-          console.error('Erreur:', error);
-          alert('Une erreur s\'est produite lors de la création de l\'agenda');
-        }
-    };
-
-    let agendaToDelete = null; // Variable pour stocker l'agenda à supprimer
-
-function removeAgenda(button) {
-    agendaToDelete = button.parentElement; // Stocke l'agenda parent
-    const confirmDeleteModal = document.getElementById("confirmDeleteModal");
-    confirmDeleteModal.style.display = "block"; // Affiche la modal de confirmation
-}
-
-// Fonction pour fermer la modal de confirmation
-function closeConfirmDeleteModal() {
-    const confirmDeleteModal = document.getElementById("confirmDeleteModal");
-    confirmDeleteModal.style.display = "none"; // Masquer la modal de confirmation
-}
-
-// Ajouter l'événement de confirmation pour supprimer l'agenda
-document.getElementById("confirmDeleteButton").onclick = function() {
-    if (agendaToDelete) {
-        agendaToDelete.remove(); // Supprime l'agenda du DOM
-        closeConfirmDeleteModal(); // Ferme la modal de confirmation
-        agendaToDelete = null; // Réinitialise la variable
-    }
-};
-
-// Ajouter l'événement de confirmation pour supprimer l'agenda
-document.getElementById("confirmDeleteButton").onclick = async function() {
-    if (agendaToDelete) {
-        const agendaId = agendaToDelete.getAttribute('data-id'); // Récupérer l'ID de l'agenda
-
-        try {
-            const response = await fetch(`http://localhost:3000/agendas/${agendaId}`, {
-                method: 'DELETE', // Envoi d'une requête DELETE
-            });
-
-            if (response.ok) {
-                agendaToDelete.remove(); // Supprime l'agenda du DOM
-                closeConfirmDeleteModal();
-                agendaToDelete = null;
-            } else {
-                const errorData = await response.json();
-                alert('Erreur lors de la suppression de l\'agenda: ' + errorData.message);
-            }
-        } catch (error) {
-            console.error('Erreur:', error);
-            alert('Une erreur s\'est produite lors de la suppression de l\'agenda');
-        }
-    }
-};
-
-
-// Bascule du mode sombre
-const toggleSwitch = document.getElementById('darkModeToggle');
-const body = document.body;
-
-// Vérifie si l'utilisateur a déjà un mode préféré
-const currentTheme = localStorage.getItem('theme');
-if (currentTheme) {
-    if (currentTheme === 'dark') {
-        body.classList.add('dark-mode');
-        toggleSwitch.checked = true;
-    }
-}
-
-// Gère la bascule
-toggleSwitch.addEventListener('change', () => {
-    if (toggleSwitch.checked) {
-        body.classList.add('dark-mode');
-        localStorage.setItem('theme', 'dark');
-    } else {
-        body.classList.remove('dark-mode');
-        localStorage.setItem('theme', 'light');
-    }
-
-});
-
-
-
-
-</script>
-
-
 </html>

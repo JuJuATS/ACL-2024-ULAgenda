@@ -3,6 +3,7 @@
 <head>
     <%- include('./partials/head', {pageName: ""}); %>
     <title>Agenda Rendez-vous</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/rendezvous/styles.css">
     <link rel="stylesheet" href="css/partials/toaster.css">
 </head>
@@ -15,18 +16,23 @@
         <div class="container">
             <h1>Planifier un rendez-vous</h1>
             <form id="rendezvous-form" data-agendaId="<%= agenda %>">
-                <div class="form-group">
+                <div class="form-group preset-group">
                     <label for="preset-select">Appliquer un préréglage:</label>
-                    <select id="preset-select">
-                        <option value="" disabled selected>-- Sélectionner un préréglage --</option>
-                        <% if (presets && presets.length > 0) { %>
-                            <% presets.forEach(function(preset) { %>
-                                <option value="<%= preset._id %>"><%= preset.name %></option>
-                            <% }); %>
-                        <% } else { %>
-                            <option disabled>Aucun préréglage disponible</option>
-                        <% } %>
-                    </select>
+                    <div class="preset-container">
+                        <select id="preset-select">
+                            <option value="" disabled selected>-- Sélectionner un préréglage --</option>
+                            <% if (presets && presets.length > 0) { %>
+                                <% presets.forEach(function(preset) { %>
+                                    <option value="<%= preset._id %>"><%= preset.name %></option>
+                                <% }); %>
+                            <% } else { %>
+                                <option disabled>Aucun préréglage disponible</option>
+                            <% } %>
+                        </select>
+                        <a href="/presets/new" class="new-preset-link" title="Créer un nouveau préréglage">
+                            <i class="fa-solid fa-plus"></i>
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Form Fields -->
