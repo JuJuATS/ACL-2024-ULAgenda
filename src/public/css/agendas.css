@@ -358,3 +358,35 @@ input:checked + .slider:before {
     color: #212a3f;
 }
 
+.search-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    color: #333;
+    background-color: #ffffff;
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 25px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.search-link:hover {
+    background-color: #00BBEC;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Support du mode sombre */
+.dark-mode .search-link {
+    background-color: #212a3f;
+    color: #cfbff7;
+}
+
+.dark-mode .search-link:hover {
+    background-color: #00BBEC;
+    color: #ffffff;
+}
+

@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <%- include('./partials/head', {pageName: "ULAgenda"}); %>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="/css/agendas.css"> <!-- Lien vers le fichier CSS externe -->
 </head>
 <body>
@@ -11,8 +12,11 @@
     <div class="container">
         <!-- Sidebar Gauche -->
         <div class="left-sidebar">
+            <a href="/search" class="search-link">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Rechercher des rendez-vous
+            </a>
             <h2>Filtres</h2>
-            <!-- Vous pouvez ajouter les filtres ici -->
         </div>
 
         <!-- Contenu principal : les autres agendas -->

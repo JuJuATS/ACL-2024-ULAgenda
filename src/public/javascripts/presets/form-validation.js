@@ -1,7 +1,9 @@
 let originalValues = null;
+let isNewPreset = false;
 
-function initializeValidation(initialValues) {
+function initializeValidation(initialValues, isNew) {
     originalValues = initialValues;
+    isNewPreset = isNew;
 }
 
 function areSetsEqual(setA, setB) {
@@ -10,7 +12,7 @@ function areSetsEqual(setA, setB) {
 }
 
 function checkIfModified(submitButton) {
-    if (!originalValues) return;
+    if (!originalValues || isNewPreset) return;
 
     const currentValues = {
         name: document.getElementById('name').value,

@@ -4,6 +4,7 @@ const getPresetEditionPage = async (req, res) => {
     try {
         const presetId = req.params.id;
         const userId = req.user.id;
+        const isNewPreset = req.query.new === 'true';
 
         const preset = await Preset.findById(presetId)
             .populate('recurrence')
@@ -35,6 +36,7 @@ const getPresetEditionPage = async (req, res) => {
             duration: preset.duration,
             reminder: preset.reminder || '',
             description: preset.description || '',
+            isNewPreset,
         });
     } catch (error) {
         console.error('Erreur lors de la récupération du préréglage:', error);

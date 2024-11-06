@@ -32,8 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Initialisation
-    submitButton.disabled = true; // Désactiver le bouton de soumission par défaut
+    if (presetDataEl.dataset.isNew !== 'true') {
+        submitButton.disabled = true; // Désactiver le bouton de soumission par défaut si le préréglage n'est pas nouveau
+    }
     initializeRecurrenceHandlers(submitButton);
     
     recurrenceData = JSON.parse(presetDataEl.dataset.recurrence || '{}');
@@ -47,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    initializeValidation(originalValues);
+    initializeValidation(originalValues , presetDataEl.dataset.isNew === 'true');
 
     updateHiddenFields();
     initializeModal();
@@ -64,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     returnLink.addEventListener('click', (event) => {
-        if (!submitButton.disabled) {
+        if (!submitButton.disabled && presetDataEl.dataset.isNew !== 'true') {
             event.preventDefault();
             if (confirm('Des modifications non sauvegardées ont été détectées. Voulez-vous vraiment quitter la page ? Les modifications seront perdues.')) {
                 window.location.href = returnLink.href;
