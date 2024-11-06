@@ -154,12 +154,13 @@ async function saveRendezVous(rendezvous) {
         }
       } catch (error) {
         console.error('Erreur:', error);
-        afficherPopUp('Une erreur s\'est produite lors de la création de l\'agenda.', false)
+        afficherPopUp('Une erreur s\'est produite lors de la création du rendez-vous.', false)
       }
 }
 
 
 async function updateRdvList(opened) {
+    console.log("je charge")
     const response = await fetch(`http://localhost:3000/rendezvous/api/recurrence?agendaId=${agendaid}`, {
         method: 'GET',
         headers: {
@@ -169,6 +170,8 @@ async function updateRdvList(opened) {
     });
     const resp = await response.json()
     const rdvs = resp.rdvs
+    console.log("j'ai recu");
+    console.log(rdvs)
     agendaList.innerHTML = ''
     if (rdvs && rdvs.length === 0) {
         let l = document.createElement("li")
@@ -183,6 +186,8 @@ async function updateRdvList(opened) {
     }
 }
 function createLiRdv(rendezvous, opened) {
+    console.log(rendezvous);
+    
     const li = document.createElement('li');
     if (opened) {
         li.classList.add('rdv-open')
@@ -276,12 +281,14 @@ function createLiRdv(rendezvous, opened) {
         div.appendChild(title);
 
         let ul = document.createElement('ul');
-        rendezvous.recurrence["yearDay"] = rendezvous.recurrence["yearDay"].map(date => new Date(date).toDateString())
+        if(rendezvous.recurrence)
+        {
+        rendezvous.recurrence["yearDay"] = rendezvous?.recurrence["yearDay"].map(date => new Date(date).toDateString())
         rendezvous.recurrence[name === "Année" ? 'yearDay' : name === "Mois" ? 'monthDay' : 'weekDay'].forEach((recurrence) => {
             const weekLi = document.createElement('li');
             weekLi.textContent = recurrence;
             ul.appendChild(weekLi);
-        });
+        });}
         div.appendChild(ul);
         recurrenceDiv.appendChild(div);
     })

@@ -1,0 +1,581 @@
+/* Styles épurés pour la page de modification */
+body {
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+}
+
+.container {
+    max-width: 500px;
+    background-color: #ffffff;
+    padding: 20px 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+h1 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.form-group {
+    margin-bottom: 15px;
+    text-align: left;
+}
+
+label {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+    display: block;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+input[type="number"],
+textarea {
+    width: 100%;
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 5px;
+    background-color: #f9f9f9;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #3498db;
+    background-color: #ffffff;
+}
+
+.btn-modifier {
+    color: #000000;
+    font-size: 16px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.btn-modifier:focus {
+    outline: none;
+}
+
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.recurrence-form-container {
+    height: fit-content;
+    padding: 20px;
+    width: 400px;
+    border-radius: 10px;
+    position: relative;
+}
+
+.closer {
+    display: block;
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    background: red;
+    border: none;
+    cursor: pointer;
+    top: 5px;
+    right: 5px;
+    clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+}
+
+.recurrence-form-container * {
+    color: #000000 !important;
+}
+
+.tabs-container {
+    display: flex;
+    flex-direction: column;
+    border-radius: 15px 15px 0 0;
+    transition: height 0.5s ease, width 0.5s ease;
+}
+
+.tab {
+    overflow: hidden;
+    border-radius: 15px 15px 0 0;
+    border: 1px solid #000000;
+    border-bottom: none;
+    display: flex;
+    justify-content: flex-start;
+}
+
+.tab button {
+    cursor: pointer;
+    padding: 9px 16px;
+    border-radius: 15px 15px 0 0;
+    border: none;
+}
+
+.tab button span {
+    z-index: 100;
+    position: relative;
+}
+
+.tab .active button {
+    background-color: #aca5c4;
+}
+
+.tab .active button span {
+    color: #1e273d !important;
+}
+
+.tab .active svg {
+    display: block;
+    z-index: 50;
+}
+
+.tab > div {
+    position: relative;
+}
+
+.tab svg {
+    display: none;
+    bottom: 0;
+    right: 0;
+    position: absolute;
+}
+
+.tabcontent {
+    display: none;
+    padding: 30px;
+    flex-wrap: wrap;
+    border-top: none;
+    gap: 5px;
+    justify-content: flex-start;
+}
+
+.tabcontent label {
+    padding: 5px 10px;
+}
+
+.tabcontent * {
+    border-radius: 10px;
+    border: #00BBEC 1px solid;
+}
+
+.tabcontent button {
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.tabcontent button.selected {
+    border: none;
+    background-color: #92d7d7;
+}
+
+.wday {
+    padding: 5px 15px;
+    font-size: 1.2em;
+    text-align: center;
+}
+
+.mday {
+    width: 45px;
+    height: 45px;
+    padding: 5px;
+    text-align: center;
+}
+
+.recurrence-list {
+    display: none;
+    padding: 30px;
+    border: 1px solid #000000;
+    background: #1e273d;
+    flex-wrap: wrap;
+    gap: 5px;
+    justify-content: flex-start;
+}
+
+.recurrence-list ul {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    padding: 5px;
+    border: none;
+    overflow-y: scroll;
+    max-height: 200px;
+}
+
+.recurrence-list ul li {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    transition: width .7s ease-in-out;
+    position: relative;
+}
+
+.common {
+    width: 100%;
+    padding: 10px;
+    display: flex;
+    border: #000000 1px solid;
+    border-top: none;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#dateUntilRecurrence {
+    cursor: pointer;
+    width: 50%;
+    border-radius: 10px;
+    border: #000000 1px solid;
+}
+
+.clear-selection {
+    border-radius: 10px;
+    border: #000000 1px solid;
+    cursor: pointer;
+    padding: 0 15px;
+    font-size: 1.2em;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+#Année {
+    align-items: center;
+    flex-wrap: nowrap;
+    padding: 10px;
+    flex-direction: column;
+}
+
+.tabcontent label {
+    padding: 5px 10px;
+}
+
+.tabcontent .yearList {
+    list-style-type: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    gap: 10px;
+    width: 100%;
+    padding: 5px;
+    border: none;
+    overflow-y: scroll;
+    max-height: 200px;
+}
+
+.tabcontent .yearList li {
+    width: 90%;
+    padding: 10px;
+    border-radius: 5px;
+    transition: width .7s ease-in-out;
+    position: relative;
+}
+
+.tabcontent .yearList li button {
+    display: block;
+    width: 10px;
+    height: 10px;
+    position: absolute;
+    background: red;
+    border: none;
+    cursor: pointer;
+    top: 5px;
+    right: 5px;
+    clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
+}
+
+.tabcontent .yearList::-webkit-scrollbar {
+    display: none;
+}
+
+.selector-year-day {
+    border: none !important;
+    background: none;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0 5px;
+    gap: 5px;
+}
+
+.selector-year-day input::-webkit-calendar-picker-indicator, #dateUntilRecurrence::-webkit-calendar-picker-indicator {
+    filter: brightness(0) saturate(100%) invert(100%);
+}
+
+.selector-year-day input {
+    border: #000000 1px solid;
+    border-radius: 10px;
+    padding: 0 10px;
+    width: 50%;
+}
+
+.recurrence-form-container {
+background-color: #ffffff; 
+border-radius: 10px;
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); 
+padding: 20px;
+margin-top: 20px; 
+position: relative;
+}
+
+
+.recurrence-form-container h1 {
+font-size: 20px; 
+color: #2c3e50; 
+margin-bottom: 15px; 
+text-align: left; 
+}
+
+
+.recurrence-form-container button {
+background-color: #3498db; 
+color: #ffffff; 
+border: none;
+padding: 10px 15px;
+border-radius: 5px;
+cursor: pointer;
+transition: background-color 0.3s ease; 
+}
+
+.recurrence-form-container button:hover {
+background-color: #2980b9; 
+}
+
+
+.tabs-container {
+margin-bottom: 15px; 
+}
+
+.tab button {
+background-color: #f1f1f1; 
+color: #333; 
+border: 1px solid #ccc; 
+padding: 10px 15px;
+border-radius: 5px 5px 0 0; 
+margin-right: 5px; 
+transition: background-color 0.3s ease; 
+}
+
+.tab button:hover {
+background-color: #e1e1e1; 
+}
+
+
+.tabcontent {
+background-color: #f9f9f9;
+padding: 15px; 
+border: 1px solid #ccc; 
+border-radius: 0 0 5px 5px; 
+}
+
+.tabcontent button.selected {
+background-color: #92d7d7; 
+border: none; 
+color: #000;
+}
+
+.common {
+display: flex;
+align-items: center; 
+justify-content: space-between; 
+margin-bottom: 10px; 
+padding: 10px; 
+border: 1px solid #ccc; 
+border-radius: 5px;
+background-color: #f1f1f1;
+}
+
+
+.yearList li {
+display: flex;
+justify-content: space-between; 
+align-items: center;
+padding: 10px; 
+background-color: #ffffff; 
+border-radius: 5px; 
+border: 1px solid #ddd; 
+margin-bottom: 5px; 
+}
+
+.yearList li button {
+background: red; 
+border: none;
+color: white; 
+padding: 5px; 
+border-radius: 50%; 
+width: 20px; 
+height: 20px; 
+cursor: pointer; 
+transition: background-color 0.3s ease; 
+}
+
+.yearList li button:hover {
+background: darkred; /* Darker red on hover */
+}
+
+/* Adjustments for mobile responsiveness */
+@media (max-width: 600px) {
+.recurrence-form-container {
+width: 90%; /* Make container responsive */
+padding: 10px; /* Adjust padding for small screens */
+}
+}
+
+
+/* Dark mode styles */
+body.dark-mode {
+    background-color: #696061;;
+    color: #ffffff;
+}
+
+body.dark-mode .h1{
+    color : #007bff;
+}
+
+body.dark-mode .container {
+    background-color: #2a2a2a;
+    border-bottom: 3px solid #00BBEC;
+    box-shadow: 0px 2px 10px #cfbff7;
+    color: #ffffff;
+}
+
+body.dark-mode label {
+    color: #ffffff;
+}
+
+body.dark-mode input[type="text"],
+body.dark-mode input[type="date"],
+body.dark-mode input[type="time"],
+body.dark-mode input[type="number"],
+body.dark-mode textarea {
+    background-color: #3a3a3a;
+    color: #ffffff;
+    border: 1px solid #444;
+}
+
+body.dark-mode .btn-modifier {
+    background-color: #007bff;
+    color: #ffffff;
+}
+
+body.dark-mode .btn-modifier:hover {
+    background-color: #0056b3;
+}
+
+/* Toggle button styles */
+.toggle-dark-mode {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+    color: #007bff;
+}
+
+
+body.dark-mode .recurrence-form-container {
+background-color: #3a3a3a; 
+border: 1px solid #333; 
+box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5); 
+}
+
+body.dark-mode .recurrence-form-container .h1 {
+color: #004d7a; 
+font-size: 24px !important;
+font-weight: 500 !important; 
+}
+
+body.dark-mode .recurrence-form-container .common{
+background-color: #444;
+}
+
+body.dark-mode .recurrence-form-container .common .date{
+color: #e6e6e6 !important;
+}
+
+body.dark-mode .recurrence-form-container .year .selector-year-day .annee{
+color: #e6e6e6 !important;
+}
+
+body.dark-mode .recurrence-form-container label {
+color: #333 /* Couleur claire pour les étiquettes */
+}
+
+body.dark-mode .recurrence-form-container input[type="date"],
+body.dark-mode .recurrence-form-container input[type="text"],
+body.dark-mode .recurrence-form-container input[type="number"],
+body.dark-mode .recurrence-form-container textarea {
+background-color: #2b2b2b; /* Fond sombre pour les champs de saisie */
+color: #e6e6e6; /* Texte clair pour les champs de saisie */
+border: 1px solid #444; /* Bordure foncée pour les entrées */
+}
+
+
+body.dark-mode .recurrence-form-container .btn-modifier {
+background-color: #005f99; /* Couleur de fond pour le bouton */
+color: #e6e6e6; /* Couleur du texte du bouton */
+}
+
+body.dark-mode .recurrence-form-container .btn-modifier:hover {
+background-color: #004d7a; /* Couleur plus sombre pour le bouton au survol */
+}
+
+body.dark-mode .recurrence-form-container .tabcontent {
+background-color: #2b2b2b; /* Fond sombre pour le contenu des onglets */
+color: #e6e6e6; /* Couleur claire pour le texte des onglets */
+border: 1px solid #444; /* Bordure sombre pour le contenu des onglets */
+}
+
+body.dark-mode .recurrence-list {
+background-color: #1a1a1a; /* Fond très sombre pour la liste de récurrence */
+border: 1px solid #333; /* Bordure sombre pour la liste */
+color: #d9d9d9; /* Couleur claire pour le texte de la liste */
+}
+
+body.dark-mode .recurrence-list ul li {
+background-color: #2b2b2b; /* Fond sombre pour les éléments de liste */
+color: #e6e6e6; /* Couleur claire pour le texte des éléments de liste */
+}
+
+body.dark-mode .recurrence-list .date{
+color: #e6e6e6 !important; /* Couleur claire pour le texte des éléments de liste */
+}
+
+/* Bouton de réinitialisation dans le mode sombre */
+body.dark-mode .clear-selection {
+background-color: #004d7a; /* Couleur de fond sombre */
+color: #d9d9d9; /* Couleur claire pour le texte */
+}
+
+body.dark-mode .clear-selection:hover {
+background-color: #444; /* Couleur au survol pour le bouton de réinitialisation */
+}

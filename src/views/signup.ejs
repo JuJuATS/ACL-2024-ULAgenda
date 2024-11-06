@@ -20,7 +20,6 @@
 
 
     <% const formData = locals.formData || {}; %>
-    <div class="pop-up-info"></div>
     <div class="page">
         <div class="container">
           <div class="left">
@@ -75,5 +74,12 @@
     </div>
     </body>
     <script src="/javascripts/signup/validateForm.js"></script>
+    <script>
+        document.getElementById('signupForm').addEventListener('submit', function(event) {
+            if (!validateForm()) {
+                event.preventDefault();
+            }
+        });
+    </script>
 
 </html>

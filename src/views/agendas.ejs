@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="/css/agendas.css"> <!-- Lien vers le fichier CSS externe -->
 </head>
 <body>
-    <header>
+    <header style="padding: 10px 10px !important;">
         <%- include('./partials/header', {user: true}); %>
     </header>
     <div class="container">
@@ -44,7 +44,7 @@
 
             <% if (agendas && agendas.length > 0) { %>
                 <% agendas.forEach(function(agenda, index) { %>
-                    <div class="calendar">
+                    <div class="calendar" data-id="<%= agenda._id %>" >
                         <button class="close-agenda" onclick="removeAgenda(this)">×</button>
                         <h3><a href="/rendezvous?agendaId=<%= agenda._id%>"><%= agenda.name %></a></h3>
 
@@ -125,6 +125,9 @@
             agendaNameInput.value = "";
             // Fermer la modal
             modal.style.display = "none";
+            setTimeout(() => {
+        window.location.reload();
+    }, 1);
           } else {
             const errorData = await response.json();
             alert(errorData.message + ' : ' + JSON.stringify(errorData.error));
@@ -182,6 +185,32 @@ document.getElementById("confirmDeleteButton").onclick = async function() {
         }
     }
 };
+
+
+// Bascule du mode sombre
+const toggleSwitch = document.getElementById('darkModeToggle');
+const body = document.body;
+
+// Vérifie si l'utilisateur a déjà un mode préféré
+const currentTheme = localStorage.getItem('theme');
+if (currentTheme) {
+    if (currentTheme === 'dark') {
+        body.classList.add('dark-mode');
+        toggleSwitch.checked = true;
+    }
+}
+
+// Gère la bascule
+toggleSwitch.addEventListener('change', () => {
+    if (toggleSwitch.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+    } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+    }
+
+});
 
 
 
