@@ -1,3 +1,59 @@
+function redirectToAgenda(agendaId) {
+    window.location.href = `/rendezvous?agendaId=${agendaId}`;
+}
+
+function stopEventPropagation(event) {
+    event.stopPropagation();
+}
+
+async function toggleEditMode(button, event) {
+    event.stopPropagation();
+
+    const calendar = button.closest('.calendar');
+    const titleView = calendar.querySelector('.title-view');
+    const editTitle = calendar.querySelector('.edit-title');
+    const input = editTitle.querySelector('input');
+
+    if (editTitle.style.display === 'none' || !editTitle.style.display) {
+        // Mode édition
+        titleView.style.display = 'none';
+        editTitle.style.display = 'flex';
+        button.textContent = 'Sauvegarder';
+        input.focus();
+    } else {
+        // Sauvegarde
+        const newTitle = input.value;
+        const agendaId = calendar.getAttribute('data-id');
+
+        try {
+            const response = await fetch(`http://localhost:3000/agendas/updateAgendaTitle`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ agendaId, newTitle })
+            });
+
+            const responseText = await response.text();
+            console.log('Response Text:', responseText);
+
+            const data = JSON.parse(responseText);
+
+            if (data.success) {
+                titleView.textContent = newTitle;
+                titleView.style.display = 'block';
+                editTitle.style.display = 'none';
+                button.textContent = 'Modifier';
+            } else {
+                alert('Erreur lors de la sauvegarde. Veuillez réessayer.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Erreur lors de la sauvegarde. Veuillez réessayer.');
+        }
+    }
+}
+
 // Éléments de la modal et du bouton
 const modal = document.getElementById("agendaModal");
 const addButton = document.querySelector(".add-button");
