@@ -37,19 +37,56 @@
     </div>
     <script>
       const agendas = []
-     
+      function showTooltip(eventRect, event,size) {
+        var tooltip = document.getElementById('event-tooltip') || 
+                 document.createElement('div');
+        tooltip.id = 'event-tooltip';
+        tooltip.style.position = 'absolute';
+        tooltip.style = `
+                  position:absolute;
+                  top:${(eventRect.top)}px;
+                  left:${eventRect.left}px;
+                  border:2px solid black;
+                  background:#3788d8;
+                  z-index:999999;
+                  transform:translateY(-100%);
+            `
+            const startHour = (event.start.getHours() <10 ? "0":"") + event.start.getHours()
+            const startMinutes = (event.start.getMinutes() <10 ? "0":"") + event.start.getMinutes()
+            const startSecondes = (event.start.getSeconds() <10 ? "0":"") + event.start.getSeconds()
+            const endHour = (event.end.getHours() <10 ? "0":"") + event.end.getHours()
+            const endMinutes = (event.end.getMinutes() <10 ? "0":"") + event.end.getMinutes()
+            const endSecondes = (event.end.getSeconds() <10 ? "0":"") + event.end.getSeconds()
+            tooltip.innerText = `${event.title}
+              ${startHour}:${startMinutes}:${startSecondes} - ${endHour}:${endMinutes}:${endSecondes}
+              ${event.extendedProps.description}
+            `
+            
+
+    if (!document.getElementById('event-tooltip')) {
+      document.body.appendChild(tooltip);
+    }
+  }
       document.addEventListener('DOMContentLoaded', function() {
         var calendarEl = document.getElementById('calendar');
         var calendar = new FullCalendar.Calendar(calendarEl, {
           eventSources:[
             async(info,success,fail)=>{
-            await fetch(`/api/getDate?agenda=${encodeURIComponent(JSON.stringify(agendas))}`)
-            .then(res=>res.json())
-            .then(data=>{
-              console.log(data)
-              success(data.event)
-            })
-            .catch(err=>fail(err))
+                let events = []
+                console.log(agendas)
+                for(agenda in agendas){
+
+                  console.log(agendas[agenda].event,agendas[agenda].visible)
+                  if(agendas[agenda].visible){
+                    console.log(Array.isArray(agendas[agenda].event))
+                    events = [...events,...agendas[agenda].event]
+                    console.log(events);
+                    
+                  }
+                }
+                console.log(events)
+                
+                return events;
             }
           ],
           timeZone:"UTC",
@@ -72,42 +109,14 @@
            },
            displayEventEnd:true,
            eventMouseEnter:(mouseInfo)=>{
-            let rect = mouseInfo.el.getBoundingClientRect();
-            console.log(mouseInfo);
-            const divInfo = document.createElement("div");
-            divInfo.classList.add("popupEvent")
-            divInfo.style = `
-              position:absolute;
-              top:${rect.top}px;
-              left:${rect.left}px;
-              width:${mouseInfo.el.offsetWidth}px;
-              
-              border:2px solid black;
-              background:#3788d8;
-              z-index:999999
-            `
-            const startHour = (mouseInfo.event.start.getHours() <10 ? "0":"") + mouseInfo.event.start.getHours()
-            const startMinutes = (mouseInfo.event.start.getMinutes() <10 ? "0":"") + mouseInfo.event.start.getMinutes()
-            const startSecondes = (mouseInfo.event.start.getSeconds() <10 ? "0":"") + mouseInfo.event.start.getSeconds()
-            const endHour = (mouseInfo.event.end.getHours() <10 ? "0":"") + mouseInfo.event.end.getHours()
-            const endMinutes = (mouseInfo.event.end.getMinutes() <10 ? "0":"") + mouseInfo.event.end.getMinutes()
-            const endSecondes = (mouseInfo.event.end.getSeconds() <10 ? "0":"") + mouseInfo.event.end.getSeconds()
-            divInfo.innerText = `${mouseInfo.event.title}
-              ${startHour}:${startMinutes}:${startSecondes} - ${endHour}:${endMinutes}:${endSecondes}
-              ${mouseInfo.event.extendedProps.description}
-            `
-            const container = document.querySelector(".container")
-            container.appendChild(divInfo)
-
+            let eventRect = mouseInfo.el.getBoundingClientRect();
+            let size = {width:mouseInfo.el.offsetWidth,height:mouseInfo.el.offsetHeight}
+            showTooltip(eventRect, mouseInfo.event,size);
            },
            eventMouseLeave:(mouseLeaveInfo)=>{
-              const popup = document.querySelector(".popupEvent")
+              const popup = document.querySelector("#event-tooltip")
               popup.remove()
            }
-
-           
-          
-          
         });
         
         const sideBar = document.querySelector(".sideBar");
@@ -129,7 +138,7 @@
           checkbox.name = `${element.name}`
           checkbox.dataset.id = element._id
           checkbox.addEventListener("change",(el)=>{
-            refetch(el,calendar)
+            refetch(el.target,calendar)
           })
          const divcheckbox = document.createElement("div")
          divcheckbox.style = "display:flex;flex-direction:row;padding-left:20px;gap:20px;width:50%;justify-content:space-between"
@@ -143,16 +152,26 @@
          listAgenda.appendChild(agenda) 
          
       }
-      const refetch = (el,calendar)=>{
-          let checkbox = document.querySelectorAll(".checkAgenda");
-          agendas.splice(0,agendas.length)
-          Array.from(checkbox).forEach(el=>{
-            if(el.checked){
-              agendas.push(el.dataset.id)
+      const refetch = async (el,calendar)=>{
+      
+          if(el.checked){
+            if(!agendas[el.dataset.id]){
+             const data = await fetch(`/api/getDate?agenda=${el.dataset.id}`).then(res=>res.json())
+             console.log("je fetch")
+             agendas[el.dataset.id]={event:data.event,visible:true}
             }
-          })
+            else{
+              agendas[el.dataset.id].visible =true;
+            }
+            
+          }
+          else{
+              agendas[el.dataset.id].visible = false;
+            }
           
           calendar.refetchEvents()
+          console.log("j'ai refetch");
+          
       }
       fetch("/api/getAgenda").then(res=>res.json()).then(data=>data.forEach(element => {
         
