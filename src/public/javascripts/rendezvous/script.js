@@ -160,7 +160,7 @@ async function saveRendezVous(rendezvous) {
 
 
 async function updateRdvList(opened) {
-    console.log("je charge")
+ 
     const response = await fetch(`http://localhost:3000/rendezvous/api/recurrence?agendaId=${agendaid}`, {
         method: 'GET',
         headers: {
@@ -170,8 +170,7 @@ async function updateRdvList(opened) {
     });
     const resp = await response.json()
     const rdvs = resp.rdvs
-    console.log("j'ai recu");
-    console.log(rdvs)
+ 
     agendaList.innerHTML = ''
     if (rdvs && rdvs.length === 0) {
         let l = document.createElement("li")
@@ -186,7 +185,7 @@ async function updateRdvList(opened) {
     }
 }
 function createLiRdv(rendezvous, opened) {
-    console.log(rendezvous);
+
     
     const li = document.createElement('li');
     if (opened) {

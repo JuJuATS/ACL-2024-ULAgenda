@@ -87,7 +87,7 @@
           timeZone:"UTC",
           allDaySlot:false,
           nowIndicator:true,
-          height:"100%",
+          height:"70%",
           initialView: 'timeGridWeek',
           dayHeaderFormat:{ weekday: 'short'},
            locale: 'fr',
@@ -152,6 +152,8 @@
           if(el.checked){
             if(!agendas[el.dataset.id]){
              const data = await fetch(`/api/getDate?agenda=${el.dataset.id}`).then(res=>res.json())
+             console.log(data)
+             console.log("j'ai recu")
              agendas[el.dataset.id]={event:data.event,visible:true}
             }
             else{

@@ -5,9 +5,7 @@ const router = express.Router();
 
 
 router.get("/",authMiddleware,(req,res)=>{
-
     res.render("planning",{user:req.user.id});
-    
 })
 
 module.exports = router

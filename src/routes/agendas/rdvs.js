@@ -65,7 +65,7 @@ router.post('/', authMiddleware, async (req, res) => {
   try {
 
     const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence } = req.body;
-    console.log(recurrences)
+    
     console.log(name,description,dateDebut,dateFin,agendaId)
     if (!name || !dateDebut || !dateFin || !agendaId ) {
       console.log("il manque quelque chose")
@@ -124,7 +124,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     try {
         const rdvId = req.params.id;
         const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence } = req.body;
-        console.log("haaaaa", recurrences, finRecurrence)
+        
         if (!name || !dateDebut || !dateFin) {
             return res.status(400).json({ message: "Fields 'name', 'dateDebut', 'dateFin' are required." });
         }
@@ -185,7 +185,6 @@ router.get('/edit/:id', authMiddleware, async (req, res) => {
       const rec = await Recurrence.findById(rendezvous.recurrences);
       if(rec!==null){
         const {yearDay, weekDay, monthDay, dateFin} = rec
-        yearDay.map(d => console.log(typeof d))
         res.render('modifier_rendezvous', { rendezvous: rendezvous, rec: {yearDay, weekDay, monthDay, dateFin}, recIdd: rec.id });
       }
       else{
