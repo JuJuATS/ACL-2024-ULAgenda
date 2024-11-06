@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Rechercher des rendez-vous</title>
+    <link rel="stylesheet" type="text/css" href="/css/partials/header.css">
+    <link rel="stylesheet" type="text/css" href="/css/partials/footer.css">
+    <link rel="stylesheet" type="text/css" href="/css/search/searchPage.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.css">
+</head>
+<body>
+    <div class="page-container">
+        <header>
+            <%- include('partials/header', {user: true}) %>
+        </header>
+        <main class="content">
+            <div class="search-container">
+                <div class="search-controls">
+                    <input type="text"
+                           class="search-input"
+                           placeholder="Rechercher un rendez-vous..."
+                           id="searchInput">
+
+                    <div class="date-filters">
+                        <div>
+                            <label for="dateDebut">À partir du:</label>
+                            <input type="date" id="dateDebut">
+                        </div>
+                        <div>
+                            <label for="dateFin">Jusqu'au:</label>
+                            <input type="date" id="dateFin">
+                        </div>
+                    </div>
+
+                    <div class="duration-filters">
+                        <label for="durationRange">Durée (minutes):</label>
+                        <div id="durationRange"></div>
+                        <div id="durationRangeValueContainer">
+                            <span id="durationRangeValue"></span>
+                        </div>
+                    </div>
+
+                    <div class="sort-controls">
+                        <label>Trier par:</label>
+                        <div>
+                            <input type="checkbox" id="sortPriority" value="priority">
+                            <label for="sortPriority">Priorité</label>
+                            <select id="sortPriorityOrder">
+                                <option value="asc">Ascendant</option>
+                                <option value="desc">Descendant</option>
+                            </select>
+                        </div>
+                        <div>
+                            <input type="checkbox" id="sortDuration" value="duration">
+                            <label for="sortDuration">Durée</label>
+                            <select id="sortDurationOrder">
+                                <option value="asc">Ascendant</option>
+                                <option value="desc">Descendant</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <ul class="rdv-list" id="rdvList">
+                    <!-- Les RDVs seront ajoutés ici dynamiquement -->
+                </ul>
+
+                <div class="error-container" id="errorContainer" style="display: none;">
+                    <div class="error-message">
+                        <span id="errorText"></span>
+                        <button class="error-close" onclick="hideError()">×</button>
+                    </div>
+                </div>
+
+                <div class="no-results" id="noResultsMessage" style="display: none;">
+                    Aucun rendez-vous ne correspond à la recherche.
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.5.0/nouislider.min.js"></script>
+    <script src="/javascripts/search/searchPage.js"></script>
+</body>
+</html>

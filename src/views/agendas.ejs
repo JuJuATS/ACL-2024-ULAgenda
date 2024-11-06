@@ -1,12 +1,11 @@
-*<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ULAgenda</title>
+    <%- include('./partials/head', {pageName: "ULAgenda"}); %>
     <link rel="stylesheet" href="/css/agendas.css"> <!-- Lien vers le fichier CSS externe -->
 </head>
 <body>
+<<<<<<< HEAD
     <header class="navbar">
         <div>
             <a href="./" class="logo">UL AGENDA</a>
@@ -26,6 +25,10 @@
                 </label>
             </div>
         </nav>
+=======
+    <header>
+        <%- include('./partials/header', {user: true}); %>
+>>>>>>> 34f13b241c06947996ea2b0b0c7b733fe9331aa4
     </header>
     <div class="container">
         <!-- Sidebar Gauche -->
@@ -55,15 +58,19 @@
                     <button id="annuler" onclick="closeConfirmDeleteModal()">Annuler</button>
                 </div>
             </div>
-        
+
             <div class="calendar new-agenda">
                 <h4>Créer un nouvel agenda</h4>
                 <button class="add-button">+</button> <!-- Bouton "+" -->
             </div>
-        
+
             <% if (agendas && agendas.length > 0) { %>
                 <% agendas.forEach(function(agenda, index) { %>
+<<<<<<< HEAD
                     <div class="calendar" data-id="<%= agenda._id %>" >
+=======
+                    <div class="calendar">
+>>>>>>> 34f13b241c06947996ea2b0b0c7b733fe9331aa4
                         <button class="close-agenda" onclick="removeAgenda(this)">×</button>
                         <h3><a href="/rendezvous?agendaId=<%= agenda._id%>"><%= agenda.name %></a></h3>
 
@@ -71,11 +78,12 @@
                     </div>
                 <% }); %>
             <% } else { %>
-               
+
             <% } %>
         </div>
+    </div>
     <footer>
-        &copy; 2024 UL-AGENDA. All rights reserved.
+        <%- include('./partials/footer', {user: {}}); %>
     </footer>
 </body>
 
@@ -190,8 +198,8 @@ document.getElementById("confirmDeleteButton").onclick = async function() {
 
             if (response.ok) {
                 agendaToDelete.remove(); // Supprime l'agenda du DOM
-                closeConfirmDeleteModal(); 
-                agendaToDelete = null; 
+                closeConfirmDeleteModal();
+                agendaToDelete = null;
             } else {
                 const errorData = await response.json();
                 alert('Erreur lors de la suppression de l\'agenda: ' + errorData.message);

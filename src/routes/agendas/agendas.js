@@ -4,7 +4,6 @@ const ObjectId = require('mongodb').ObjectId;
 const authMiddleware = require('../../middlewares/authMiddleware.js')
 const router = express.Router();
 
-
 // Route pour afficher les agendas
 router.get('/', authMiddleware, async (req, res) => {
 
@@ -14,10 +13,9 @@ router.get('/', authMiddleware, async (req, res) => {
     return res.status(401).json({ message: 'Utilisateur non authentifié' });
   }*/
 
-   let userId = ObjectId.createFromTime(req.session.id);  
-  const agendas = await Agenda.find({userId:userId});
+  const agendas = await Agenda.find({userId: req.user.id});
 
-  res.render('agendas' ,{ agendas,user:req.session.isLoggedIn });
+  res.render('agendas' ,{ agendas });
 });
 
 // Route pour supprimer un agenda par son ID
@@ -41,7 +39,7 @@ router.delete('/:id', async (req, res) => {
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const { name } = req.body;
-    const userId = ObjectId.createFromTime(req.session.id);
+    const userId = req.user.id;
 
     if (!name) {
       return res.status(400).json({ message: 'Le nom de l\'agenda est requis' });

@@ -1,0 +1,31 @@
+========================================================================================
+					SPRINT 2
+========================================================================================
+
+
+Objectif :
+----------
+Avoir une première version utilisable, qui contient toutes les fonctionnalités importantes.
+
+
+Tableau des fonctionnalités du sprint :  
+---------------------------------------
+┌───────────────────────────────────────────────────────┬───────────┬────────────┐
+│                                                       │ Priorité  │ Estimation │
+├───────────────────────────────────────────────────────┼───────────┼────────────┤
+│ Modifier un rendez-vous                               │     1     │      1     │
+│ Supprimer un rendez-vous                              │     1     │      3     │
+│ Modifier un agenda                                    │     1     │      1     │
+│ Supprimer un agenda                                   │     1     │      3     │
+│ Ajouter des catégories de rendez-vous                 │     2     │      5     │
+│ Ajouter des rendez-vous récurrents                    │     1     │      8     │
+│ Modifier des catégories                               │     2     │      3     │
+│ Filtrer des rendez-vous / Recherche : 		│     4     │      3     │
+│	- Par nom 					│	    │		 │
+│	- Par catégorie					│	    │		 │
+│	- Par priorité                            	│  	    │		 │
+│ Visualisation d'un calendrier de l'agenda             │     4     │      8     │
+└───────────────────────────────────────────────────────┴───────────┴────────────┘
+
+
+

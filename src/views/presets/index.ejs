@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes Préréglages</title>
+    <link rel="stylesheet" href="/css/partials/header.css">
+    <link rel="stylesheet" href="/css/partials/footer.css">
+    <link rel="stylesheet" href="/css/presets/index.css">
+</head>
+<body>
+    <header>
+        <%- include('../partials/header', {user: true}); %>
+    </header>
+
+    <div class="content">
+        <div class="presets-page">
+            <h1>Mes Préréglages</h1>
+
+            <%- include('../partials/flashMessages') %>
+
+            <table border="1">
+                <thead>
+                    <tr>
+                        <th>Nom du préréglage</th>
+                        <th>Nom du rendez-vous</th>
+                        <th>Couleur</th>
+                        <th>Heure de début</th>
+                        <th>Priorité</th>
+                        <th>Récurrence</th>
+                        <th>Durée</th>
+                        <th>Rappel</th>
+                        <th colspan="2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% if (presets.length === 0) { %>
+                        <tr>
+                            <td colspan="8">Aucun préréglage trouvé.</td>
+                        </tr>
+                    <% } else { %>
+                        <% presets.forEach(preset => { %>
+                            <tr>
+                                <td><%= preset.name %></td>
+                                <td><%- preset.eventName ? preset.eventName : '<i>Aucun</i>' %></td>
+                                <td style="background-color: <%= preset.color %>;">&nbsp;</td>
+                                <td><%- preset.startHour ? preset.startHour : '<i>Aucune</i>' %></td>
+                                <td class="<%= preset.priority === 'Haute' ? 'priority-high' : (preset.priority === 'Moyenne' ? 'priority-medium' : 'priority-low') %>">
+                                    <%= preset.priority %>
+                                </td>
+                                <td><%- preset.recurrence ? preset.recurrence.summary : '<i>Aucune</i>' %></td>
+                                <td><%= preset.duration %> min</td>
+                                <td><%= preset.reminder ? preset.reminder + ' min' : 'Aucun' %></td>
+                                <td colspan="2">
+                                    <div class="action-buttons">
+                                        <button onclick="window.location.href='/presets/<%= preset._id %>'">Modifier</button>
+                                        <form action="/presets/<%= preset._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer ce préréglage ?')">
+                                            <button type="submit">Supprimer</button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    <% } %>
+                </tbody>
+            </table>
+
+            <a href="/presets/new">Créer un nouveau préréglage</a>
+        </div>
+    </div>
+</body>
+</html>

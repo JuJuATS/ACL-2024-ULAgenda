@@ -1,0 +1,92 @@
+@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
+
+* {
+    font-family: "Afacad Flux", sans-serif;
+    font-weight:600;
+}
+header {
+    position:sticky;
+    top:0;
+    width:100%;
+    padding: 20px;
+    background-color: #212a3f;
+    z-index:1000;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width:100%;
+}
+
+nav a {
+    color:#cfbff7;
+}
+
+.logo {
+    background-color: transparent;
+    color: #cfbff7;
+    margin: 0 100px;
+    font-size: 1.5rem;
+    text-decoration: none;
+}
+
+.right {
+    position:relative;
+    width:20%;
+    display:flex;
+    justify-content: space-around;
+}
+.user-container {
+    position: absolute;
+    left: 0;
+    width: 30%;
+    display: flex;
+    gap:10px;
+    align-items: center;
+    flex-direction: column;
+}
+
+.user-button {
+    width:44px;
+    padding-bottom: 44px;
+
+    background: #cfbff7 url("../../images/user.png") no-repeat center/75%;
+    border-radius: 50%;
+}
+.hidden {
+    border-radius:10px;
+    padding:5px;
+    background:#cfbff7;
+    color: white;
+    text-align: center;
+    display:none;
+    font-size:1.1rem;
+}
+.user-container:hover .hidden {
+    display:block;
+}
+
+.connect-button {
+
+    padding: 10px 15px;
+    font-size: 1rem;
+    font-weight:bold;
+    text-align: center;
+}
+
+.app-button {
+
+
+    min-width:fit-content;
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-size: 1rem;
+    color: white;
+    margin: 0 20px;
+    background-color: #259e88;
+    font-weight:bold;
+    text-align: center;
+    text-decoration: none;
+}

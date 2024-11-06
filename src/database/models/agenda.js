@@ -1,9 +1,8 @@
 const mongoose = require('mongoose');
-const { rdvSchema } = require('./rdv');
 
 const agendaSchema = new mongoose.Schema({
     name: { type: String, required: true },
-    rdvs: [rdvSchema],
+    rdvs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Rdv' }],
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 }, { collection: 'agendas' });
 

@@ -5,8 +5,8 @@ const jwt = require('jsonwebtoken');
 const argon2 = require('argon2');
 
 const forgottenPassword = async (req,res)=>{
-    if(req.session.isLoggedIn){
-        res.redirect(302,"/")
+    if(req.isAuthenticated()){
+        res.redirect("/");
     }
     else{
         res.render("forgottenPasswordForm",{expressFlash:req.flash("error")});
@@ -15,34 +15,36 @@ const forgottenPassword = async (req,res)=>{
 }
 
 const forgottenPasswordLinkMaker  = async(req,res)=>{
-        if(req.session.isLoggedIn){
+        if(req.isAuthenticated()){
             return;
         }
         const { email } = req.body;
         const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
         if(!email){
             req.flash("error","Entrer votre adresse mail");
-            res.redirect(302,"/forgotten-password");
-        }
-        if(!emailRegex.test(email)){
-            req.flash("error","Veuillez entrer une adresse mail valide")
-            res.redirect(302,"/forgotten-password");
-        }
-        const user = await User.findOne({email:email});
-        if(!user){
-            req.flash("error","adresse mail non trouvé");
-            res.redirect(302,"/forgotten-password");
-        }
-        else{
-            const token = createVerificationToken(user);
-            user.resetPasswordToken = token;
-            user.save();
-            const sendingMail = await sendResetMail(user,token);
-            res.render("resetPasswordLinkConfirmation");
+            return res.redirect("/forgotten-password");
+        }else{
+
+            if(!emailRegex.test(email)){
+                req.flash("error","Veuillez entrer une adresse mail valide")
+               return res.redirect("/forgotten-password");
+            }
+            const user = await User.findOne({email:email});
+            if(!user){
+                req.flash("error","adresse mail non trouvé");
+               return res.redirect("/forgotten-password");
+            }
+            else{
+                const token = createVerificationToken(user);
+                user.resetPasswordToken = token;
+                user.save();
+                const sendingMail = await sendResetMail(user,token);
+              return  res.render("resetPasswordLinkConfirmation");
+            }
         }
 }
 const resetPassword = async(req,res)=>{
-    if(req.session.isLoggedIn){
+    if(req.isAuthenticated()){
         return res.redirect("/")
     }
     const {token} = req.query
@@ -55,7 +57,7 @@ const resetPassword = async(req,res)=>{
             req.flash("error","utilisateur non trouvé");
             res.redirect(401,"/forgottenPassword");
         }else{
-            res.render("passwordChange",{expressFlash:req.flash("error"),token:token});
+            res.render("passwordChange",{token:token});
         }
     }catch(error){
         req.flash("error","ce lien n'est pas valide ou expiré");
@@ -63,7 +65,7 @@ const resetPassword = async(req,res)=>{
     }
     }
 const changePassword = async(req,res)=>{
-    if(req.session.isLoggedIn){
+    if(req.isAuthenticated()){
         return res.redirect("/");
     }
     const {token} = req.query;

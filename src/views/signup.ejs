@@ -11,60 +11,64 @@
             margin-left: 10px;
         }
     </style>
+    <link rel="stylesheet" href="css/signup/signup.css">
 </head>
 <body>
-    <h1>Inscription</h1>
+    
 
-    <% if (locals.messagesFlash) { %>
-        <div>
-            <% locals.messagesFlash.forEach(function(message) { %>
-                <div><%= message.content %></div>
-            <% }); %>
-        </div>
-    <% } %>
 
     <% const formData = locals.formData || {}; %>
-
-    <form id="signupForm" action="/signup" method="post">
-        <div>
-            <label for="nom">Nom:</label>
-            <input type="text" id="nom" name="nom" value="<%= formData.nom || '' %>" required>
-            <span id="nomError" class="error-message"></span>
+    <div class="page">
+        <div class="container">
+          <div class="left">
+            <div class="login">Inscription</div>
+           
+          </div>
+          <div class="right">
+            <form class="form UserForm" id = "signupForm" method="post" action="/signup">
+              
+              <div style="position: relative;">
+                <label for="nom">Nom:</label>
+                <input type="text" id="nom" name="nom" value="<%= formData.nom || '' %>" required>
+                <span id="nomError" class="error-message"></span>
+              </div>
+              <div>
+                <label for="prenom">Prénom:</label>
+                <input type="text" id="prenom" name="prenom" value="<%= formData.prenom || '' %>" required>
+                <span id="prenomError" class="error-message"></span>
+                </div>
+                <div>
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" name="email" value="<%= formData.email || '' %>" required>
+                    <span id="emailError" class="error-message"><%= locals.errors && locals.errors.email ? locals.errors.email : '' %></span>
+                </div>
+                
+                <div>
+                    <label for="pseudo">Pseudo:</label>
+                    <input type="text" id="pseudo" name="pseudo" value="<%= formData.pseudo || '' %>" required>
+                    <span id="pseudoError" class="error-message"><%= locals.errors && locals.errors.pseudo ? locals.errors.pseudo : '' %></span>
+                </div>
+                
+                <div>
+                    <label for="password">Mot de passe:</label>
+                    <input type="password" id="password" name="password" required>
+                    <span id="passwordError" class="error-message"></span>
+                </div>
+                
+                <div>
+                    <label for="passwordConf">Confirmer le mot de passe:</label>
+                    <input type="password" id="passwordConf" name="passwordConf" required>
+                    <span id="passwordConfError" class="error-message"></span>
+                </div>
+              <input type="submit" id="submit" value="S'inscrire">
+            </form>
+            <% if ( locals.expressFlash) { %>
+                <p class="error"> <%= expressFlash %> </p>
+                <%}%>
+          </div>
         </div>
-        
-        <div>
-            <label for="prenom">Prénom:</label>
-            <input type="text" id="prenom" name="prenom" value="<%= formData.prenom || '' %>" required>
-            <span id="prenomError" class="error-message"></span>
-        </div>
-        
-        <div>
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" value="<%= formData.email || '' %>" required>
-            <span id="emailError" class="error-message"><%= locals.errors && locals.errors.email ? locals.errors.email : '' %></span>
-        </div>
-        
-        <div>
-            <label for="pseudo">Pseudo:</label>
-            <input type="text" id="pseudo" name="pseudo" value="<%= formData.pseudo || '' %>" required>
-            <span id="pseudoError" class="error-message"><%= locals.errors && locals.errors.pseudo ? locals.errors.pseudo : '' %></span>
-        </div>
-        
-        <div>
-            <label for="password">Mot de passe:</label>
-            <input type="password" id="password" name="password" required>
-            <span id="passwordError" class="error-message"></span>
-        </div>
-        
-        <div>
-            <label for="passwordConf">Confirmer le mot de passe:</label>
-            <input type="password" id="passwordConf" name="passwordConf" required>
-            <span id="passwordConfError" class="error-message"></span>
-        </div>
-        
-        <button type="submit">S'inscrire</button>
-    </form>
-
+      </div>
+    </body>
     <script src="/javascripts/signup/validateForm.js"></script>
     <script>
         document.getElementById('signupForm').addEventListener('submit', function(event) {
@@ -73,5 +77,5 @@
             }
         });
     </script>
-</body>
+
 </html>
