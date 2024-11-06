@@ -5,30 +5,8 @@
     <link rel="stylesheet" href="/css/agendas.css"> <!-- Lien vers le fichier CSS externe -->
 </head>
 <body>
-<<<<<<< HEAD
-    <header class="navbar">
-        <div>
-            <a href="./" class="logo">UL AGENDA</a>
-        </div>
-        <nav>
-            <% if (user) { %>
-                <a href="./logout" class="user-button"></a>
-            <% } else { %>
-                <a href="./signin" class="connect-button">Connection</a>
-            <% } %>
-            <a href="./app" class="app-button">Agenda App</a>
-
-            <div class="theme-switch-wrapper">
-                <label class="theme-switch">
-                    <input type="checkbox" id="darkModeToggle">
-                    <span class="slider"></span>
-                </label>
-            </div>
-        </nav>
-=======
     <header>
         <%- include('./partials/header', {user: true}); %>
->>>>>>> 34f13b241c06947996ea2b0b0c7b733fe9331aa4
     </header>
     <div class="container">
         <!-- Sidebar Gauche -->
@@ -66,11 +44,7 @@
 
             <% if (agendas && agendas.length > 0) { %>
                 <% agendas.forEach(function(agenda, index) { %>
-<<<<<<< HEAD
                     <div class="calendar" data-id="<%= agenda._id %>" >
-=======
-                    <div class="calendar">
->>>>>>> 34f13b241c06947996ea2b0b0c7b733fe9331aa4
                         <button class="close-agenda" onclick="removeAgenda(this)">×</button>
                         <h3><a href="/rendezvous?agendaId=<%= agenda._id%>"><%= agenda.name %></a></h3>
 
