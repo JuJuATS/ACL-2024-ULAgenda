@@ -6,16 +6,30 @@ const router = express.Router();
 
 // Route pour afficher les agendas
 router.get('/', authMiddleware, async (req, res) => {
-
-  /*let userId = req.session.userId;
-
-  if (!userId) {
-    return res.status(401).json({ message: 'Utilisateur non authentifié' });
-  }*/
-
   const agendas = await Agenda.find({userId: req.user.id});
-
   res.render('agendas' ,{ agendas });
+});
+
+// Route pour mettre à jour le titre d'un agenda
+router.put('/updateAgendaTitle', async (req, res) => {
+  try {
+    const { agendaId, newTitle } = req.body;
+
+    if (!agendaId || !newTitle) {
+      return res.status(400).json({ success: false, message: 'ID de l\'agenda et nouveau titre sont requis' });
+    }
+
+    const updatedAgenda = await Agenda.findByIdAndUpdate(agendaId, { name: newTitle }, { new: true });
+
+    if (!updatedAgenda) {
+      return res.status(404).json({ success: false, message: 'Agenda non trouvé' });
+    }
+
+    res.json({ success: true, updatedAgenda });
+  } catch (err) {
+    console.error('Erreur lors de la mise à jour de l\'agenda:', err);
+    res.status(500).json({ success: false, message: 'Erreur lors de la modification' });
+  }
 });
 
 // Route pour supprimer un agenda par son ID
