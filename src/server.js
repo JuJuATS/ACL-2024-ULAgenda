@@ -125,8 +125,12 @@ app.get('/', async (req, res) => {
   res.render('index', { user: req.user} );
 });
 
+
+app.get('/profil', async (req, res) => {
+  res.render('profil', { user: req.user} );
+});
 app.use('/agendas', agendaRoutes);
-app.use('/rendezvous',rdvRoutes);
+app.use('/rendezvous', rdvRoutes);
 // Routes pour afficher le formulaire d'inscription
 app
   .get('/signup', (req, res) => {

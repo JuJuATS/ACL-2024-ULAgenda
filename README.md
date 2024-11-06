@@ -14,8 +14,23 @@
   </p>
 </div>
 
+
+markdown
+Copy code
+<!-- GETTING STARTED -->
+## Mode d'emploi
+
+Pour lancer l'application UlPlanning, suivez les étapes ci-dessous :
+
+1. Installez les dépendances du projet :
+   ```sh
+   git clone https://github.com/JuJuATS/ACL-2024-ULAgenda
+   npm install
+   cd src
+   npm run start
 <!-- TABLE OF CONTENTS -->
 <details>
+
   <summary>Sommaire</summary>
   <ol>
     <li>

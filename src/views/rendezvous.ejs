@@ -4,13 +4,14 @@
     <%- include('./partials/head', {pageName: ""}); %>
     <title>Agenda Rendez-vous</title>
     <link rel="stylesheet" href="css/rendezvous/styles.css">
+    <link rel="stylesheet" href="css/partials/toaster.css">
 </head>
 <body>
+    <div class="pop-up-info"></div>
     <header>
         <%- include('./partials/header', {user: user}); %>
     </header>
     <div class="wrapper">
-
         <div class="container">
             <h1>Planifier un rendez-vous</h1>
             <form id="rendezvous-form" data-agendaId="<%= agenda %>">
@@ -65,31 +66,15 @@
                         <option value="1440">1 jour avant</option>
                     </select>
                 </div>
-                <button type="button" class="form-button" id="btn-recurrence">Récurrence</button>
-
                 <button type="submit" class="form-button" id="btn-placer">Placer le rendez-vous</button>
-
-                <button type="button" class="form-button" id="btn-view-rdv">View Rdv List</button>
             </form>
+            <button type="button" class="form-button" id="btn-recurrence">RÉCURRENCES</button>
+            <button type="button" class="form-button" id="btn-view-rdv">RENDEZ - VOUS</button>
         </div>
 
-        <div class="agenda"style="overflow-x: hidden;">
-            <h2 style="white-space:nowrap;">Rendez-vous</h2>
-            <ul id="agenda-list">
-                <% if (rdvUser && rdvUser.length > 0) { %>
-                    <% rdvUser.forEach(function(rendezvous, index) { %>
-                        <li>
-                            <strong><%= rendezvous.name %></strong> -
-                            du
-                            <%= new Date(rendezvous.dateDebut).toLocaleString('fr-FR') %> au
-                            <%= new Date(rendezvous.dateFin).toLocaleString('fr-FR') %><br>
-                            <%= rendezvous.description %>
-                        </li>
-                    <% }); %>
-                <% } else { %>
-                    <li>Aucun rendez-vous trouvé.</li>
-                <% } %>
-            </ul>
+        <div class="agenda">
+            <h2>Rendez-vous</h2>
+            <ul id="agenda-list"></ul>
         </div>
     </div>
 
@@ -132,7 +117,7 @@
                     <div class="common">
                         <button type=button class="clear-selection" onclick="clearSelection()">Clear</button>
                         <label>Jusqu'au : </label>
-                        <input type="date" id="dateUntilRecurrence" name="date">
+                        <input type="date" id="dateUntilRecurrence" name="date" required>
                     </div>
 
 
@@ -165,10 +150,12 @@
                     </div>
                 </div>
 
-                <!--<button type="submit" class="form-button" id="recurrence-placer">Retour</button>-->
             </form>
         </div>
     </div>
+    <script>
+        const agendaid = "<%= agenda %>";
+    </script>
     <script src="javascripts/rendezvous/script.js"></script>
 </body>
 </html>

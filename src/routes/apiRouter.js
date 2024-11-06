@@ -9,12 +9,17 @@ const mongoose = require("mongoose")
 const recurrence = require("../database/models/recurrence")
 // Route pour récupérer les informations d'un preset à partir de son id
 apiRouter.get('/presets/:id', isAuthentified, getPresetInfosById);
+
 apiRouter.get('/search', isAuthentified, async (req, res) => {
     try {
         const searchTerm = req.query.term?.toLowerCase() || '';
         const dateDebut = req.query.dateDebut ? new Date(req.query.dateDebut) : null;
         const dateFin = req.query.dateFin ? new Date(req.query.dateFin) : null;
-        const sortBy = req.query.sortBy ? req.query.sortBy.split(',') : []; // ['criteria:order', ...]
+        const durationMin = req.query.durationMin ? parseInt(req.query.durationMin) : null;
+        const durationMax = req.query.durationMax ? parseInt(req.query.durationMax) : null;
+        const sortBy = req.query.sortBy ? req.query.sortBy.split(',') : [];
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
 
         // Récupérer les agendas avec les rendez-vous
         const agendas = await Agenda.find({ userId: req.user.id })
@@ -32,9 +37,8 @@ apiRouter.get('/search', isAuthentified, async (req, res) => {
         let filteredRdvs = allRdvs;
 
         if (searchTerm) {
-            // Utilisation de Fuse.js pour la recherche
             const options = {
-                keys: ['name', 'tags'],
+                keys: ['name', 'tags', 'description'],
                 threshold: 0.3,
                 includeScore: true
             };
@@ -42,11 +46,13 @@ apiRouter.get('/search', isAuthentified, async (req, res) => {
             filteredRdvs = fuse.search(searchTerm).map(result => result.item);
         }
 
-        // Vérification de la plage de dates
+        // Appliquer les filtres de date et durée
         filteredRdvs = filteredRdvs.filter(rdv => {
             const dateMatch = (!dateDebut || rdv.dateDebut >= dateDebut) &&
                             (!dateFin || rdv.dateFin <= dateFin);
-            return dateMatch;
+            const durationMatch = (!durationMin || rdv.duration >= durationMin) &&
+                                (!durationMax || rdv.duration <= durationMax);
+            return dateMatch && durationMatch;
         });
 
         // Association de valeurs numériques aux priorités
@@ -73,13 +79,22 @@ apiRouter.get('/search', isAuthentified, async (req, res) => {
                     }
 
                     if (order === 'desc') comparison = -comparison;
-
                     if (comparison !== 0) return comparison;
                 }
                 return 0;
             });
         }
-        res.json(filteredRdvs);
+
+        // Calcul du total et on applique la pagination
+        const total = filteredRdvs.length;
+        const startIndex = (page - 1) * limit;
+        const endIndex = startIndex + limit;
+        const paginatedRdvs = filteredRdvs.slice(startIndex, endIndex);
+
+        res.json({
+            rdvs: paginatedRdvs,
+            hasMore: endIndex < total,
+        });
     } catch (error) {
         console.error('Erreur lors de la recherche:', error);
         res.status(500).json({ error: 'Erreur serveur' });

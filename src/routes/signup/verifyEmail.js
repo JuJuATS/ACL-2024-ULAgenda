@@ -13,20 +13,19 @@ const verifyEmail = async (req, res) => {
         // Trouver l'utilisateur correspondant dans la base de données
         const user = await User.findById(decoded.userId);
         if (!user) {
-            return res.status(400).send('Utilisateur non trouvé');
+            return res.render('email-verif', {message: 'Utilisateur non trouvé.'});
         }
 
         // Vérifier si l'utilisateur est déjà vérifié
         if (user.isVerified) {
-            return res.send('Email déjà vérifié.');
+            return res.render('email-verif', {message: 'Email déjà vérifié.'});
         }
 
         user.isVerified = true;
         await user.save();
-
-        res.send('Votre email a été vérifié avec succès ! Vous pouvez maintenant vous connecter.');
+        return res.render('email-verif', {message: 'Votre email a été vérifié avec succès ! Vous pouvez maintenant vous connecter.'});
     } catch (error) {
-        return res.status(400).send('Token invalide ou expiré.');
+        return res.render('email-verif', {message: 'Erreur lors de la vérification du mail, message potentiellement expiré'});
     }
 };
 

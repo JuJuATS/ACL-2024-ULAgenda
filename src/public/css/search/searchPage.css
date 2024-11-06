@@ -16,14 +16,6 @@ header {
     right: 0;
 }
 
-footer {
-    position: fixed;
-    bottom: 0;
-    width: 100%;
-    left: 0;
-    right: 0;
-}
-
 .content {
     flex: 1;
     padding-top: 90px;
@@ -73,6 +65,28 @@ footer {
     border: 1px solid #ced4da;
     border-radius: 4px;
     padding: 5px;
+}
+
+/* Filtres de durée */
+.duration-filters {
+    margin-bottom: 10px;
+}
+
+.duration-filters label {
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+#durationRange {
+    margin-top: 5px;
+}
+
+#durationRangeValueContainer {
+    margin-top: 5px;
+}
+
+#durationRangeValue {
+    font-weight: bold;
 }
 
 /* Contrôles de tri */
@@ -182,6 +196,213 @@ footer {
     min-height: 100vh;
 }
 
-.content {
-    flex: 1;
+
+/* Animation de base pour le skeleton */
+@keyframes shimmer {
+    0% {
+        background-position: -1000px 0;
+    }
+    100% {
+        background-position: 1000px 0;
+    }
+}
+
+.skeleton-container {
+    padding: 10px 0;
+}
+
+.skeleton-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background-color: #ffffff;
+}
+
+/* Style de base pour tous les éléments skeleton */
+.skeleton-name,
+.skeleton-priority,
+.skeleton-info,
+.skeleton-tag {
+    background: linear-gradient(90deg, 
+        #f0f0f0 25%, 
+        #f8f8f8 50%, 
+        #f0f0f0 75%
+    );
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite linear;
+}
+
+/* Header du skeleton */
+.skeleton-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.skeleton-name {
+    height: 24px;
+    width: 200px;
+    border-radius: 4px;
+}
+
+.skeleton-priority {
+    height: 24px;
+    width: 80px;
+    border-radius: 12px;
+}
+
+/* Info du skeleton */
+.skeleton-info {
+    height: 18px;
+    width: 60%;
+    margin: 10px 0;
+    border-radius: 4px;
+}
+
+/* Tags du skeleton */
+.skeleton-tags {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.skeleton-tag {
+    height: 20px;
+    width: 80px;
+    border-radius: 12px;
+}
+
+/* Animation d'entrée pour les skeletons */
+.skeleton-item {
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeInUp 0.3s ease forwards;
+}
+
+.skeleton-item:nth-child(1) { animation-delay: 0s; }
+.skeleton-item:nth-child(2) { animation-delay: 0.1s; }
+.skeleton-item:nth-child(3) { animation-delay: 0.2s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+.error-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1000;
+    max-width: 400px;
+}
+
+.error-message {
+    background-color: #fee2e2;
+    border: 1px solid #ef4444;
+    color: #991b1b;
+    padding: 12px 16px;
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.error-close {
+    background: none;
+    border: none;
+    color: #991b1b;
+    cursor: pointer;
+    font-size: 20px;
+    line-height: 1;
+    padding: 0;
+}
+
+.error-close:hover {
+    opacity: 0.8;
+}
+
+/* Animations */
+@keyframes slideIn {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOut {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.error-container {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Désactiver les contrôles pendant le chargement */
+.controls-disabled {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+
+/* Animation pour les rendez-vous */
+.rdv-item {
+    padding: 15px;
+    margin-bottom: 15px;
+    border: 1px solid #e9ecef;
+    border-radius: 8px;
+    background-color: #ffffff;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease forwards;
+}
+
+/* Animation personnalisée pour l'entrée des rendez-vous */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ajout d'un délai progressif pour chaque élément */
+.rdv-item:nth-child(1) { animation-delay: 0s; }
+.rdv-item:nth-child(2) { animation-delay: 0.1s; }
+.rdv-item:nth-child(3) { animation-delay: 0.2s; }
+.rdv-item:nth-child(4) { animation-delay: 0.3s; }
+.rdv-item:nth-child(5) { animation-delay: 0.4s; }
+
+/* Amélioration de la transition lors du survol */
+.rdv-item {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rdv-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
