@@ -73,18 +73,13 @@
           eventSources:[
             async(info,success,fail)=>{
                 let events = []
-                console.log(agendas)
                 for(agenda in agendas){
 
-                  console.log(agendas[agenda].event,agendas[agenda].visible)
                   if(agendas[agenda].visible){
-                    console.log(Array.isArray(agendas[agenda].event))
                     events = [...events,...agendas[agenda].event]
-                    console.log(events);
                     
                   }
                 }
-                console.log(events)
                 
                 return events;
             }
@@ -157,7 +152,6 @@
           if(el.checked){
             if(!agendas[el.dataset.id]){
              const data = await fetch(`/api/getDate?agenda=${el.dataset.id}`).then(res=>res.json())
-             console.log("je fetch")
              agendas[el.dataset.id]={event:data.event,visible:true}
             }
             else{
@@ -170,7 +164,7 @@
             }
           
           calendar.refetchEvents()
-          console.log("j'ai refetch");
+        
           
       }
       fetch("/api/getAgenda").then(res=>res.json()).then(data=>data.forEach(element => {

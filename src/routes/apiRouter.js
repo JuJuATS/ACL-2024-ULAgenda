@@ -133,12 +133,11 @@ const getAgendaEvents = async (req, res, next) => {
       });
     }
     // Récupération des rendez-vous avec projection optimisée
-    console.log(decodedAgenda)
+
     let events = await RDV.find({agendaId:decodedAgenda})
-    console.log(events)
-   
-    events = events.map(async el=>{
-      
+
+
+    events = events.map(el=>{
       let rdv = {
         id:el._id,
         start:el.dateDebut,
@@ -149,39 +148,39 @@ const getAgendaEvents = async (req, res, next) => {
         title:el.name,
         duration:el.dateFin-el.dateDebut
       }
+      
       if(el.recurrences){
-          console.log("il y a une recurrence")
-          const recurrenceRdv = await recurrence.findById(el.recurrences._id);
+          const recurrenceRdv = recurrence.findById(el.recurrences);
         
-         if(recurrenceRdv!==null){
-          if(recurrenceRdv.yearDay.length !== 0){
-            console.log("il ya une recurrence par année")
+         if(recurrenceRdv!=null){
+          if(recurrenceRdv.yearDay){
+            
             let dateDebut = new Date(recurrenceRdv.dateDebut)
             dateDebut.setDate(dateDebut.getDate() + 1)
              rdv.rrule={
-              freq:YEARLY,
+              freq:"YEARLY",
               byyearday:recurrenceRdv.yearDay,
               dtstart:el.dateDebut,
               until:recurrenceRdv.dateFin
             }
           } 
-          if(recurrenceRdv.monthDay.length !==0){
-            console.log("il ya une recurrence par mois")
+          if(recurrenceRdv.monthDay){
+            
             let dateDebut = new Date(recurrenceRdv.dateDebut)
             dateDebut.setDate(dateDebut.getDate() + 1)
               rdv.rrule={
-                freq:MONTHLY,
+                freq:"MONTHLY",
                 bymonth:recurrenceRdv.monthDay,
                 dtstart:el.dateDebut,
                 until:recurrenceRdv.dateFin
               }
             } 
-          if(recurrenceRdv.weekDay.length !==0){
-            console.log("il ya une recurrence par jour")
+          if(recurrenceRdv.weekDay){
+        
             let dateDebut = new Date(recurrenceRdv.dateDebut)
             dateDebut.setDate(dateDebut.getDate() + 1)
               rdv.rrule={
-                freq:weekDay,
+                freq:"weekDay",
                 bymonth:recurrenceRdv.weekDay,
                 dtstart:el.dateDebut,
                 until:el.dateFin
@@ -189,12 +188,11 @@ const getAgendaEvents = async (req, res, next) => {
             
             }
           }
-         }
-          
-          return rdv
-       
+        }
+        return rdv 
       }
     )
+   
     // Envoi de la réponse
     res.status(200).json({ 
       event: events
