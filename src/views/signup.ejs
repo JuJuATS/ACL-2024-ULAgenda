@@ -13,12 +13,9 @@
     </style>
     <link rel="stylesheet" href="css/signup/signup.css">
     <link rel="stylesheet" href="css/partials/toaster.css">
-
 </head>
 <body>
-
-
-
+    <div class="pop-up-info"></div>
     <% const formData = locals.formData || {}; %>
     <div class="page">
         <div class="container">
@@ -74,12 +71,4 @@
     </div>
     </body>
     <script src="/javascripts/signup/validateForm.js"></script>
-    <script>
-        document.getElementById('signupForm').addEventListener('submit', function(event) {
-            if (!validateForm()) {
-                event.preventDefault();
-            }
-        });
-    </script>
-
 </html>

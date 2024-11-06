@@ -1,10 +1,11 @@
+
 const form = document.getElementById('rendezvous-form');
 const agendaList = document.getElementById('agenda-list');
 const recurrences = {"week":[],"month":[],"year":[]}
 
 let currentTab = null;
 const popUp = document.querySelector(".pop-up-info");
-
+let rdvsOpen = false;
 
 form.addEventListener('submit', async function(event) {
     event.preventDefault();
@@ -31,17 +32,18 @@ form.addEventListener('submit', async function(event) {
                 description:description,
                 agendaId:form.dataset.agendaid,
                 recurrences: recurrences,
-                finRecurrence: new Date(finRecurrence),
+                finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
             }
             await saveRendezVous(rendezvous);
         }
 
     } else {
-        afficherPopUp('Certaines informations du rendez-vous sont incorrect ou manquantes.', false)
+        afficherPopUp('Certaines informations du rendez-vous sont incorrect ou manquantes.', true)
     }
 });
 
 function afficherPopUp(text, good) {
+
     popUp.innerHTML = ''
     popUp.innerHTML = good ? `
         <svg viewBox="0 0 512 512">
@@ -69,6 +71,7 @@ function afficherPopUp(text, good) {
 }
 
 document.querySelector("#btn-view-rdv").addEventListener('click', function(event) {
+    rdvsOpen = !rdvsOpen
     document.querySelector(".agenda").classList.toggle('agenda-open');
     for (let i = 0; i < document.querySelector("#agenda-list").children.length; i++) {
         document.querySelector("#agenda-list").children[i].classList.toggle('rdv-open');
@@ -95,13 +98,13 @@ document.querySelector(".closer").addEventListener('click', function(event) {
 
 function clearSelection() {
     recurrences[currentTab] = []
+    document.querySelector("#dateUntilRecurrence").value = ''
     Array.from(document.querySelector(`#${currentTab}`).children).forEach(c => {
         c.classList.remove('selected')
     })
 }
 
 function openMode(e, mode) {
-
     document.querySelectorAll(".tabcontent").forEach(tab => {
         if (tab.id === mode) {
             tab.style.display = 'flex';
@@ -138,6 +141,7 @@ function calculerHeureFin(dateDebut,heureDebut, duree) {
 async function saveRendezVous(rendezvous) {
 
     try {
+        console.log(rendezvous)
         const response = await fetch(`http://localhost:3000/rendezvous?agendaId=${form.dataset.agendaid}`, {
             method: 'POST',
             headers: {
@@ -150,7 +154,7 @@ async function saveRendezVous(rendezvous) {
         if (json.ok) {
             if (agendaList.children[0].id === 'first') agendaList.innerHTML = ''
             afficherPopUp(`Rendez-vous : ${json.rdv.name} ajoutés`, true)
-            await updateRdvList(true)
+            await updateRdvList(rdvsOpen)
         }
       } catch (error) {
         console.error('Erreur:', error);
@@ -160,7 +164,7 @@ async function saveRendezVous(rendezvous) {
 
 
 async function updateRdvList(opened) {
-    console.log("je charge")
+
     const response = await fetch(`http://localhost:3000/rendezvous/api/recurrence?agendaId=${agendaid}`, {
         method: 'GET',
         headers: {
@@ -170,12 +174,12 @@ async function updateRdvList(opened) {
     });
     const resp = await response.json()
     const rdvs = resp.rdvs
-    console.log("j'ai recu");
-    console.log(rdvs)
+
     agendaList.innerHTML = ''
     if (rdvs && rdvs.length === 0) {
         let l = document.createElement("li")
         l.id = "first"
+        if (rdvsOpen) l.classList.add("rdv-open")
         l.innerText = "Aucun rendez-vous trouvé."
         agendaList.appendChild(l);
     }
@@ -186,8 +190,7 @@ async function updateRdvList(opened) {
     }
 }
 function createLiRdv(rendezvous, opened) {
-    console.log(rendezvous);
-    
+
     const li = document.createElement('li');
     if (opened) {
         li.classList.add('rdv-open')
@@ -234,6 +237,7 @@ function createLiRdv(rendezvous, opened) {
                 if (json.ok) {
                     afficherPopUp(json.message, true)
                     li.remove();
+                    await updateRdvList(rdvsOpen)
                 }
             } catch (error) {
                 console.error('Erreur lors de la suppression:', error);

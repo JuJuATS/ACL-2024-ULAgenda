@@ -30,9 +30,7 @@ async function verifOwner(agendaId, userId) {
 // Route pour afficher les rendez-vous avec le bon id.
 router.get('/', authMiddleware, async (req, res) => {
   const {agendaId} = req.query;
-
   const isOwner = await verifOwner(agendaId, req.user.id);
-
   if (!isOwner) {
     return res.redirect('/agendas');
   }
@@ -52,7 +50,6 @@ router.get('/api/recurrence', authMiddleware, async (req, res) => {
   });
   const rdvs = await Promise.all(rdvUser.map(async (rdv) => {
     const rec = await Recurrence.findById(rdv.recurrences);
-
     return {"recurrence": rec, ...rdv.toObject()};
   }))
   res.status(201).json({rdvs:rdvs});
@@ -91,7 +88,7 @@ router.post('/', authMiddleware, async (req, res) => {
       monthDay: recurrences["month"],
       weekDay: recurrences["week"],
       dateDebut: debut,
-      dateFin: new Date(finRecurrence)
+      dateFin:finRecurrence ? new Date(finRecurrence) : null,
     });
 
     const newRdv = new Rdv({
@@ -113,7 +110,6 @@ router.post('/', authMiddleware, async (req, res) => {
 
     res.status(201).json({ok:true, rdv:newRdv});
   } catch (error) {
-    console.log("il y a une erreur")
     console.log(error)
     res.status(500).json({ message: "Erreur lors de la création du rendez-vous.", error });
   }
@@ -124,7 +120,6 @@ router.put('/:id', authMiddleware, async (req, res) => {
     try {
         const rdvId = req.params.id;
         const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence } = req.body;
-        console.log("haaaaa", recurrences, finRecurrence)
         if (!name || !dateDebut || !dateFin) {
             return res.status(400).json({ message: "Fields 'name', 'dateDebut', 'dateFin' are required." });
         }
@@ -147,8 +142,8 @@ router.put('/:id', authMiddleware, async (req, res) => {
         rec.yearDay = recurrences.year
         rec.monthDay = recurrences.month
         rec.weekDay = recurrences.week
-        rec.dateDebut = finRecurrence
-        rec.dateFin = new Date(dateDebut)
+        rec.dateDebut = new Date(dateDebut)
+        rec.dateFin = finRecurrence ? new Date(finRecurrence) : null;
         await rec.save();
 
         await rdv.save();
@@ -163,10 +158,10 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     try {
         const rdvId = req.params.id;
         const rdv = await Rdv.findByIdAndDelete(rdvId);
+        const rec = await Recurrence.findByIdAndDelete(rdv.recurrences);
         if (!rdv) {
             return res.status(404).json({ message: "Rendezvous not found" });
         }
-
         res.status(200).json({ ok: true, message: "Rendez-vous supprimé correctement" });
     } catch (error) {
         console.error("Error deleting rendezvous:", error);
