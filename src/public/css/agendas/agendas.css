@@ -1,0 +1,294 @@
+/* Importations */
+@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
+
+/* ============================================================================
+                                GLOBAL
+============================================================================ */
+* {
+    font-family: "Afacad Flux", sans-serif;
+    font-weight: 600;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #ffffff;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ============================================================================
+                                CONTAINER
+============================================================================ */
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 16px;
+    gap: 16px;
+    justify-content: space-between;
+}
+
+/* ============================================================================
+                                LEFT SIDEBAR
+============================================================================ */
+.left-sidebar {
+    border-radius: 8px;
+    margin-right: 16px;
+    width: 15%;
+    background-color: #212a3f;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    margin-top: 5px;
+    min-height: 750px;
+    color: #fff;
+}
+
+.left-sidebar h2 {
+    color: #48B0D9;
+    margin-bottom: 20px;
+}
+
+.left-sidebar .filter {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.left-sidebar .filter label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.left-sidebar .filter input[type="text"],
+.left-sidebar .filter select {
+    padding: 8px;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    background-color: #3a475e;
+    color: #fff;
+}
+
+.left-sidebar .filter input[type="text"]::placeholder {
+    color: #aaa;
+}
+
+.left-sidebar .filter button {
+    padding: 10px;
+    border: none;
+    border-radius: 4px;
+    background-color: #48B0D9;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.left-sidebar .filter button:hover {
+    background-color: #45a049;
+}
+
+/* ============================================================================
+                                MAIN CONTENT
+============================================================================ */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: flex-start;
+    height: fit-content;
+}
+
+#new-agenda {
+    text-align: center;
+}
+
+#new-agenda-title {
+    color: #45a049;
+}
+
+.add-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: #48B0D9;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    margin: 10px auto;
+}
+
+.add-button:hover {
+    background-color: #45a049;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.add-button:active {
+    background-color: #3e8e41;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    transform: translateY(2px);
+}
+
+/* ============================================================================
+                                CALENDAR
+============================================================================ */
+.calendar {
+    background-color: #495571;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 8px;
+    margin: 16px;
+    position: relative;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    flex: 1 1 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100px;
+    max-width: 200px;
+}
+
+.header-calendar {
+    height: 50%;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.content-calendar {
+    height: 50%;
+    display: flex;
+    justify-content: center;
+}
+
+.calendar:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.calendar .close-agenda,
+.calendar .edit-button {
+    position: absolute;
+    top: 10px;
+    background: none;
+    border: none;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.edit-button {
+    color: #259e88;
+}
+
+.close-agenda {
+    color: #fe7e8d;
+}
+
+.calendar .close-agenda {
+    right: 10px;
+}
+
+.calendar .edit-button {
+    right: 40px;
+}
+
+.calendar .close-agenda:hover,
+.calendar .edit-button:hover {
+    color: #ff1a1a;
+}
+
+.calendar h3 {
+    margin: 0;
+    padding: 0;
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calendar .title-view {
+    display: block;
+}
+
+.calendar .edit-title {
+    display: none;
+}
+
+.calendar .edit-title input {
+    width: calc(100% - 40px);
+}
+
+/* ============================================================================
+                                MODALS
+============================================================================ */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: 10% auto;
+    padding: 30px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+    transition: transform 0.3s ease-in-out;
+}
+
+.modal-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: #212a3f;
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+}
+
+.modal-content input[type="text"] {
+    width: calc(100% - 20px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.modal-content input[type="text"]:focus {
+    border-color: #00BBEC;
+    outline: none;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
