@@ -12,21 +12,26 @@
         }
     </style>
     <link rel="stylesheet" href="css/signup/signup.css">
+    <link rel="stylesheet" href="css/partials/toaster.css">
+
 </head>
 <body>
-    
+
 
 
     <% const formData = locals.formData || {}; %>
+    <div class="pop-up-info"></div>
     <div class="page">
         <div class="container">
           <div class="left">
             <div class="login">Inscription</div>
-           
+              <div class="eula">
+                  <a href="/signin">Se connecter</a>
+              </div>
           </div>
           <div class="right">
-            <form class="form UserForm" id = "signupForm" method="post" action="/signup">
-              
+            <form class="form UserForm" id="signupForm">
+
               <div style="position: relative;">
                 <label for="nom">Nom:</label>
                 <input type="text" id="nom" name="nom" value="<%= formData.nom || '' %>" required>
@@ -42,19 +47,19 @@
                     <input type="email" id="email" name="email" value="<%= formData.email || '' %>" required>
                     <span id="emailError" class="error-message"><%= locals.errors && locals.errors.email ? locals.errors.email : '' %></span>
                 </div>
-                
+
                 <div>
                     <label for="pseudo">Pseudo:</label>
                     <input type="text" id="pseudo" name="pseudo" value="<%= formData.pseudo || '' %>" required>
                     <span id="pseudoError" class="error-message"><%= locals.errors && locals.errors.pseudo ? locals.errors.pseudo : '' %></span>
                 </div>
-                
+
                 <div>
                     <label for="password">Mot de passe:</label>
                     <input type="password" id="password" name="password" required>
                     <span id="passwordError" class="error-message"></span>
                 </div>
-                
+
                 <div>
                     <label for="passwordConf">Confirmer le mot de passe:</label>
                     <input type="password" id="passwordConf" name="passwordConf" required>
@@ -63,19 +68,12 @@
               <input type="submit" id="submit" value="S'inscrire">
             </form>
             <% if ( locals.expressFlash) { %>
-                <p class="error"> <%= expressFlash %> </p>
-                <%}%>
+                <p class="error"> <%= expressFlash  %> </p>
+            <% } %>
           </div>
         </div>
-      </div>
-    
+    </div>
+    </body>
     <script src="/javascripts/signup/validateForm.js"></script>
-    <script>
-        document.getElementById('signupForm').addEventListener('submit', function(event) {
-            if (!validateForm()) {
-                event.preventDefault();
-            }
-        });
-    </script>
 
 </html>

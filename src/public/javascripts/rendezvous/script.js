@@ -99,6 +99,7 @@ function clearSelection() {
         c.classList.remove('selected')
     })
 }
+
 function openMode(e, mode) {
 
     document.querySelectorAll(".tabcontent").forEach(tab => {

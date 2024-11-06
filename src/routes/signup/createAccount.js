@@ -6,31 +6,27 @@ const { sendVerificationEmail } = require('../../utils/mailer');
 
 const createAccount = async (req, res) => {
     const { nom, prenom, email, pseudo, password } = req.body;
-
     if (!nom || !prenom || !email || !pseudo || !password) {
-        return res.status(400).send('Tous les champs sont obligatoires');
+        return res.status(400).json({good: false,message:['Tous les champs sont obligatoires']});
     }
-
     try {
         // Vérification si l'email ou le pseudo existent déjà
         const existingUser = await User.findOne({ $or: [{ email: email }, { pseudo: pseudo }] });
         if (existingUser) {
-            const errors = {};
+            const errors = [];
             if (existingUser.email === email) {
-                errors.email = 'Un compte existe déjà avec cette adresse email';
+                errors.push('Un compte existe déjà avec cette adresse email');
             }
             if (existingUser.pseudo === pseudo) {
-                errors.pseudo = 'Ce pseudo est déjà utilisé';
+                errors.push('Ce pseudo est déjà utilisé');
             }
-
-            return res.status(400).render('signup', {
-                error:errors,
-                formData: req.body,
+            return res.status(400).json({
+                good: false,
+                message:errors,
             });
         }
 
         const hashedPassword = await argon2.hash(password);
-
         const newUser = new User({
             firstname: prenom,
             lastname: nom,
@@ -48,12 +44,12 @@ const createAccount = async (req, res) => {
 
         // Sauvegarde de l'utilisateur dans la base de données
         await newUser.save();
-        console.log("je redirige")
-        res.redirect('/');
+        res.status(200).json({good: true, message : ["Un email de vérification vous a était envoyé."]});
+
     } catch (error) {
         console.error(error);
         const messagesFlash = [{ type: 'error', content: 'Erreur lors de la création du compte' }];
-        res.render('signup', { messagesFlash, formData: req.body,expressFlash:req.flash() });
+        res.render('signup', { messagesFlash, formData: req.body,expressFlash:req.flash()});
     }
 };
 
