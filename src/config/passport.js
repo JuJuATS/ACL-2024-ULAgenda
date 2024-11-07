@@ -12,7 +12,7 @@ passport.use(
         },
         async (email, password, done) => {
             try {
-                const user = await User.findOne({ email });
+                const user = await User.findOne({ email: email.toLowerCase() });
                 if (!user) {
                     return done(null, false, { message: "Utilisateur non trouvé." });
                 }
