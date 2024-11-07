@@ -50,6 +50,7 @@ const updatePreset = async (req, res) => {
             weekDay: JSON.parse(weekDays || '[]'),
             monthDay: JSON.parse(monthDays || '[]'),
             yearDay: JSON.parse(yearDays || '[]'),
+            dateDebut: new Date(),
         };
 
         // Si le preset a déjà une récurrence, la mettre à jour
