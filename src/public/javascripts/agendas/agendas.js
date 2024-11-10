@@ -101,31 +101,45 @@ addAgendaButton.onclick = async () => {
         if (response.ok) {
             const newAgenda = await response.json();
 
-            // Créer un nouvel élément agenda
+            // Créer un nouvel élément agenda avec la nouvelle structure
             const agendaDiv = document.createElement("div");
-            agendaDiv.className = "calendar"; // Assurez-vous que le style est appliqué
+            agendaDiv.className = "calendar";
             agendaDiv.setAttribute("data-id", newAgenda._id);
+            agendaDiv.onclick = () => redirectToAgenda(newAgenda._id);
+            
             agendaDiv.innerHTML = `
                 <div class="header-calendar">
-                    <button class="edit-button" onclick="toggleEditMode(this, event)">Modifier</button>
-                    <button class="close-agenda" onclick="removeAgenda(this, event)">x</button>
+                    <div class="header-actions">
+                        <button class="edit-button" onclick="toggleEditMode(this, event)">Modifier</button>
+                        <div class="dropdown">
+                            <button class="options-button" onclick="toggleDropdown(event, this)">
+                                <i class="fas fa-ellipsis-v"></i>
+                            </button>
+                            <div class="dropdown-content">
+                                <a href="/agendas/${newAgenda._id}/share" onclick="event.stopPropagation()">
+                                    <i class="fas fa-share-alt"></i> Partager
+                                </a>
+                                <a href="#" onclick="removeAgenda(this, event)" data-agenda-id="${newAgenda._id}">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="content-calendar">
                     <a class="title-view">${newAgenda.name}</a>
-                    <span class="edit-title" style="display: none;">
+                    <span class="edit-title" style="display: none;" onclick="stopEventPropagation(event)">
                         <input type="text" value="${newAgenda.name}" />
                     </span>
                 </div>
             `;
-            agendaDiv.onclick = () => redirectToAgenda(newAgenda._id);
 
-            // Ajouter le nouvel agenda au conteneur principal
-            mainContent.appendChild(agendaDiv);
+            // Insérer le nouvel agenda après le bouton "Nouvel Agenda"
+            const newAgendaButton = document.getElementById('new-agenda');
+            newAgendaButton.parentNode.insertBefore(agendaDiv, newAgendaButton.nextSibling);
 
-            // Réinitialise l'input
+            // Réinitialiser l'input et fermer la modal
             agendaNameInput.value = "";
-
-            // Fermer la modal
             modal.style.display = "none";
         } else {
             const errorData = await response.json();
@@ -139,13 +153,38 @@ addAgendaButton.onclick = async () => {
 
 let agendaToDelete = null; // Variable pour stocker l'agenda à supprimer
 
-function removeAgenda(button, event) {
-    event.stopPropagation();
-    event.preventDefault();
-    agendaToDelete = button.closest('.calendar');
 
-    const confirmDeleteModal = document.getElementById("confirmDeleteModal");
-    confirmDeleteModal.style.display = "block";
+function removeAgenda(link, event) {
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const agendaId = link.getAttribute('data-agenda-id');
+    const calendar = document.querySelector(`.calendar[data-id="${agendaId}"]`);
+    
+    // Affiche la modal de confirmation
+    const confirmDeleteModal = document.getElementById('confirmDeleteModal');
+    confirmDeleteModal.style.display = 'block';
+    
+    // Configure le bouton de confirmation
+    document.getElementById('confirmDeleteButton').onclick = async function() {
+        try {
+            const response = await fetch(`/agendas/${agendaId}`, {
+                method: 'DELETE',
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                calendar.remove();
+                closeConfirmDeleteModal();
+            } else {
+                const data = await response.json();
+                alert(data.message || 'Une erreur est survenue');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('Une erreur est survenue lors de la suppression');
+        }
+    };
 }
 
 // Fonction pour fermer la modal de confirmation
@@ -154,34 +193,26 @@ function closeConfirmDeleteModal() {
     confirmDeleteModal.style.display = "none"; // Masquer la modal de confirmation
 }
 
-const confirmDeleteButton = document.getElementById("confirmDeleteButton");
-
-// Événement de confirmation pour supprimer l'agenda
-confirmDeleteButton.onclick = async function() {
-    if (agendaToDelete) {
-        const agendaId = agendaToDelete.getAttribute('data-id');
-
-        try {
-            const response = await fetch(`http://localhost:3000/agendas/${agendaId}`, {
-                method: 'DELETE',
-            });
-
-            if (response.ok) {
-                agendaToDelete.remove();
-                closeConfirmDeleteModal();
-                agendaToDelete = null;
-            } else {
-                const errorData = await response.json();
-                alert('Erreur lors de la suppression de l\'agenda: ' + errorData.message);
-            }
-        } catch (error) {
-            console.error('Erreur:', error);
-            alert('Une erreur s\'est produite lors de la suppression de l\'agenda');
-        }
-    } else {
-        console.error("agendaToDelete is nill");
-    }
+function toggleDropdown(event, button) {
+    event.stopPropagation();
+    const dropdown = button.parentElement;
+    
+    // Ferme tous les autres dropdowns
+    document.querySelectorAll('.dropdown.active').forEach(d => {
+        if (d !== dropdown) d.classList.remove('active');
+    });
+    
+    dropdown.classList.toggle('active');
 }
+
+// Ferme les dropdowns quand on clique ailleurs sur la page
+document.addEventListener('click', function(event) {
+    if (!event.target.closest('.dropdown')) {
+        document.querySelectorAll('.dropdown.active').forEach(d => {
+            d.classList.remove('active');
+        });
+    }
+});
 
 /*
 

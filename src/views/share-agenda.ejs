@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <%- include('./partials/head', {pageName: "Partage d'agenda"}); %>
+    <link rel="stylesheet" href="/css/share/share.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <%- include('./partials/header', {user: true}); %>
+    </header>
+
+    <div class="container">
+        <div class="share-container">
+            <h1>Partager l'agenda : <%= agenda.name %></h1>
+
+            <div class="share-layout">
+                <!-- Section d'ajout de partage -->
+                <div id="ajouterPartage" class="share-section" data-agenda-id="<%= agenda._id %>">
+                    <h2>Ajouter un partage</h2>
+                    <div class="share-type-selector">
+                        <button class="share-type-btn active" data-type="user">Partager avec un utilisateur</button>
+                        <button class="share-type-btn" data-type="link">Créer un lien de partage</button>
+                    </div>
+                
+                    <!-- Formulaire de partage utilisateur -->
+                    <form id="userShareForm" class="share-form">
+                        <div class="form-group">
+                            <label for="email">Adresse email :</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="permission">Permissions :</label>
+                            <select id="permission" name="permission" required>
+                                <option value="read">Lecture seule</option>
+                                <option value="contribute">Contributeur</option>
+                                <option value="admin">Administrateur</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group dates">
+                            <div class="date-input">
+                                <label for="validFrom">Valide à partir du :</label>
+                                <input type="date" id="validFrom" name="validFrom">
+                            </div>
+                            
+                            <div class="date-input">
+                                <label for="validUntil">Jusqu'au :</label>
+                                <input type="date" id="validUntil" name="validUntil">
+                            </div>
+                        </div>
+                
+                        <button type="submit" class="submit-button">Partager</button>
+                    </form>
+                
+                    <!-- Formulaire de partage par lien -->
+                    <form id="linkShareForm" class="share-form" style="display: none;">
+                        <div class="form-group">
+                            <label for="linkPermission">Permissions :</label>
+                            <select id="linkPermission" name="permission" required>
+                                <option value="read">Lecture seule</option>
+                                <option value="contribute">Contributeur</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group dates">
+                            <div class="date-input">
+                                <label for="linkValidUntil">
+                                    Date d'expiration
+                                    <span class="required-star">*</span>
+                                    <i class="fas fa-info-circle info-icon" 
+                                    title="Le lien de partage doit avoir une date d'expiration pour des raisons de sécurité"></i>
+                                </label>
+                                <div class="date-input-wrapper">
+                                    <input type="date" 
+                                        id="linkValidUntil" 
+                                        name="validUntil" 
+                                        required 
+                                        min="<%= new Date().toISOString().split('T')[0] %>">
+                                    <button type="button" class="quick-date-btn selected" data-days="7">7 jours</button>
+                                    <button type="button" class="quick-date-btn" data-days="30">30 jours</button>
+                                    <button type="button" class="quick-date-btn" data-days="90">3 mois</button>
+                                </div>
+                                <small class="form-text">La durée de validité maximale est de 3 mois</small>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="submit-button">Générer le lien</button>
+                    </form>
+                </div>
+
+                <!-- Section des partages actuels -->
+                <div class="share-section current-section">
+                    <h2>Partages actuels</h2>
+                    <div class="current-shares">
+                        <% 
+                        const userShares = shares.filter(s => s.shareType === 'user');
+                        const linkShares = shares.filter(s => s.shareType === 'link');
+                        %>
+
+                        <% if (shares.length === 0) { %>
+                            <p class="no-shares">Aucun partage actif</p>
+                        <% } else { %>
+                            <% if (userShares.length > 0) { %>
+                                <div class="share-category" id="user-shares">
+                                    <h3 class="share-category-title">
+                                        <i class="fas fa-user-friends"></i>
+                                        Partages avec des utilisateurs
+                                        <button class="delete-all-btn" onclick="deleteAllShares('user', event)">
+                                            <i class="fas fa-trash-alt"></i>
+                                            Tout supprimer
+                                        </button>
+                                    </h3>
+                                    <div class="share-list">
+                                        <% userShares.forEach(function(share) { %>
+                                            <div class="share-item" data-id="<%= share._id %>">
+                                                <div class="share-info">
+                                                    <span class="user-info">
+                                                        <i class="fas fa-user"></i>
+                                                        <span class="user-pseudo"><%= share.sharedWith.pseudo %></span>
+                                                        <span class="user-email">(<%= share.sharedWith.email %>)</span>
+                                                    </span>
+                                                    <span class="permission-badge <%= share.permission %>">
+                                                        <%= share.permission %>
+                                                    </span>
+                                                    <% if (share.settings && (share.settings.validFrom || share.settings.validUntil)) { %>
+                                                        <div class="validity-info">
+                                                            <i class="fas fa-clock"></i>
+                                                            <% if (share.settings.validFrom) { %>
+                                                                À partir du <%= new Date(share.settings.validFrom).toLocaleDateString() %>
+                                                            <% } %>
+                                                            <% if (share.settings.validUntil) { %>
+                                                                <%= share.settings.validFrom ? ' - ' : '' %>
+                                                                Jusqu'au <%= new Date(share.settings.validUntil).toLocaleDateString() %>
+                                                            <% } %>
+                                                        </div>
+                                                    <% } %>
+                                                </div>
+                                                <div class="share-actions">
+                                                    <button class="edit-share" onclick="editShare('<%= share._id %>', event)">
+                                                        <i class="fas fa-edit"></i>
+                                                    </button>
+                                                    <button class="delete-share" onclick="deleteShare('<%= share._id %>', event, 'user')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                </div>
+                            <% } %>
+
+                            <% if (linkShares.length > 0) { %>
+                                <div class="share-category" id="link-shares">
+                                    <h3 class="share-category-title">
+                                        <i class="fas fa-link"></i>
+                                        Liens de partage actifs
+                                        <button class="delete-all-btn" onclick="deleteAllShares('link', event)">
+                                            <i class="fas fa-trash-alt"></i>
+                                            Tout supprimer
+                                        </button>
+                                    </h3>
+                                    <div class="share-list">
+                                        <% linkShares.forEach(function(share) { %>
+                                            <div class="share-item" data-id="<%= share._id %>">
+                                                <div class="share-info">
+                                                    <span class="share-link">
+                                                        <i class="fas fa-link"></i>
+                                                        <input type="text" 
+                                                            class="link-input" 
+                                                            value="<%= process.env.BASE_URL %>/agendas/share/<%= share.shareToken %>" 
+                                                            readonly>
+                                                        <button class="copy-link-btn" onclick="copyShareLink(this, event)">
+                                                            <i class="fas fa-copy"></i>
+                                                        </button>
+                                                    </span>
+                                                    <span class="permission-badge <%= share.permission %>">
+                                                        <%= share.permission %>
+                                                    </span>
+                                                    <% if (share.settings && share.settings.validUntil) { %>
+                                                        <div class="validity-info">
+                                                            <i class="fas fa-clock"></i>
+                                                            Valide jusqu'au <%= new Date(share.settings.validUntil).toLocaleDateString() %>
+                                                        </div>
+                                                    <% } %>
+                                                </div>
+                                                <div class="share-actions">
+                                                    <button class="delete-share" onclick="deleteShare('<%= share._id %>', event, 'link')">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                </div>
+                            <% } %>
+                        <% } %>
+                    </div>
+                </div>
+        </div>
+    </div>
+
+    <script src="/javascripts/share/share.js"></script>
+</body>
+</html>

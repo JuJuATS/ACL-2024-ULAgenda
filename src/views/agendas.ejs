@@ -53,11 +53,25 @@
             <% agendas.forEach(function(agenda) { %>
                 <div class="calendar" data-id="<%= agenda._id %>" onclick="redirectToAgenda('<%= agenda._id %>')">
                     <div class="header-calendar">
-                        <button class="edit-button" onclick="toggleEditMode(this, event)">Modifier</button>
-                        <button class="close-agenda" onclick="removeAgenda(this, event)">x</button>
+                        <div class="header-actions">
+                            <button class="edit-button" onclick="toggleEditMode(this, event)">Modifier</button>
+                            <div class="dropdown">
+                                <button class="options-button" onclick="toggleDropdown(event, this)">
+                                    <i class="fas fa-ellipsis-v"></i>
+                                </button>
+                                <div class="dropdown-content">
+                                    <a href="/agendas/<%= agenda._id %>/share" onclick="event.stopPropagation()">
+                                        <i class="fas fa-share-alt"></i> Partager
+                                    </a>
+                                    <a href="#" onclick="removeAgenda(this, event)" data-agenda-id="<%= agenda._id %>">
+                                        <i class="fas fa-trash"></i> Supprimer
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="content-calendar">
-                        <a class="title-view"> <%= agenda.name %> </a>
+                        <a class="title-view"><%= agenda.name %></a>
                         <span class="edit-title" style="display: none;" onclick="stopEventPropagation(event)">
                             <input type="text" value="<%= agenda.name %>" />
                         </span>
