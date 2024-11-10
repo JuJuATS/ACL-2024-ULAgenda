@@ -34,6 +34,125 @@ body {
     justify-content: space-between;
 }
 
+/* Styles pour les sections d'agenda */
+.agenda-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    width: 100%;
+}
+
+.agenda-section {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #48B0D9;
+}
+
+.section-header h2 {
+    font-size: 1.25rem;
+    color: #212a3f;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.section-header .count-badge {
+    background: #48B0D9;
+    color: white;
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    margin-left: 1rem;
+}
+
+.calendars-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Styles spécifiques pour les agendas partagés */
+.shared-calendar {
+    position: relative;
+}
+
+.shared-calendar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: #48B0D9;
+    border-radius: 4px 4px 0 0;
+}
+
+.access-level-badge {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.access-level-badge.read {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.access-level-badge.contribute {
+    background-color: #48B0D9;
+    color: white;
+}
+
+.access-level-badge.admin {
+    background-color: #212a3f;
+    color: white;
+}
+
+/* Animation pour les sections au chargement */
+@keyframes sectionFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.agenda-section {
+    animation: sectionFadeIn 0.5s ease-out forwards;
+}
+
+.agenda-section:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .agenda-section {
+        padding: 1rem;
+    }
+
+    .calendars-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 /* ============================================================================
                                 LEFT SIDEBAR
 ============================================================================ */

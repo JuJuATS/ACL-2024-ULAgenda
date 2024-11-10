@@ -6,6 +6,32 @@ function stopEventPropagation(event) {
     event.stopPropagation();
 }
 
+// Fonction pour mettre à jour les compteurs
+function updateAgendaCounts() {
+    // Compter les agendas personnels
+    const ownedAgendas = document.querySelectorAll('.calendar[data-id]').length - document.querySelectorAll('.shared-calendar[data-id]').length;
+    const ownedCountBadge = document.querySelector('.agenda-section:first-child .count-badge');
+    
+    if (ownedCountBadge) {
+        ownedCountBadge.innerHTML = ownedAgendas;
+    }
+
+    // Compter les agendas partagés
+    const sharedAgendas = document.querySelectorAll('.shared-calendar[data-id]').length;
+    // Changer le sélecteur pour cibler spécifiquement la section des agendas partagés
+    const sharedSection = document.querySelector('.agenda-section:nth-child(2)');
+    const sharedCountBadge = sharedSection?.querySelector('.count-badge');
+    
+    if (sharedCountBadge) {
+        sharedCountBadge.innerHTML = sharedAgendas;
+    }
+    
+    // Gérer l'affichage de la section des agendas partagés séparément
+    if (sharedSection) {
+        sharedSection.style.display = sharedAgendas === 0 ? 'none' : 'block';
+    }
+}
+
 async function toggleEditMode(button, event) {
     event.stopPropagation();
 
@@ -134,9 +160,12 @@ addAgendaButton.onclick = async () => {
                 </div>
             `;
 
-            // Insérer le nouvel agenda après le bouton "Nouvel Agenda"
+            const personalAgendasGrid = document.querySelector('.agenda-section:first-child .calendars-grid');
             const newAgendaButton = document.getElementById('new-agenda');
-            newAgendaButton.parentNode.insertBefore(agendaDiv, newAgendaButton.nextSibling);
+            personalAgendasGrid.insertBefore(agendaDiv, newAgendaButton.nextSibling);
+
+            // Mettre à jour les compteurs
+            updateAgendaCounts();
 
             // Réinitialiser l'input et fermer la modal
             agendaNameInput.value = "";
@@ -151,9 +180,6 @@ addAgendaButton.onclick = async () => {
     }
 };
 
-let agendaToDelete = null; // Variable pour stocker l'agenda à supprimer
-
-
 function removeAgenda(link, event) {
     event.preventDefault();
     event.stopPropagation();
@@ -161,11 +187,9 @@ function removeAgenda(link, event) {
     const agendaId = link.getAttribute('data-agenda-id');
     const calendar = document.querySelector(`.calendar[data-id="${agendaId}"]`);
     
-    // Affiche la modal de confirmation
     const confirmDeleteModal = document.getElementById('confirmDeleteModal');
     confirmDeleteModal.style.display = 'block';
     
-    // Configure le bouton de confirmation
     document.getElementById('confirmDeleteButton').onclick = async function() {
         try {
             const response = await fetch(`/agendas/${agendaId}`, {
@@ -175,6 +199,8 @@ function removeAgenda(link, event) {
             
             if (response.ok) {
                 calendar.remove();
+                // Mettre à jour les compteurs après la suppression
+                updateAgendaCounts();
                 closeConfirmDeleteModal();
             } else {
                 const data = await response.json();
