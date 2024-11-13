@@ -61,6 +61,7 @@ nav a {
     background: #cfbff7 url("../../images/user.png") no-repeat center/75%;
     border-radius: 50%;
 }
+
 .hidden {
     border-radius:10px;
     padding:5px;

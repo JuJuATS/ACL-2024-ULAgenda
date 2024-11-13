@@ -19,6 +19,7 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
+    font-family: Arial, sans-serif;
 }
 
 /* ============================================================================
@@ -27,7 +28,7 @@ body {
 .container {
     flex: 1;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     flex-wrap: wrap;
     padding: 16px;
     gap: 16px;
@@ -102,12 +103,10 @@ body {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;
-    justify-content: flex-start;
+    justify-content: center;
     height: fit-content;
-}
-
-#new-agenda {
-    text-align: center;
+    min-height: 1000px;
+    padding-top : 40px;
 }
 
 #new-agenda-title {
@@ -128,7 +127,15 @@ body {
     border-radius: 50%;
     cursor: pointer;
     transition: background-color 0.3s, box-shadow 0.3s;
-    margin: 10px auto;
+}
+
+#layer2-content {
+    display: flex;
+    justify-content: space-evenly; /* Espacement uniforme entre les boutons */
+    flex-direction: column; /* Alignement vertical */
+    align-items: center;
+    height: 100%; /* S'assurer que le conteneur occupe toute la hauteur de layer2 */
+    padding-left: 20px;
 }
 
 .add-button:hover {
@@ -137,7 +144,7 @@ body {
 }
 
 .add-button:active {
-    background-color: #3e8e41;
+    background-color: #3e8e41;padding-top: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     transform: translateY(2px);
 }
@@ -146,89 +153,106 @@ body {
                                 CALENDAR
 ============================================================================ */
 .calendar {
-    background-color: #495571;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 8px;
-    margin: 16px;
     position: relative;
+    width: 15%;
+    height: 160px;
+    overflow: hidden;
+    border-radius: 8px;
     cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    flex: 1 1 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 100px;
-    max-width: 200px;
 }
 
-.header-calendar {
-    height: 50%;
-    display: flex;
-    justify-content: flex-end;
+.calendar.open .layer2 {
+    transform: translateX(0);
 }
 
-.content-calendar {
-    height: 50%;
+.calendar.open .tab {
+    right: 100%;
+    transform: translateY(-50%) translateX(100%);
+}
+
+
+.tab {
+    position: absolute;
+    top: 50%;
+    width: 20px;
+    height: 100%;
+    right: 0;
+    transform: translateY(-50%);
+    background-color: #303f5f;
+    color: white;
+    display: flex;
+    cursor: pointer;
+    transition: right 0.5s ease;
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.layer1 {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #41537b;
     display: flex;
     justify-content: center;
-}
-
-.calendar:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.calendar .close-agenda,
-.calendar .edit-button {
-    position: absolute;
-    top: 10px;
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.edit-button {
-    color: #259e88;
-}
-
-.close-agenda {
-    color: #fe7e8d;
-}
-
-.calendar .close-agenda {
-    right: 10px;
-}
-
-.calendar .edit-button {
-    right: 40px;
-}
-
-.calendar .close-agenda:hover,
-.calendar .edit-button:hover {
-    color: #ff1a1a;
-}
-
-.calendar h3 {
-    margin: 0;
-    padding: 0;
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
+    color: #ffff;
     align-items: center;
+    transition: transform 0.5s ease;
 }
 
-.calendar .title-view {
-    display: block;
+.layer2 {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: #d1e7dd;
+    transform: translateX(100%);
+    transition: transform 0.5s ease;
 }
 
-.calendar .edit-title {
-    display: none;
+.agenda-but {
+    width: 80%;
+    height: 11.1%;
+    border-radius: 20px;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    border: none;
 }
 
-.calendar .edit-title input {
-    width: calc(100% - 40px);
+/* Effet de survol sur les boutons */
+.agenda-but:hover {
+    background-color: #0056b3; /* Changer la couleur au survol */
+}
+
+/* Couleurs spécifiques des boutons */
+.share-but {
+    background-color: #28a745;
+}
+
+.rdv-but {
+    background-color: #6f42c1;
+}
+
+.modify-but {
+    background-color: #6c757d;
+}
+
+.delete-but {
+    background-color: #dc3545;
+}
+
+.container.open .layer2 {
+    transform: translateX(0);
+}
+
+.container.open .tab {
+    right: 100%;
+    transform: translateY(-50%) translateX(100%);
 }
 
 /* ============================================================================
@@ -291,4 +315,34 @@ body {
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+}
+
+/* ============================================================================
+                                OTHER
+============================================================================ */
+
+.newAgenda {
+    display : flex;
+    justify-content: center;
+    align-items: center;
+    cursor: default;
+    background-color: #417b68;
+}
+
+.addCalendarBody {
+    display : flex;
+    justify-content: center;
+}
+
+.agendasOptions {
+    background-color: #212a3f;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.search-link {
+    padding-left: 10px;
+    color: white;
 }

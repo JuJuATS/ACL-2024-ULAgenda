@@ -14,8 +14,17 @@
 
 <div class="container">
     <!-- Sidebar Gauche -->
+     <!--
     <div class="left-sidebar">
         <h2>Filtres</h2>
+        <a href="/search" class="search-link">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            Rechercher des rendez-vous
+        </a>
+    </div>
+    -->
+
+    <div class="agendasOptions">
         <a href="/search" class="search-link">
             <i class="fa-solid fa-magnifying-glass"></i>
             Rechercher des rendez-vous
@@ -44,27 +53,18 @@
             </div>
         </div>
 
-        <div id="new-agenda" class="calendar">
-            <h4 id="new-agenda-title">Nouvel Agenda</h4>
-            <button class="add-button">+</button>
+        <div class="calendar newAgenda">
+
+            <div class="addCalendarBody"> 
+                <button class="add-button" style="height:75px; width:75px;">+</button>
+            </div>
+
         </div>
 
-        <% if (agendas && agendas.length > 0) { %>
-            <% agendas.forEach(function(agenda) { %>
-                <div class="calendar" data-id="<%= agenda._id %>" onclick="redirectToAgenda('<%= agenda._id %>')">
-                    <div class="header-calendar">
-                        <button class="edit-button" onclick="toggleEditMode(this, event)">Modifier</button>
-                        <button class="close-agenda" onclick="removeAgenda(this, event)">x</button>
-                    </div>
-                    <div class="content-calendar">
-                        <a class="title-view"> <%= agenda.name %> </a>
-                        <span class="edit-title" style="display: none;" onclick="stopEventPropagation(event)">
-                            <input type="text" value="<%= agenda.name %>" />
-                        </span>
-                    </div>
-                </div>
-            <% }); %>
-        <% } %>
+        <div class="agendas-container">
+            <!-- Les agendas seront stockés ici -->
+        </div>
+        
     </div>
 </div>
 
