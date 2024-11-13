@@ -2,6 +2,7 @@
 const modal = document.getElementById("agendaModal");
 const addButton = document.querySelector(".add-button");
 const closeButton = document.querySelector(".close-button");
+const agendaNameInput = document.getElementById("agendaName");
 const addAgendaButton = document.getElementById("addAgendaButton");
 const mainContent = document.querySelector(".main-content");
 
