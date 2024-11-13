@@ -1,3 +1,10 @@
+// Éléments de la modal et du bouton
+const modal = document.getElementById("agendaModal");
+const addButton = document.querySelector(".add-button");
+const closeButton = document.querySelector(".close-button");
+const addAgendaButton = document.getElementById("addAgendaButton");
+const mainContent = document.querySelector(".main-content");
+
 document.addEventListener("DOMContentLoaded", function() {
     fetch("/agendas/getAgendas")
         .then(response => response.text())
@@ -8,10 +15,6 @@ document.addEventListener("DOMContentLoaded", function() {
                     const agendaDiv = generateAgendaDiv(
                         generateAgendaHTML(agenda), agenda
                     );
-
-                    openCloseOptions(agendaDiv);
-
-                    document.querySelector('.main-content').appendChild(agendaDiv);
                 });
             } catch (error) {
                 console.error('Erreur lors de la conversion de la réponse en JSON:', error);
@@ -45,14 +48,6 @@ function openCloseOptions(container) {
                                     MODAL
    ====================================================================== */
 
-// Éléments de la modal et du bouton
-const modal = document.getElementById("agendaModal");
-const addButton = document.querySelector(".add-button");
-const closeButton = document.querySelector(".close-button");
-const addAgendaButton = document.getElementById("addAgendaButton");
-const agendaNameInput = document.getElementById("agendaName");
-const mainContent = document.querySelector(".main-content"); // Conteneur des agendas
-
 // Ouvrir la modal quand le bouton "+" est cliqué
 addButton.onclick = function() {
     modal.style.display = "block";
@@ -81,15 +76,17 @@ function generateAgendaHTML(agenda) {
         </div>
 
         <div class="layer2">
+            <div class="tab">Ｏ Ｏ Ｏ</div>
+
             <div id="layer2-content">
                 <button class="agenda-but share-but">Partager</button>
                 <button class="agenda-but rdv-but" onclick="redirectToRendezVous('${agenda._id}')">Nouveau Rendez-vous</button>
                 <button class="agenda-but modify-but" onclick="toggleEditMode(this, event)">Renommer</button>
                 <button class="agenda-but delete-but" onclick="removeAgenda(this, event)">Supprimer</button>
             </div>
+            
         </div>
 
-        <div class="tab">Ｏ Ｏ Ｏ</div>
     `;
 }
 
@@ -98,9 +95,13 @@ function generateAgendaDiv(htmlCode, agenda) {
     agendaDiv.className = "calendar";
     agendaDiv.setAttribute('data-id', agenda._id);
     agendaDiv.innerHTML = htmlCode;
+
+    openCloseOptions(agendaDiv);
+
+    mainContent.appendChild(agendaDiv);
+
     return agendaDiv;
 }
-
 
 // Fonction pour ajouter l'agenda à la liste
 addAgendaButton.onclick = async () => {
@@ -128,8 +129,6 @@ addAgendaButton.onclick = async () => {
                 generateAgendaHTML(newAgenda), newAgenda
             );
 
-            mainContent.appendChild(agendaDiv);
-            agendaNameInput.value = "";
             modal.style.display = "none";
         } else {
             const errorData = await response.json();
