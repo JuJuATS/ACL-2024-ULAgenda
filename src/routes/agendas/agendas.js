@@ -207,6 +207,14 @@ router.post('/:id/share', authMiddleware, checkAgendaAccess, checkAdminRights, a
                 });
             }
 
+            // Vérifier si l'utilisateur est le propriétaire de l'agenda
+            const agenda = await Agenda.findById(req.agenda._id);
+            if (agenda.userId.equals(targetUser._id)) {
+                return res.status(400).json({
+                    error: 'Vous ne pouvez pas partager un agenda avec son propriétaire'
+                });
+            }
+
             const existingShare = await Share.findOne({
                 agendaId: req.agenda._id,
                 sharedWith: targetUser._id,
@@ -331,6 +339,13 @@ router.get('/share/:token', authMiddleware, async (req, res) => {
         if (!linkShare || !linkShare.isValid()) {
             req.flash('error', 'Lien de partage invalide ou expiré');
             return res.redirect('/agendas');
+        }
+
+        // Vérifier si l'utilisateur est le propriétaire de l'agenda
+        const agenda = await Agenda.findById(linkShare.agendaId);
+        if (agenda.userId.equals(req.user.id)) {
+            req.flash('info', 'Vous êtes le propriétaire de cet agenda');
+            return res.redirect(`/rendezvous?agendaId=${linkShare.agendaId}`);
         }
 
         // Vérifier le partage existant
