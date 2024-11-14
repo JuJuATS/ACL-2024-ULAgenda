@@ -1,3 +1,21 @@
+// Fonction pour mettre en évidence un élément de partage
+const highlightShareItem = (shareId) => {
+    // Trouver l'élément de partage
+    const shareItem = document.querySelector(`.share-item[data-id="${shareId}"]`);
+    if (shareItem) {
+        // Scroll jusqu'à l'élément
+        shareItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        
+        // Ajouter la classe highlight pour l'animation
+        shareItem.classList.add('highlight');
+        
+        // Retirer la classe après l'animation
+        setTimeout(() => {
+            shareItem.classList.remove('highlight');
+        }, 2000);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', function() {
     const shareSection = document.querySelector('#ajouterPartage');
     const agendaId = shareSection.dataset.agendaId;
@@ -5,25 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const userForm = document.getElementById('userShareForm');
     const linkForm = document.getElementById('linkShareForm');
     const typeBtns = document.querySelectorAll('.share-type-btn');
-
-    // Fonction pour mettre en évidence un élément de partage
-    const highlightShareItem = (shareId) => {
-        // Trouver l'élément de partage
-        const shareItem = document.querySelector(`.share-item[data-id="${shareId}"]`);
-        if (shareItem) {
-            // Scroll jusqu'à l'élément
-            shareItem.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            
-            // Ajouter la classe highlight pour l'animation
-            shareItem.classList.add('highlight');
-            
-            // Retirer la classe après l'animation
-            setTimeout(() => {
-                shareItem.classList.remove('highlight');
-            }, 2000);
-        }
-    };
-
 
     // Fonction pour calculer la date dans 'days' jours
     const getFutureDate = (days) => {
@@ -435,9 +434,155 @@ async function deleteAllShares(shareType, event) {
     }
 }
 
+
 async function editShare(shareId, event) {
     event.stopPropagation();
-    // TODO : Implémentation de l'édition du partage
+    const shareItem = event.target.closest('.share-item');
+    const userInfo = shareItem.querySelector('.user-info').cloneNode(true);
+    const currentPermission = shareItem.querySelector('.permission-badge').innerText.toLowerCase(); // conversion en minuscules pour matcher les valeurs de select
+    const validityInfo = shareItem.querySelector('.validity-info');
+    
+    let currentValidFrom = null;
+    let currentValidUntil = null;
+    if (validityInfo) {
+        const dateText = validityInfo.textContent;
+        const fromMatch = dateText.match(/À partir du (\d{2}\/\d{2}\/\d{4})/);
+        const untilMatch = dateText.match(/Jusqu'au (\d{2}\/\d{2}\/\d{4})/);
+        
+        if (fromMatch) {
+            const [day, month, year] = fromMatch[1].split('/');
+            currentValidFrom = `${year}-${month}-${day}`;
+        }
+        if (untilMatch) {
+            const [day, month, year] = untilMatch[1].split('/');
+            currentValidUntil = `${year}-${month}-${day}`;
+        }
+    }
+
+    // Créer le formulaire d'édition
+    const editForm = document.createElement('div');
+    editForm.className = 'share-item-edit';
+    editForm.innerHTML = `
+        <div class="share-info">
+            ${userInfo.outerHTML}
+        </div>
+        <form class="share-form edit-share-form">
+            <div class="form-group">
+                <label for="editPermission">Permissions :</label>
+                <select id="editPermission" name="permission" required>
+                    <option value="read" ${currentPermission === 'read' ? 'selected' : ''}>Lecture seule</option>
+                    <option value="contribute" ${currentPermission === 'contribute' ? 'selected' : ''}>Contributeur</option>
+                    <option value="admin" ${currentPermission === 'admin' ? 'selected' : ''}>Administrateur</option>
+                </select>
+            </div>
+            <div class="form-group dates">
+                <div class="date-input">
+                    <label for="editValidFrom">Valide à partir du :</label>
+                    <input type="date" 
+                           id="editValidFrom" 
+                           name="validFrom" 
+                           value="${currentValidFrom || ''}"
+                           min="${new Date().toISOString().split('T')[0]}">
+                </div>
+                <div class="date-input">
+                    <label for="editValidUntil">Jusqu'au :</label>
+                    <input type="date" 
+                           id="editValidUntil" 
+                           name="validUntil" 
+                           value="${currentValidUntil || ''}"
+                           min="${new Date().toISOString().split('T')[0]}">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="submit-button">Sauvegarder</button>
+                <button type="button" class="cancel-button">Annuler</button>
+            </div>
+        </form>
+    `;
+
+    // Stocker le contenu original et remplacer par le formulaire
+    const originalContent = shareItem.innerHTML;
+    shareItem.innerHTML = '';
+    shareItem.appendChild(editForm);
+
+    // Gérer la soumission du formulaire
+    const form = editForm.querySelector('form');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const newPermission = form.permission.value;
+        const validFrom = form.validFrom.value;
+        const validUntil = form.validUntil.value;
+
+        // Confirmer si changement en administrateur
+        if (newPermission === 'admin' && currentPermission !== 'admin') {
+            if (!confirm('Voulez-vous vraiment donner les droits d\'administrateur à cet utilisateur ? Il pourra modifier et partager l\'agenda.')) {
+                return;
+            }
+        }
+
+        const agendaId = document.querySelector('#ajouterPartage').dataset.agendaId;
+        
+        try {
+            const response = await fetch(`/agendas/${agendaId}/share/${shareId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    permission: newPermission,
+                    validFrom,
+                    validUntil
+                })
+            });
+
+            if (response.ok) {
+                const updatedShare = await response.json();
+                
+                // Restaurer la structure HTML originale avec les valeurs mises à jour
+                shareItem.innerHTML = originalContent;
+
+                // Mettre à jour le badge de permission
+                const permissionBadge = shareItem.querySelector('.permission-badge');
+                permissionBadge.className = `permission-badge ${updatedShare.permission}`;
+                permissionBadge.textContent = updatedShare.permission;
+
+                // Mettre à jour les informations de validité
+                if (shareItem.querySelector('.validity-info')) {
+                    shareItem.querySelector('.validity-info').remove();
+                }
+                
+                if (validFrom || validUntil) {
+                    const validityInfo = document.createElement('div');
+                    validityInfo.className = 'validity-info';
+                    validityInfo.innerHTML = `
+                        <i class="fas fa-clock"></i>
+                        ${validFrom ? `À partir du ${new Date(validFrom).toLocaleDateString()}` : ''}
+                        ${validFrom && validUntil ? ' - ' : ''}
+                        ${validUntil ? `Jusqu'au ${new Date(validUntil).toLocaleDateString()}` : ''}
+                    `;
+                    shareItem.querySelector('.share-info').appendChild(validityInfo);
+                }
+
+                // Mettre en évidence l'élément mis à jour
+                highlightShareItem(shareId);
+                
+                showFloatingMessage('Partage mis à jour avec succès', 'info');
+            } else {
+                const error = await response.json();
+                throw new Error(error.error || 'Erreur lors de la mise à jour');
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            showFloatingMessage(error.message, 'error');
+        }
+    });
+
+    // Gérer l'annulation
+    editForm.querySelector('.cancel-button').addEventListener('click', () => {
+        shareItem.innerHTML = originalContent;
+    });
 }
 
 async function copyShareLink(button, event) {
