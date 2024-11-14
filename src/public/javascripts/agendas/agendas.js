@@ -136,9 +136,11 @@ addAgendaButton.onclick = async () => {
             agendaDiv.innerHTML = `
                 <div class="header-calendar">
                     <div class="header-actions">
-                        <button class="edit-button" onclick="toggleEditMode(this, event)">Modifier</button>
+                        <button class="edit-button" onclick="toggleEditMode(this, event)" title="Modifier">
+                            <i class="fas fa-edit"></i>
+                        </button>
                         <div class="dropdown">
-                            <button class="options-button" onclick="toggleDropdown(event, this)">
+                            <button class="options-button" onclick="toggleDropdown(event, this)" title="Plus d'options">
                                 <i class="fas fa-ellipsis-v"></i>
                             </button>
                             <div class="dropdown-content">

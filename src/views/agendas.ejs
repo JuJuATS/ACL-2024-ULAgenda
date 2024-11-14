@@ -10,6 +10,7 @@
         <%- include('./partials/header', {user: true}); %>
     </header>
 
+    <main class="main-wrapper">
     <div class="container">
         <!-- Sidebar Gauche -->
         <div class="left-sidebar">
@@ -67,9 +68,11 @@
                             <div class="calendar" data-id="<%= agenda._id %>" onclick="redirectToAgenda('<%= agenda._id %>')">
                                 <div class="header-calendar">
                                     <div class="header-actions">
-                                        <button class="edit-button" onclick="toggleEditMode(this, event)">Modifier</button>
+                                        <button class="edit-button" onclick="toggleEditMode(this, event)" title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
                                         <div class="dropdown">
-                                            <button class="options-button" onclick="toggleDropdown(event, this)">
+                                            <button class="options-button" onclick="toggleDropdown(event, this)" title="Plus d'options">
                                                 <i class="fas fa-ellipsis-v"></i>
                                             </button>
                                             <div class="dropdown-content">
@@ -115,9 +118,11 @@
                                     <div class="header-calendar">
                                         <div class="header-actions">
                                             <% if (agenda.accessLevel === 'admin') { %>
-                                                <button class="edit-button" onclick="toggleEditMode(this, event)">Modifier</button>
+                                                <button class="edit-button" onclick="toggleEditMode(this, event)" title="Modifier">
+                                                <i class="fas fa-edit"></i>
+                                                </button>
                                                 <div class="dropdown">
-                                                    <button class="options-button" onclick="toggleDropdown(event, this)">
+                                                    <button class="options-button" onclick="toggleDropdown(event, this)" title="Plus d'options">
                                                         <i class="fas fa-ellipsis-v"></i>
                                                     </button>
                                                     <div class="dropdown-content">
@@ -132,15 +137,39 @@
                                             <% } %>
                                         </div>
                                     </div>
+                                    
                                     <div class="content-calendar">
                                         <a class="title-view"><%= agenda.name %></a>
-                                        <% if (agenda.accessLevel === 'admin') { %>
+                                        <% if (agenda.accessLevel === 'admin' || agenda.accessLevel === 'contribute') { %>
                                             <span class="edit-title" style="display: none;" onclick="stopEventPropagation(event)">
                                                 <input type="text" value="<%= agenda.name %>" />
                                             </span>
                                         <% } %>
                                     </div>
-                                </div>
+                                
+                                    <div class="calendar-info">
+                                        <% if (agenda.sharedBy) { %>
+                                            <div class="shared-by">
+                                                <small>
+                                                    Partagé par : <%= agenda.sharedBy.pseudo %>
+                                                </small>
+                                            </div>
+                                        <% } %>
+                                
+                                        <% if (agenda.settings && (agenda.settings.validFrom || agenda.settings.validUntil)) { %>
+                                            <div class="share-validity">
+                                                <small>
+                                                    <% if (agenda.settings.validFrom) { %>
+                                                        À partir du <%= new Date(agenda.settings.validFrom).toLocaleDateString() %>
+                                                    <% } %>
+                                                    <% if (agenda.settings.validUntil) { %>
+                                                        <%= agenda.settings.validFrom ? ' - ' : '' %>
+                                                        Jusqu'au <%= new Date(agenda.settings.validUntil).toLocaleDateString() %>
+                                                    <% } %>
+                                                </small>
+                                            </div>
+                                        <% } %>
+                                    </div>
                             <% }); %>
                         </div>
                     </div>
@@ -148,10 +177,19 @@
             </div>
         </div>
     </div>
+    </main>
 
-    <footer>
+    <footer class="footer">
         <%- include('./partials/footer', {user: {}}); %>
     </footer>
+
+    <!-- Ajout d'un template pour les messages d'erreur/succès -->
+    <div class="toast-container" style="display: none;">
+        <div class="toast">
+            <div class="toast-content"></div>
+            <button class="toast-close">&times;</button>
+        </div>
+    </div>
 
     <script src="/javascripts/agendas/agendas.js"></script>
 </body>

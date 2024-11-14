@@ -20,13 +20,22 @@ router.get('/', authMiddleware, async (req, res) => {
         const shares = await Share.find({
             sharedWith: req.user.id,
             shareType: 'user'
-        }).populate('agendaId');
+        })
+        .populate('agendaId')
+        .populate('ownerId', 'pseudo');  // Pour avoir les infos de l'utilisateur qui a partagé
 
         const sharedAgendas = shares
             .filter(share => share.isValid())
             .map(share => ({
                 ...share.agendaId.toObject(),
-                accessLevel: share.permission
+                accessLevel: share.permission,
+                sharedBy: {
+                    pseudo: share.ownerId.pseudo
+                },
+                settings: {
+                    validFrom: share.settings?.validFrom || null,
+                    validUntil: share.settings?.validUntil || null
+                }
             }));
 
         const agendas = [

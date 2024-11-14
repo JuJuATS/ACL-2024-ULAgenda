@@ -1,78 +1,114 @@
-/* Importations */
+/* =============================================================================
+   TABLE OF CONTENTS
+   -----------------------------------------------------------------------------
+   1. Base & Typography
+   2. Layout & Grid
+   3. Components
+      3.1 Sidebar
+      3.2 Calendar Cards
+      3.3 Badges & Labels
+      3.4 Buttons
+      3.5 Dropdowns
+   4. Modals & Overlays
+   5. Animations
+   6. Responsive Design
+============================================================================= */
+
+/* =============================================================================
+   1. Base & Typography
+============================================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
 
-/* ============================================================================
-                                GLOBAL
-============================================================================ */
+:root {
+    /* Colors */
+    --primary-color: #48B0D9;
+    --secondary-color: #45a049;
+    --dark-bg: #212a3f;
+    --calendar-bg: #495571;
+    --text-light: #ffffff;
+    --text-dark: #212a3f;
+    --text-muted: rgba(255, 255, 255, 0.8);
+    
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
 * {
     font-family: "Afacad Flux", sans-serif;
     font-weight: 600;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: #ffffff;
 }
 
 body {
     display: flex;
     flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--text-light);
 }
 
-/* ============================================================================
-                                CONTAINER
-============================================================================ */
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure main content takes available space */
+main, .container {
+    flex: 1 0 auto;
+}
+
+/* Keep footer at bottom */
+footer {
+    flex-shrink: 0;
+}
+
+/* =============================================================================
+   2. Layout & Grid
+============================================================================= */
 .container {
     flex: 1;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    padding: 16px;
-    gap: 16px;
+    padding: var(--spacing-md);
+    gap: var(--spacing-md);
     justify-content: space-between;
+    max-width: 1800px;
+    margin: 0 auto;
+    width: 100%;
 }
 
-/* Styles pour les sections d'agenda */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-md);
+    justify-content: flex-start;
+    height: fit-content;
+}
+
 .agenda-sections {
     display: flex;
     flex-direction: column;
     gap: 2rem;
     width: 100%;
-}
-
-.agenda-section {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 12px;
-    padding: 1.5rem;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.section-header {
-    display: flex;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid #48B0D9;
-}
-
-.section-header h2 {
-    font-size: 1.25rem;
-    color: #212a3f;
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.section-header .count-badge {
-    background: #48B0D9;
-    color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 12px;
-    font-size: 0.875rem;
-    margin-left: 1rem;
 }
 
 .calendars-grid {
@@ -81,30 +117,113 @@ body {
     gap: 1.5rem;
 }
 
-/* Styles spécifiques pour les agendas partagés */
-.shared-calendar {
+/* =============================================================================
+   3. Components
+============================================================================= */
+
+/* 3.1 Sidebar */
+.left-sidebar {
+    border-radius: var(--spacing-sm);
+    margin-right: var(--spacing-md);
+    width: 15%;
+    background-color: var(--dark-bg);
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-sm);
+    margin-top: 5px;
+    min-height: 750px;
+    color: var(--text-light);
+}
+
+.left-sidebar h2 {
+    color: var(--primary-color);
+    margin-bottom: var(--spacing-lg);
+}
+
+/* 3.2 Calendar Cards */
+.header-actions {
+    display: flex;
+    gap: 16px; /* Augmenté de 8px à 16px */
+    align-items: center;
+    padding: 4px;
+}
+
+.calendar {
+    background-color: var(--calendar-bg);
+    border-radius: var(--spacing-sm);
+    box-shadow: var(--shadow-md);
+    padding: var(--spacing-md);
+    margin: var(--spacing-md);
     position: relative;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: grid;
+    grid-template-rows: auto 1fr auto auto;
+    gap: var(--spacing-sm);
+    min-height: 150px;
+    max-width: 200px;
 }
 
-.shared-calendar::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: #48B0D9;
-    border-radius: 4px 4px 0 0;
+.calendar:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
 }
 
+.header-calendar {
+    height: auto;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+}
+
+.content-calendar {
+    height: auto;
+    display: flex;
+    justify-content: center;
+    padding: var(--spacing-sm) 0;
+}
+
+.content-calendar .title-view {
+    color: var(--text-light);
+    font-size: 1.1em;
+    text-align: center;
+    word-break: break-word;
+}
+
+.calendar-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-top: auto;
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shared-by,
+.share-validity {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--spacing-xs);
+}
+
+.shared-by small,
+.share-validity small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.8em;
+    line-height: 1.4;
+}
+
+/* 3.3 Badges & Labels */
 .access-level-badge {
     position: absolute;
-    top: 0.5rem;
-    right: 0.5rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--spacing-xs);
     font-size: 0.75rem;
     font-weight: 500;
+    z-index: 2;
 }
 
 .access-level-badge.read {
@@ -113,16 +232,215 @@ body {
 }
 
 .access-level-badge.contribute {
-    background-color: #48B0D9;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-light);
 }
 
 .access-level-badge.admin {
-    background-color: #212a3f;
-    color: white;
+    background-color: var(--dark-bg);
+    color: var(--text-light);
 }
 
-/* Animation pour les sections au chargement */
+.count-badge {
+    background: var(--primary-color);
+    color: var(--text-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    margin-left: 1rem;
+}
+
+/* 3.4 Buttons */
+.add-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    font-size: 24px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin: 10px auto;
+}
+
+.add-button:hover {
+    background-color: var(--secondary-color);
+    box-shadow: var(--shadow-md);
+}
+
+/* 3.4 Buttons */
+.edit-button,
+.options-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #259e88;
+    transition: all 0.3s ease;
+    padding: 8px;
+    min-width: 32px;
+    min-height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+}
+
+.options-button i {
+    font-size: 20px;
+}
+
+.edit-button:hover,
+.options-button:hover {
+    color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* 3.5 Dropdowns */
+.header-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    padding: 4px;
+    position: relative; /* Important pour le positionnement du dropdown */
+}
+
+/* Styles pour le dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Ajouter une zone invisible qui connecte le bouton au menu */
+.dropdown::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: -8px;
+    right: -8px;
+    height: 20px; /* Crée une zone invisible entre le bouton et le menu */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: -8px;
+    top: calc(100% + 8px);
+    background-color: white;
+    min-width: 180px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    z-index: 1000;
+}
+
+/* Flèche du dropdown */
+.dropdown-content::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 12px;
+    width: 14px;
+    height: 14px;
+    background-color: white;
+    transform: rotate(45deg);
+    box-shadow: -2px -2px 5px rgba(0,0,0,0.05);
+}
+
+/* Fond du dropdown */
+.dropdown-content::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    border-radius: 4px;
+    z-index: -1;
+}
+
+.dropdown-content a {
+    color: #333;
+    padding: 12px 16px;
+    margin: 4px;
+    border-radius: 4px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.3s;
+}
+
+/* Styles pour les icônes dans le dropdown */
+.dropdown-content a i {
+    width: 20px;
+    text-align: center;
+    margin-right: 8px;
+}
+
+.dropdown-content a:hover {
+    background-color: #f5f5f5;
+}
+
+/* Affichage du dropdown */
+.dropdown:hover .dropdown-content,
+.dropdown-content:hover {
+    display: block;
+}
+
+/* État actif du bouton options */
+.dropdown.active .options-button,
+.dropdown:hover .options-button {
+    color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+/* =============================================================================
+   4. Modals & Overlays
+============================================================================= */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background-color: var(--text-light);
+    margin: 10% auto;
+    padding: var(--spacing-xl);
+    border-radius: var(--spacing-sm);
+    box-shadow: var(--shadow-lg);
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.modal-content h2 {
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-lg);
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* =============================================================================
+   5. Animations
+============================================================================= */
 @keyframes sectionFadeIn {
     from {
         opacity: 0;
@@ -142,330 +460,26 @@ body {
     animation-delay: 0.2s;
 }
 
-/* Responsive design */
+/* =============================================================================
+   6. Responsive Design
+============================================================================= */
 @media (max-width: 768px) {
-    .agenda-section {
-        padding: 1rem;
+    .container {
+        padding: var(--spacing-sm);
+    }
+
+    .left-sidebar {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: var(--spacing-md);
+        min-height: auto;
     }
 
     .calendars-grid {
         grid-template-columns: 1fr;
     }
-}
 
-/* ============================================================================
-                                LEFT SIDEBAR
-============================================================================ */
-.left-sidebar {
-    border-radius: 8px;
-    margin-right: 16px;
-    width: 15%;
-    background-color: #212a3f;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    margin-top: 5px;
-    min-height: 750px;
-    color: #fff;
-}
-
-.left-sidebar h2 {
-    color: #48B0D9;
-    margin-bottom: 20px;
-}
-
-.left-sidebar .filter {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.left-sidebar .filter label {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.left-sidebar .filter input[type="text"],
-.left-sidebar .filter select {
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    background-color: #3a475e;
-    color: #fff;
-}
-
-.left-sidebar .filter input[type="text"]::placeholder {
-    color: #aaa;
-}
-
-.left-sidebar .filter button {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #48B0D9;
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.left-sidebar .filter button:hover {
-    background-color: #45a049;
-}
-
-/* ============================================================================
-                                MAIN CONTENT
-============================================================================ */
-.main-content {
-    flex: 1;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 16px;
-    justify-content: flex-start;
-    height: fit-content;
-}
-
-#new-agenda {
-    text-align: center;
-}
-
-#new-agenda-title {
-    color: #45a049;
-}
-
-.add-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    background-color: #48B0D9;
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
-    margin: 10px auto;
-}
-
-.add-button:hover {
-    background-color: #45a049;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.add-button:active {
-    background-color: #3e8e41;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transform: translateY(2px);
-}
-
-/* ============================================================================
-                                CALENDAR
-============================================================================ */
-.calendar {
-    background-color: #495571;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 8px;
-    margin: 16px;
-    position: relative;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-    flex: 1 1 200px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    min-height: 100px;
-    max-width: 200px;
-}
-
-.header-calendar {
-    height: 50%;
-    display: flex;
-    justify-content: flex-end;
-}
-
-.content-calendar {
-    height: 50%;
-    display: flex;
-    justify-content: center;
-}
-
-.calendar:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-}
-
-.calendar .close-agenda,
-.calendar .edit-button {
-    position: absolute;
-    top: 10px;
-    background: none;
-    border: none;
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.edit-button {
-    color: #259e88;
-}
-
-.close-agenda {
-    color: #fe7e8d;
-}
-
-.calendar .close-agenda {
-    right: 10px;
-}
-
-.calendar .edit-button {
-    right: 40px;
-}
-
-.calendar .close-agenda:hover,
-.calendar .edit-button:hover {
-    color: #ff1a1a;
-}
-
-.calendar h3 {
-    margin: 0;
-    padding: 0;
-    flex: 1;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.calendar .title-view {
-    display: block;
-}
-
-.calendar .edit-title {
-    display: none;
-}
-
-.calendar .edit-title input {
-    width: calc(100% - 40px);
-}
-
-.header-actions {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-}
-
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.options-button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 8px;
-    color: #666;
-    transition: color 0.3s;
-}
-
-.options-button:hover {
-    color: #00BBEC;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    background-color: white;
-    min-width: 160px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-    border-radius: 4px;
-    z-index: 1;
-}
-
-.dropdown-content a {
-    color: #333;
-    padding: 12px 16px;
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    transition: background-color 0.3s;
-}
-
-.dropdown-content a:hover {
-    background-color: #f5f5f5;
-}
-
-.dropdown.active .dropdown-content {
-    display: block;
-}
-
-/* Pour éviter que le dropdown ne se ferme immédiatement */
-.dropdown-content:hover {
-    display: block;
-}
-
-/* ============================================================================
-                                MODALS
-============================================================================ */
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1001;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(5px);
-}
-
-.modal-content {
-    background-color: #ffffff;
-    margin: 10% auto;
-    padding: 30px;
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-    width: 90%;
-    max-width: 400px;
-    text-align: center;
-    transition: transform 0.3s ease-in-out;
-}
-
-.modal-content h2 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: #212a3f;
-}
-
-.modal-content p {
-    margin-bottom: 20px;
-}
-
-.modal-content input[type="text"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
-}
-
-.modal-content input[type="text"]:focus {
-    border-color: #00BBEC;
-    outline: none;
-}
-
-.close-button {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
+    .calendar {
+        max-width: none;
+    }
 }
