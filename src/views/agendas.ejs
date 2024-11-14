@@ -119,7 +119,7 @@
                                         <div class="header-actions">
                                             <% if (agenda.accessLevel === 'admin') { %>
                                                 <button class="edit-button" onclick="toggleEditMode(this, event)" title="Modifier">
-                                                <i class="fas fa-edit"></i>
+                                                    <i class="fas fa-edit"></i>
                                                 </button>
                                                 <div class="dropdown">
                                                     <button class="options-button" onclick="toggleDropdown(event, this)" title="Plus d'options">
@@ -170,6 +170,7 @@
                                             </div>
                                         <% } %>
                                     </div>
+                                </div>
                             <% }); %>
                         </div>
                     </div>
@@ -183,7 +184,7 @@
         <%- include('./partials/footer', {user: {}}); %>
     </footer>
 
-    <!-- Ajout d'un template pour les messages d'erreur/succès -->
+    <!-- Template pour les messages d'erreur/succès -->
     <div class="toast-container" style="display: none;">
         <div class="toast">
             <div class="toast-content"></div>
