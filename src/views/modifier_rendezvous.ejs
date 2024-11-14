@@ -246,7 +246,7 @@
             const heureDebut = document.getElementById('heureDebut').value;
             const duree = parseFloat(document.getElementById('duree').value); // Lire la durée en heures
             const description = document.getElementById('description').value;
-
+            const rappel = document.getElementById
             const finRecurrence = document.getElementById('dateUntilRecurrence').value;
 
             if (nom && date && heureDebut && duree && description){
@@ -264,6 +264,7 @@
                         recId: recId,
                         recurrences: recurrencesD,
                         finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
+                        rappel
                     }
                     try {
                         const response = await fetch(`http://localhost:3000/rendezvous/${rdvId}`, {
@@ -276,7 +277,7 @@
                         });
                         if (response.ok) {
                             afficherPopUp("Rendez-vous modifié avec succès !", true);
-                            window.location.href = `/rendezvous?agendaId=${agendaId}`;
+                            window.location.href = document.referrer;
                         }
                     } catch (error) {
                         console.error('Erreur lors de la modification:', error);

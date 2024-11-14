@@ -143,7 +143,8 @@ const getAgendaEvents = async (req, res, next) => {
         start:el.dateDebut,
         end:el.dateFin,
         extendedProps: {
-          description: el.description
+          description: el.description,
+          link:`/rendezvous/edit/${el._id}`
       },
         title:el.name,
         duration:el.dateFin-el.dateDebut

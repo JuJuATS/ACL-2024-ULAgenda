@@ -104,3 +104,35 @@ body{
   outline: 2px solid var(--c);
   outline-offset: 5px;
 }
+#popup-rdv{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  background: white;
+  border: 2px solid black;
+  padding: 20px;
+  z-index: 999;
+  transform: translate(-50%,-50%);
+  border-radius: 20px;
+}
+.popup-form-field{
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.popup-form-field input{
+  border: 2px 0 solid black;
+  width: 300px;
+}
+.popup-form-field label{
+  text-align: center;
+}
+#preset-container select{
+  width: 100%;
+}
+
+#popup-form{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
