@@ -7,8 +7,10 @@
     <link rel="stylesheet" href="/css/partials/header.css">
     <link rel="stylesheet" href="/css/partials/footer.css">
     <link rel="stylesheet" href="/css/presets/edit.css">
+    <link rel="stylesheet" href="/css/partials/toaster.css">
 </head>
 <body>
+    <div class="pop-up-info"></div>
     <header>
         <%- include('../partials/header', {user: true}); %>
     </header>
@@ -143,7 +145,7 @@
 
 
     <!-- Données du préréglage pour les scripts -->
-    <div id="preset-data" 
+    <div id="preset-data"
         data-name="<%= name %>"
         data-color="<%= color %>"
         data-priority="<%= priority %>"

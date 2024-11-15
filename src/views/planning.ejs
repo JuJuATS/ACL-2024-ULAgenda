@@ -62,7 +62,7 @@
 
     <div class="popup-form-field">
         <label for="description">Description:</label>
-        <textarea id="description" name="description" rows="4" required></textarea>
+        <textarea id="description" name="description" rows="4"></textarea>
     </div>
 
     <div class="popup-form-field">
@@ -209,10 +209,10 @@
         })
       });
       const handleCheckBox = ()=>{
-          
+
       }
       const fetchEvent = async (el) => {
-        let checkBox = JSON.parse(localStorage.getItem("checkBox")) || [];        
+        let checkBox = JSON.parse(localStorage.getItem("checkBox")) || [];
           checkBox.push(el.dataset.id)
           localStorage.setItem("checkBox",JSON.stringify(checkBox))
           if (!agendas[el.dataset.id]) {
@@ -222,9 +222,9 @@
           else {
             agendas[el.dataset.id].visible = true;
           }
-        
+
       }
-      
+
       const refetch = async (el, calendar) => {
         if (el.checked) {
          fetchEvent(el)
@@ -242,7 +242,7 @@
 
 
       }
-      
+
     });
 
   </script>
