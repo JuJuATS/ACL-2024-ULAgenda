@@ -29,41 +29,57 @@ document.addEventListener("DOMContentLoaded", function() {
 function openCloseOptions(container) {
     const tab = container.getElementsByClassName('tab')[0];
     const layer2 = container.getElementsByClassName('layer2')[0];
-    
+    let openTimeout, closeTimeout;
+
+    function openContainer() {
+        clearTimeout(closeTimeout);
+        openTimeout = setTimeout(() => {
+            container.classList.add('open');
+        }, 300);
+    }
+
+    function closeContainer(event) {
+        if (!container.contains(event.relatedTarget)) {
+            clearTimeout(openTimeout);
+            closeTimeout = setTimeout(() => {
+                container.classList.remove('open');
+            }, 300);
+        }
+    }
+
     if (tab) {
-        tab.addEventListener('click', function() {
-            container.classList.toggle('open');
-        });
+        tab.addEventListener('mouseenter', openContainer);
     } else {
         console.log("Aucun élément avec la classe 'tab' trouvé.");
     }
 
-    layer2.addEventListener('mouseout', function(event) {
-        if (!container.contains(event.relatedTarget)) {
-            container.classList.remove('open');
-        }
-    });
+    if (layer2) {
+        layer2.addEventListener('mouseleave', closeContainer);
+    } else {
+        console.log("Aucun élément avec la classe 'layer2' trouvé.");
+    }
 }
 
 /* ====================================================================== 
                                     MODAL
    ====================================================================== */
 
-// Ouvrir la modal quand le bouton "+" est cliqué
 addButton.onclick = function() {
     modal.style.display = "block";
 }
 
-// Fermer la modal quand l'utilisateur clique sur le "x"
 closeButton.onclick = function() {
     modal.style.display = "none";
 }
 
-// Fermer la modal quand l'utilisateur clique à l'extérieur de la modal
 window.onclick = function(event) {
     if (event.target === modal) {
         modal.style.display = "none";
     }
+}
+
+function closeModal(modal) {
+    modal.style.display = "none";
 }
 
 /* ====================================================================== 
@@ -73,7 +89,7 @@ window.onclick = function(event) {
 function generateAgendaHTML(agenda) {
     return `
         <div class="layer1" onclick="redirectToAgenda('${agenda._id}')">
-            <h1>${agenda.name}</h1>
+            <h1 id="agendaName">${agenda.name}</h1>
         </div>
 
         <div class="layer2">
@@ -82,7 +98,7 @@ function generateAgendaHTML(agenda) {
             <div id="layer2-content">
                 <button class="agenda-but share-but">Partager</button>
                 <button class="agenda-but rdv-but" onclick="redirectToRendezVous('${agenda._id}')">Nouveau Rendez-vous</button>
-                <button class="agenda-but modify-but" onclick="toggleEditMode(this, event)">Renommer</button>
+                <button class="agenda-but modify-but" onclick="renameAgenda(this, event)">Renommer</button>
                 <button class="agenda-but delete-but" onclick="removeAgenda(this, event)">Supprimer</button>
             </div>
             
@@ -145,51 +161,105 @@ addAgendaButton.onclick = async () => {
                             SUPPRESSION DES AGENDAS
    ====================================================================== */
 
-   let agendaToDelete = null; // Variable pour stocker l'agenda à supprimer
+let agendaToDelete = null;
 
-   function removeAgenda(button, event) {
-       event.stopPropagation();
-       event.preventDefault();
-       agendaToDelete = button.closest('.calendar');
-   
-       const confirmDeleteModal = document.getElementById("confirmDeleteModal");
-       confirmDeleteModal.style.display = "block";
-   }
-   
-   // Fonction pour fermer la modal de confirmation
-   function closeConfirmDeleteModal() {
-       const confirmDeleteModal = document.getElementById("confirmDeleteModal");
-       confirmDeleteModal.style.display = "none"; // Masquer la modal de confirmation
-   }
-   
-   const confirmDeleteButton = document.getElementById("confirmDeleteButton");
-   
-   // Événement de confirmation pour supprimer l'agenda
-   confirmDeleteButton.onclick = async function() {
-       if (agendaToDelete) {
-           const agendaId = agendaToDelete.getAttribute('data-id');
-   
-           try {
-               const response = await fetch(`http://localhost:3000/agendas/${agendaId}`, {
-                   method: 'DELETE',
-               });
-   
-               if (response.ok) {
-                   agendaToDelete.remove();
-                   closeConfirmDeleteModal();
-                   agendaToDelete = null;
-               } else {
-                   const errorData = await response.json();
-                   alert('Erreur lors de la suppression de l\'agenda: ' + errorData.message);
-               }
-           } catch (error) {
-               console.error('Erreur:', error);
-               alert('Une erreur s\'est produite lors de la suppression de l\'agenda');
-           }
-       } else {
-           console.error("agendaToDelete is nill");
-       }
-   }
+const confirmDeleteModal = document.getElementById("confirmDeleteModal");
+
+function removeAgenda(button, event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    agendaToDelete = button.closest('.calendar');
+    confirmDeleteModal.style.display = "block";
+}
+
+const confirmDeleteButton = document.getElementById("confirmDeleteButton");
+
+// Événement de confirmation pour supprimer l'agenda
+confirmDeleteButton.onclick = async function() {
+    if (agendaToDelete) {
+        const agendaId = agendaToDelete.getAttribute('data-id');
+
+        try {
+            const response = await fetch(`http://localhost:3000/agendas/${agendaId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                agendaToDelete.remove();
+                closeConfirmDeleteModal();
+                agendaToDelete = null;
+            } else {
+                const errorData = await response.json();
+                alert('Erreur lors de la suppression de l\'agenda: ' + errorData.message);
+            }
+        } catch (error) {
+            console.error('Erreur:', error);
+            alert('Une erreur s\'est produite lors de la suppression de l\'agenda');
+        }
+    } else {
+        console.error("agendaToDelete is nill");
+    }
+}
+
+/* ====================================================================== 
+                            RENOMMAGE DES AGENDAS
+   ====================================================================== */
+
+let agendaToRename = null;
+
+const confirmRenameModal = document.getElementById("confirmRenameModal");
+const confirmRenameButton = document.getElementById("confirmRenameButton");
+const inputAgendaName = document.getElementById("inputAgendaName");
+
+function renameAgenda(button, event) {
+    event.stopPropagation();
+    event.preventDefault();
+
+    agendaToRename = button.closest('.calendar');
+    confirmRenameModal.style.display = "block";
+}
+
+// Événement de confirmation pour renommer l'agenda.
+confirmRenameButton.onclick = async function() {
+    if (agendaToRename) {
+        try {
+            const agendaId = agendaToRename.getAttribute("data-id");
+            const newTitle = inputAgendaName.value;
+            const agendaNameTitle = agendaToRename.querySelector("#agendaName");
+
+            if (!agendaId) {
+                alert("Impossible de retrieve l'agendaId");
+            }
+
+            const response = await fetch(`http://localhost:3000/agendas/updateAgendaTitle`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ agendaId, newTitle })
+            });
+
+            const responseText = await response.text();
+            console.log('Response Text:', responseText);
+
+            const data = JSON.parse(responseText);
+
+            if (data.success) {
+                agendaNameTitle.textContent = newTitle;
+                inputAgendaName.value = "";
+                closeModal(confirmRenameModal);
+            } else {
+                alert('Erreur lors de la sauvegarde. Veuillez réessayer.');
+            }
+        
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Erreur lors de la sauvegarde. Veuillez réessayer.');
+        }
+    }
+}
+
 
 /* ====================================================================== 
                                 REDIRECTIONS
@@ -205,54 +275,6 @@ function redirectToRendezVous(agendaId) {
 
 function stopEventPropagation(event) {
     event.stopPropagation();
-}
-
-async function toggleEditMode(button, event) {
-    event.stopPropagation();
-
-    const calendar = button.closest('.calendar');
-    const titleView = calendar.querySelector('.title-view');
-    const editTitle = calendar.querySelector('.edit-title');
-    const input = editTitle.querySelector('input');
-
-    if (editTitle.style.display === 'none' || !editTitle.style.display) {
-        // Mode édition
-        titleView.style.display = 'none';
-        editTitle.style.display = 'flex';
-        button.textContent = 'Sauvegarder';
-        input.focus();
-    } else {
-        // Sauvegarde
-        const newTitle = input.value;
-        const agendaId = calendar.getAttribute('data-id');
-
-        try {
-            const response = await fetch(`http://localhost:3000/agendas/updateAgendaTitle`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ agendaId, newTitle })
-            });
-
-            const responseText = await response.text();
-            console.log('Response Text:', responseText);
-
-            const data = JSON.parse(responseText);
-
-            if (data.success) {
-                titleView.textContent = newTitle;
-                titleView.style.display = 'block';
-                editTitle.style.display = 'none';
-                button.textContent = 'Modifier';
-            } else {
-                alert('Erreur lors de la sauvegarde. Veuillez réessayer.');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            alert('Erreur lors de la sauvegarde. Veuillez réessayer.');
-        }
-    }
 }
 
 /* ====================================================================== 

@@ -153,7 +153,6 @@ body {
     height: 160px;
     overflow: hidden;
     border-radius: 8px;
-    cursor: pointer;
     margin-bottom: 1%;
 }
 
@@ -186,16 +185,23 @@ body {
     justify-content: center;
     color: #ffff;
     align-items: center;
+    cursor: pointer;
     transition: transform 0.5s ease;
 }
 
 .layer2 {
     position: absolute;
-    width: 100%;
+    width: 101%;
     height: 100%;
     background-color: #d1e7dd;
     transform: translateX(100%);
+    cursor: default;
     transition: transform 0.5s ease;
+}
+
+.calendar .layer2,
+.calendar .tab {
+    transition: transform 0.3s ease-in-out;
 }
 
 .calendar.open .layer2 {
