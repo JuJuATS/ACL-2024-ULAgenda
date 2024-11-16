@@ -5,7 +5,7 @@
   <meta charset='utf-8' />
   <link rel="stylesheet" href="css/planning/style.css">
   <%- include('./partials/head', {pageName: "planning" }); %>
-
+    <link rel="stylesheet" href="css/partials/toaster.css">
     <!-- fullcalendar bundle -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 
@@ -16,69 +16,115 @@
 </head>
 
 <body>
+  <div class="pop-up-info"></div>
   <header>
     <%- include('./partials/header', {user: user}); %>
   </header>
   <div id="popup-rdv">
-    <form action="" id="popup-form">
-      <div class="popup-form-field">
-        <div id="preset-container">
-          <label for="prereglage"></label>
-          <select name="prereglage" id="">
-            <option value="" disabled selected>-- Sélectionner un préréglage --</option>
-                              <% if (presets && presets.length > 0) { %>
-                                  <% presets.forEach(function(preset) { %>
-                                      <option value="<%= preset._id %>"><%= preset.name %></option>
-                                  <% }); %>
-                              <% } else { %>
-                                  <option disabled>Aucun préréglage disponible</option>
-                              <% } %>
-          </select>
-          <a href="/presets/new" class="new-preset-link" title="Créer un nouveau préréglage">
-            <i class="fa-solid fa-plus"></i>
-          </a>
-      </div>
-    </div>
-       <!-- Form Fields -->
-       <div class="popup-form-field">
-        <label for="nom">Nom du rendez-vous:</label>
-        <input type="text" id="nom" name="nom" required>
-    </div>
+      <button type="button" class="closer"></button>
+      <form id="rendezvous-form" autocomplete="off">
+          <input id="namerdv" type="text" name="nom" placeholder="Titre" required>
 
-    <div class="popup-form-field">
-        <label for="date">Date du rendez-vous:</label>
-        <input type="date" id="date" name="date" required>
-    </div>
 
-    <div class="popup-form-field">
-        <label for="heureDebut">Heure de début:</label>
-        <input type="time" id="heureDebut" name="heureDebut" required>
-    </div>
+          <div class="time-picker-container">
 
-    <div class="popup-form-field">
-        <label for="duree">Durée (en minutes):</label>
-        <input type="number" id="duree" name="duree" min="0" step="1" required>
-    </div>
+          </div>
 
-    <div class="popup-form-field">
-        <label for="description">Description:</label>
-        <textarea id="description" name="description" rows="4"></textarea>
-    </div>
+          <div class="infoDate">
+              <input type="date" id="date" name="date" required>
+              <div class="time-picker">
+                  <input id="startrdvtime" type="text" class="time-input" readonly required>
+                  <div class="time-dropdown" style="display: none;">
+                      <!-- Time options will be populated by JavaScript -->
+                  </div>
+              </div>
+              <span class="separator">-</span>
+              <div class="time-picker">
+                  <input id="endrdvtime" type="text" class="time-input" readonly required>
+                  <div class="time-dropdown" style="display: none;">
+                  </div>
+              </div>
+          </div>
 
-    <div class="popup-form-field">
-        <label for="rappel">Rappel:</label>
-        <select id="rappel" name="rappel">
-            <option value="">Aucun</option>
-            <option value="5">5 minutes avant</option>
-            <option value="10">10 minutes avant</option>
-            <option value="25">25 minutes avant</option>
-            <option value="60">1 heure avant</option>
-            <option value="1440">1 jour avant</option>
-        </select>
-    </div>
-    <button type="submit" class="form-button" id="btn-placer">Placer le rendez-vous</button>
-    </form>
+
+          <div class="description-container">
+              <div class="description-header">
+                  <button class="toggle-btn" id="toggleBtn">
+                      <svg class="icon menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                      </svg>
+                      <svg class="icon close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                  </button>
+                  <div class="label">
+                      <span id="labelText">Description</span>
+                  </div>
+              </div>
+              <div class="textarea-container" id="textareaContainer">
+                  <textarea class="description-textarea" placeholder="Ajouter la description ici..."></textarea>
+              </div>
+          </div>
+
+          <div class="container-color-agenda">
+              <div class="color-picker-container">
+                  <button class="color-button" id="colorButton">
+                      <span class="selected-color"></span>
+                      <span class="dropdown-arrow"></span>
+                  </button>
+
+                  <div class="color-dropdown" id="colorDropdown">
+                  </div>
+              </div>
+
+              <div class="agenda-picker-container">
+                  <button class="agenda-button" id="agendaButton">
+                      <span class="agenda-name">Sélectionner un agenda</span>
+                      <span class="dropdown-arrow"></span>
+                  </button>
+                  <div class="agenda-dropdown" id="agendaDropdown">
+                  </div>
+              </div>
+          </div>
+
+
+          <div class="form-group">
+              <label for="rappel">Rappel:</label>
+              <select id="rappel" name="rappel">
+                  <option value="">Aucun</option>
+                  <option value="5">5 minutes avant</option>
+                  <option value="10">10 minutes avant</option>
+                  <option value="25">25 minutes avant</option>
+                  <option value="60">1 heure avant</option>
+                  <option value="1440">1 jour avant</option>
+              </select>
+          </div>
+          <div class="form-group preset-group">
+              <label for="preset-select">Appliquer un préréglage:</label>
+              <div class="preset-container">
+                  <select id="preset-select">
+                      <option value="" disabled selected>-- Sélectionner un préréglage --</option>
+                      <% if (presets && presets.length > 0) { %>
+                          <% presets.forEach(function(preset) { %>
+                              <option value="<%= preset._id %>"><%= preset.name %></option>
+                          <% }); %>
+                      <% } else { %>
+                          <option disabled>Aucun préréglage disponible</option>
+                      <% } %>
+                  </select>
+                  <a href="/presets/new" class="new-preset-link" title="Créer un nouveau préréglage">
+                      <i class="fa-solid fa-plus"></i>
+                  </a>
+              </div>
+          </div>
+          <button type="submit" class="form-button" id="btn-placer">Enregistrez</button>
+      </form>
+      <button type="button" class="form-button" id="MICHAEL">michael</button>
+
+      <button type="button" class="form-button" id="btn-recurrence">RÉCURRENCES</button>
   </div>
+
+
   <div style="display: flex; flex-direction: column; height: 100%;">
     <div class="container">
       <div class="sideBar sideBar-open">
@@ -108,144 +154,9 @@
       </div>
       <div id='calendar'></div>
     </div>
-    <button id="add-rdv" style="width: 40px; margin: 0 auto;">toto</button>
   </div>
 
-  <script>
-    const agendas = []
-    function showTooltip(eventRect, event, size) {
-      var tooltip = document.getElementById('event-tooltip') ||
-        document.createElement('div');
-      tooltip.id = 'event-tooltip';
-      tooltip.style.position = 'absolute';
-      tooltip.style = `
-                  position:absolute;
-                  top:${(eventRect.top)}px;
-                  left:${eventRect.left}px;
-                  width:${size.width}px;
-                  border:2px solid black;
-                  background:#3788d8;
-                  z-index:999999;
-                  transform:translateY(-100%);
-            `
-      const startHour = (event.start.getHours() < 10 ? "0" : "") + event.start.getHours()
-      const startMinutes = (event.start.getMinutes() < 10 ? "0" : "") + event.start.getMinutes()
-      const startSecondes = (event.start.getSeconds() < 10 ? "0" : "") + event.start.getSeconds()
-      const endHour = (event.end.getHours() < 10 ? "0" : "") + event.end.getHours()
-      const endMinutes = (event.end.getMinutes() < 10 ? "0" : "") + event.end.getMinutes()
-      const endSecondes = (event.end.getSeconds() < 10 ? "0" : "") + event.end.getSeconds()
-      tooltip.innerText = `${event.title}
-              ${startHour}:${startMinutes}:${startSecondes} - ${endHour}:${endMinutes}:${endSecondes}
-              ${event.extendedProps.description}
-            `
-
-
-      if (!document.getElementById('event-tooltip')) {
-        document.body.appendChild(tooltip);
-      }
-    }
-    document.addEventListener('DOMContentLoaded', function () {
-      var calendarEl = document.getElementById('calendar');
-      var calendar = new FullCalendar.Calendar(calendarEl, {
-        eventSources: [
-          async (info, success, fail) => {
-            let events = []
-            for (agenda in agendas) {
-              if (agendas[agenda].visible) {
-                events = [...events, ...agendas[agenda].event]
-              }
-            }
-
-            return events;
-          }
-        ],
-
-        allDaySlot: false,
-        nowIndicator: true,
-        height: "70%",
-        initialView: 'timeGridWeek',
-        dayHeaderFormat: { weekday: 'short' },
-        locale: 'fr',
-        firstDay: 1,
-        headerToolbar: {
-          start: 'title',
-          center: "timeGridWeek,dayGridMonth",
-          end: 'today prev,next'
-        },
-        buttonText: {
-          today: "Aujourd'hui",
-          week: "semaine",
-          month: "mois"
-        },
-        displayEventEnd: true,
-        eventMouseEnter: (mouseInfo) => {
-          let eventRect = mouseInfo.el.getBoundingClientRect();
-          let size = { width: mouseInfo.el.offsetWidth, height: mouseInfo.el.offsetHeight }
-          showTooltip(eventRect, mouseInfo.event, size);
-        },
-        eventMouseLeave: (mouseLeaveInfo) => {
-          const popup = document.querySelector("#event-tooltip")
-          popup.remove()
-        },
-        eventClick: (eventClickInfo) => {
-          window.location.href = `${eventClickInfo.event.extendedProps.link}`;
-        }
-      });
-
-      const sideBar = document.querySelector(".sideBar");
-      calendar.render();
-      const menu = document.querySelector(".menu");
-      menu.addEventListener("click", () => {
-        sideBar.classList.toggle("sideBar-open");
-        setTimeout(() => {
-          calendar.updateSize();
-        }, 500)
-      })
-
-      const checkBoxs = document.querySelectorAll(".listAgenda input");
-      checkBoxs.forEach(checkBox => {
-        checkBox.addEventListener("change", (el) => {
-          refetch(el.target, calendar)
-        })
-      });
-      const handleCheckBox = ()=>{
-
-      }
-      const fetchEvent = async (el) => {
-        let checkBox = JSON.parse(localStorage.getItem("checkBox")) || [];
-          checkBox.push(el.dataset.id)
-          localStorage.setItem("checkBox",JSON.stringify(checkBox))
-          if (!agendas[el.dataset.id]) {
-            const data = await fetch(`/api/getDate?agenda=${el.dataset.id}`).then(res => res.json())
-            agendas[el.dataset.id] = { event: data.event, visible: true }
-          }
-          else {
-            agendas[el.dataset.id].visible = true;
-          }
-
-      }
-
-      const refetch = async (el, calendar) => {
-        if (el.checked) {
-         fetchEvent(el)
-        }
-        else {
-          agendas[el.dataset.id].visible = false;
-          let checkBox = JSON.parse(localStorage.getItem("checkBox"))
-          console.log(checkBox)
-          checkBox.splice(checkBox.indexOf(el.dataset.id), 1)
-          localStorage.setItem("checkBox",JSON.stringify(checkBox));
-
-        }
-
-        calendar.refetchEvents()
-
-
-      }
-
-    });
-
-  </script>
+  <script src="/javascripts/planning/planning.js"></script>
 </body>
 
 </html>
