@@ -6,6 +6,7 @@ const router = express.Router();
 const Recurrence = require("../../database/models/recurrence");
 const Agenda = require("../../database/models/agenda.js");
 const Preset = require('../../database/models/preset.js');
+const Rappel = require('../../database/models/rappel.js');
 
 async function verifOwner(agendaId, userId) {
   console.log("Testing ownership..");
@@ -43,6 +44,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
 
 router.get('/api/recurrence', authMiddleware, async (req, res) => {
+  console.log("on veut ajouter un rdv")
   const {agendaId} = req.query
   const rdvUser = await Rdv.find({agendaId:agendaId})
   rdvUser.sort((a, b) => {
@@ -64,7 +66,7 @@ router.get('/api/recurrence', authMiddleware, async (req, res) => {
 router.post('/', authMiddleware, async (req, res) => {
   try {
 
-    const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence } = req.body;
+    const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence,rappel,priorite} = req.body;
     if (!name || !dateDebut || !dateFin || !agendaId ) {
       console.log("il manque quelque chose")
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
@@ -83,13 +85,15 @@ router.post('/', authMiddleware, async (req, res) => {
       console.log("date pas valide")
       return res.status(400).json({ message: "La date de fin doit être après la date de début." });
     }
-
+    
+    const rappelEntity = rappel === 0 ? null : new Rappel({duree:rappel,envoye:false});
     const recurrence = new Recurrence({
       yearDay: recurrences["year"],
       monthDay: recurrences["month"],
       weekDay: recurrences["week"],
       dateDebut: debut,
       dateFin:finRecurrence ? new Date(finRecurrence) : null,
+      
     });
 
     const newRdv = new Rdv({
@@ -98,17 +102,15 @@ router.post('/', authMiddleware, async (req, res) => {
       dateDebut: debut,
       dateFin: fin,
       agendaId:agendaId,
-      recurrences: recurrence
+      recurrences: recurrence,
+      rappel:rappelEntity,
+      priority:priorite
     });
-
+    rappelEntity !== null ? await rappelEntity.save : null; 
     await recurrence.save();
-
     await newRdv.save();
-
     agenda.rdvs.push(newRdv._id);
-
     await agenda.save();
-
     res.status(201).json({ok:true, rdv:newRdv});
   } catch (error) {
     console.log(error)
@@ -118,9 +120,11 @@ router.post('/', authMiddleware, async (req, res) => {
 
 
 router.put('/:id', authMiddleware, async (req, res) => {
+    console.log("on veut modifer un rendez vous")
     try {
         const rdvId = req.params.id;
-        const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence } = req.body;
+        console.log(req.body)
+        const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence,color,rappel } = req.body;
         if (!name || !dateDebut || !dateFin) {
             return res.status(400).json({ message: "Fields 'name', 'dateDebut', 'dateFin' are required." });
         }
@@ -129,23 +133,37 @@ router.put('/:id', authMiddleware, async (req, res) => {
         if (!rdv) {
             return res.status(404).json({ message: "Rendezvous not found" });
         }
-
-        const rec = await Recurrence.findById(recId);
-        if (!rec) {
-            return res.status(404).json({ message: "Recurrence not found" });
+        if(recId){
+          const rec = await Recurrence.findById(recId);
+          if (!rec) {
+              return res.status(404).json({ message: "Recurrence not found" });
+          }
         }
-
+        let rappelEntity=null;
+        if(!rdv.rappel && rappel!==0){
+          rappelEntity = new Rappel({duree:rappel,envoye:false})
+          rdv.rappel = rappelEntity
+          await rappelEntity.save();
+        }
+        else{
+          if(rdv.rappel){
+            rdv.rappel.duree = rappel
+          }
+        }
+        
         rdv.name = name;
-        rdv.description = description;
+        rdv.description = description || rdv.description;
         rdv.dateDebut = new Date(dateDebut);
         rdv.dateFin = new Date(dateFin);
-
-        rec.yearDay = recurrences.year
-        rec.monthDay = recurrences.month
-        rec.weekDay = recurrences.week
-        rec.dateDebut = new Date(dateDebut)
-        rec.dateFin = finRecurrence ? new Date(finRecurrence) : null;
-        await rec.save();
+        rdv.color = color || rdv.color;
+        if(recurrences){
+          rec.yearDay = recurrences.year
+          rec.monthDay = recurrences.month
+          rec.weekDay = recurrences.week
+          rec.dateDebut = new Date(dateDebut)
+          rec.dateFin = finRecurrence ? new Date(finRecurrence) : null;
+          await rec.save();
+        }
 
         await rdv.save();
         res.status(200).json({ ok: true, rdv });

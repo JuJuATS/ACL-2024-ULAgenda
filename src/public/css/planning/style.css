@@ -518,4 +518,12 @@ form {
     background-color: #f8fafc;
 }
 
-
+#dateSelector{
+    position: absolute;
+    left: 30%;
+    margin-top: 10px;
+    width: 25px;
+}
+.calendar{
+  position: relative;
+}

@@ -305,7 +305,7 @@
                         rappel
                     }
                     try {
-                        const response = await fetch(`http://localhost:3000/rendezvous/${rdvId}`, {
+                        const response = await fetch(`/rendezvous/${rdvId}`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json'
