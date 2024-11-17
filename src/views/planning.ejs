@@ -5,7 +5,7 @@
   <meta charset='utf-8' />
   <link rel="stylesheet" href="css/planning/style.css">
   <%- include('./partials/head', {pageName: "planning" }); %>
-
+    <link rel="stylesheet" href="css/partials/toaster.css">
     <!-- fullcalendar bundle -->
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js'></script>
 
@@ -17,10 +17,115 @@
 </head>
 
 <body>
+  <div class="pop-up-info"></div>
   <header>
     <%- include('./partials/header', {user: user}); %>
   </header>
-  
+  <div id="popup-rdv">
+      <button type="button" class="closer"></button>
+      <form id="rendezvous-form" autocomplete="off">
+          <input id="namerdv" type="text" name="nom" placeholder="Titre" required>
+
+
+          <div class="time-picker-container">
+
+          </div>
+
+          <div class="infoDate">
+              <input type="date" id="date" name="date" required>
+              <div class="time-picker">
+                  <input id="startrdvtime" type="text" class="time-input" readonly required>
+                  <div class="time-dropdown" style="display: none;">
+                      <!-- Time options will be populated by JavaScript -->
+                  </div>
+              </div>
+              <span class="separator">-</span>
+              <div class="time-picker">
+                  <input id="endrdvtime" type="text" class="time-input" readonly required>
+                  <div class="time-dropdown" style="display: none;">
+                  </div>
+              </div>
+          </div>
+
+
+          <div class="description-container">
+              <div class="description-header">
+                  <button class="toggle-btn" id="toggleBtn">
+                      <svg class="icon menu-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+                      </svg>
+                      <svg class="icon close-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" style="display: none;">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                  </button>
+                  <div class="label">
+                      <span id="labelText">Description</span>
+                  </div>
+              </div>
+              <div class="textarea-container" id="textareaContainer">
+                  <textarea class="description-textarea" placeholder="Ajouter la description ici..."></textarea>
+              </div>
+          </div>
+
+          <div class="container-color-agenda">
+              <div class="color-picker-container">
+                  <button class="color-button" id="colorButton">
+                      <span class="selected-color"></span>
+                      <span class="dropdown-arrow"></span>
+                  </button>
+
+                  <div class="color-dropdown" id="colorDropdown">
+                  </div>
+              </div>
+
+              <div class="agenda-picker-container">
+                  <button class="agenda-button" id="agendaButton">
+                      <span class="agenda-name">Sélectionner un agenda</span>
+                      <span class="dropdown-arrow"></span>
+                  </button>
+                  <div class="agenda-dropdown" id="agendaDropdown">
+                  </div>
+              </div>
+          </div>
+
+
+          <div class="form-group">
+              <label for="rappel">Rappel:</label>
+              <select id="rappel" name="rappel">
+                  <option value="">Aucun</option>
+                  <option value="5">5 minutes avant</option>
+                  <option value="10">10 minutes avant</option>
+                  <option value="25">25 minutes avant</option>
+                  <option value="60">1 heure avant</option>
+                  <option value="1440">1 jour avant</option>
+              </select>
+          </div>
+          <div class="form-group preset-group">
+              <label for="preset-select">Appliquer un préréglage:</label>
+              <div class="preset-container">
+                  <select id="preset-select">
+                      <option value="" disabled selected>-- Sélectionner un préréglage --</option>
+                      <% if (presets && presets.length > 0) { %>
+                          <% presets.forEach(function(preset) { %>
+                              <option value="<%= preset._id %>"><%= preset.name %></option>
+                          <% }); %>
+                      <% } else { %>
+                          <option disabled>Aucun préréglage disponible</option>
+                      <% } %>
+                  </select>
+                  <a href="/presets/new" class="new-preset-link" title="Créer un nouveau préréglage">
+                      <i class="fa-solid fa-plus"></i>
+                  </a>
+              </div>
+          </div>
+          <button type="submit" class="form-button" id="btn-placer">Enregistrez</button>
+      </form>
+      <button type="button" class="form-button" id="MICHAEL">michael</button>
+
+      <button type="button" class="form-button" id="btn-recurrence">RÉCURRENCES</button>
+  </div>
+
+
   <div style="display: flex; flex-direction: column; height: 100%;">
     <div class="container">
       <div class="sideBar sideBar-open">
@@ -58,9 +163,9 @@
         <input type="date" id="dateSelector">
       </div>
     </div>
-    
   </div>
 
+  <script src="/javascripts/planning/planning.js"></script>
 </body>
 
 </html>
