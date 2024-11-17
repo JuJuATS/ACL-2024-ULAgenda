@@ -22,8 +22,7 @@ apiRouter.get('/search', isAuthentified, async (req, res) => {
         const limit = parseInt(req.query.limit) || 20;
 
         // Récupérer les agendas avec les rendez-vous
-        const agendas = await Agenda.find({ userId: req.user.id })
-                                  .populate('rdvs');
+        const agendas = await Agenda.find({ userId: req.user.id }).populate('rdvs');
 
         // Filtrer et formater les rendez-vous
         let allRdvs = agendas.reduce((acc, agenda) => {

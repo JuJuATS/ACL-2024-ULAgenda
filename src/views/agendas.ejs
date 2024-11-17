@@ -13,17 +13,17 @@
 </header>
 
 <div class="container">
-    <!-- Sidebar Gauche -->
-    <div class="left-sidebar">
-        <h2>Filtres</h2>
+
+    <div class="agendasOptions">
         <a href="/search" class="search-link">
             <i class="fa-solid fa-magnifying-glass"></i>
             Rechercher des rendez-vous
         </a>
     </div>
 
-    <!-- Contenu principal : les autres agendas -->
+    <!-- Contenu principal -->
     <div class="main-content">
+
         <!-- Pop-up pour ajouter un nouvel agenda -->
         <div id="agendaModal" class="modal" style="display:none;">
             <div class="modal-content">
@@ -36,35 +36,32 @@
 
         <div id="confirmDeleteModal" class="modal" style="display:none;">
             <div class="modal-content">
-                <span class="close-button" onclick="closeConfirmDeleteModal()">&times;</span>
+                <span class="close-button" onclick="closeModal(this.parentNode.parentNode)">&times;</span>
                 <h2>Confirmer la suppression</h2>
                 <p>Voulez-vous vraiment supprimer cet agenda ?</p>
                 <button id="confirmDeleteButton">Supprimer</button>
-                <button id="annuler" onclick="closeConfirmDeleteModal()">Annuler</button>
+                <button id="annuler" onclick="closeModal(this)">Annuler</button>
             </div>
         </div>
 
-        <div id="new-agenda" class="calendar">
-            <h4 id="new-agenda-title">Nouvel Agenda</h4>
-            <button class="add-button">+</button>
+        <div id="confirmRenameModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close-button" onclick="closeModal(this.parentNode.parentNode)">&times;</span>
+                <h2>Nouveau titre</h2>
+                <input type="text" id="inputAgendaName" name="name" required minlength="4" maxlength="16" size="10" />
+                <button id="confirmRenameButton">Renommer</button>
+                <button id="annuler" onclick="closeModal(this)">Annuler</button>
+            </div>
         </div>
 
-        <% if (agendas && agendas.length > 0) { %>
-            <% agendas.forEach(function(agenda) { %>
-                <div class="calendar" data-id="<%= agenda._id %>" onclick="redirectToAgenda('<%= agenda._id %>')">
-                    <div class="header-calendar">
-                        <button class="edit-button" onclick="toggleEditMode(this, event)">Modifier</button>
-                        <button class="close-agenda" onclick="removeAgenda(this, event)">x</button>
-                    </div>
-                    <div class="content-calendar">
-                        <a class="title-view"> <%= agenda.name %> </a>
-                        <span class="edit-title" style="display: none;" onclick="stopEventPropagation(event)">
-                            <input type="text" value="<%= agenda.name %>" />
-                        </span>
-                    </div>
-                </div>
-            <% }); %>
-        <% } %>
+        <div class="calendar newAgenda">
+            <div class="addCalendarBody"> 
+                <button class="add-button" style="height:75px; width:75px;">+</button>
+            </div>
+        </div>
+
+        <!-- Les agendas seront ajoutés ici -->
+        
     </div>
 </div>
 

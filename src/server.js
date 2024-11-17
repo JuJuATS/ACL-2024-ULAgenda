@@ -6,8 +6,6 @@
 
 require('dotenv').config();
 
-
-
 // -- IMPORT MODULES --
 
 const express = require('express');
@@ -97,8 +95,6 @@ app.use(session({
 // Middlewares pour Passport.js
 app.use(passport.initialize())
    .use(passport.session());
-
-
 
 // Configuration des messages flash
 app.use((req, res, next) => {

@@ -4,10 +4,25 @@ const ObjectId = require('mongodb').ObjectId;
 const authMiddleware = require('../../middlewares/authMiddleware.js')
 const router = express.Router();
 
-// Route pour afficher les agendas
+// Route pour afficher la page d'agenda
 router.get('/', authMiddleware, async (req, res) => {
-  const agendas = await Agenda.find({userId: req.user.id});
-  res.render('agendas' ,{ agendas });
+  try {
+    const agendas = await Agenda.find({userId: req.user.id});
+    res.render('agendas', { agendas });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erreur lors de la récupération des agendas" });
+  }
+});
+
+router.get('/getAgendas', authMiddleware, async (req, res) => {
+  try {
+    const agendas = await Agenda.find({ userId: req.user.id });
+    res.json(agendas);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Erreur lors de la récupération des agendas" });
+  }
 });
 
 // Route pour mettre à jour le titre d'un agenda
