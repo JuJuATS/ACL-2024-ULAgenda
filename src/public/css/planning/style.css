@@ -28,6 +28,7 @@ body{
     border-bottom: none;
     background-color: #f7f9fc;
     transition: width .7s ease-in-out;   
+    position: relative;
 }
 .sideBar-open{
     width: 300px;
@@ -130,9 +131,63 @@ body{
 #preset-container select{
   width: 100%;
 }
+#selectButtons button{
+    background: #d1d1d1;
+    border: none;
+    height: 50px;
+    display: block;
+}
+#selectButtons{
+  width: 100%;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  position: absolute;
+  bottom: 0;
+}
 
 #popup-form{
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+.checkAgenda{
+  width:35px;
+  height: 35px;
+  border-radius: 80%;
+  vertical-align: middle;
+  border: 1px solid black;
+  appearance: none;
+  -webkit-appearance: none;
+  outline: none;
+  cursor: pointer;
+}
+.checkAgenda:checked {
+  appearance: auto;
+  clip-path: circle(50% at 50% 50%);
+  background-color: rgb(90, 90, 213);
+}
+.agendaDiv{
+  display:flex;
+  flex-direction:row;
+  padding-left:20px;
+  gap:20px;
+  width:80%;
+  justify-content:space-between;
+}
+
+.listAgenda{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+}
+.calendar{
+  position: relative;
+}
+#dateSelector{
+  position: absolute;
+  left: 40%;
+  margin-top: 10px;
+  width: 25px;
 }

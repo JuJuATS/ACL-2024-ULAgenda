@@ -32,6 +32,7 @@ form.addEventListener('submit', async function(event) {
                 agendaId:form.dataset.agendaid,
                 recurrences: recurrences,
                 finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
+                rappel:rappel
             }
             await saveRendezVous(rendezvous);
         }
