@@ -9,6 +9,7 @@ const rdvSchema = new mongoose.Schema({
     recurrences: { type: mongoose.Schema.Types.ObjectId, ref: 'Recurrence' },
     tags: { type: [String], default: [] },
     description: { type: String },
+    rappel: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Rappel' }]
 });
 
 // Ajout d'un champ virtuel pour la durée (en minutes)
