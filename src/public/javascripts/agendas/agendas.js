@@ -1,3 +1,33 @@
+function redirectToAgenda(agendaId) {
+    window.location.href = `/rendezvous?agendaId=${agendaId}`;
+}
+
+// Fonction pour mettre à jour les compteurs
+function updateAgendaCounts() {
+    // Compter les agendas personnels
+    const ownedAgendas = document.querySelectorAll('.calendar[data-id]').length - document.querySelectorAll('.shared-calendar[data-id]').length;
+    const ownedCountBadge = document.querySelector('.agenda-section:first-child .count-badge');
+    
+    if (ownedCountBadge) {
+        ownedCountBadge.innerHTML = ownedAgendas;
+    }
+
+    // Compter les agendas partagés
+    const sharedAgendas = document.querySelectorAll('.shared-calendar[data-id]').length;
+    // Changer le sélecteur pour cibler spécifiquement la section des agendas partagés
+    const sharedSection = document.querySelector('.agenda-section:nth-child(2)');
+    const sharedCountBadge = sharedSection?.querySelector('.count-badge');
+    
+    if (sharedCountBadge) {
+        sharedCountBadge.innerHTML = sharedAgendas;
+    }
+    
+    // Gérer l'affichage de la section des agendas partagés séparément
+    if (sharedSection) {
+        sharedSection.style.display = sharedAgendas === 0 ? 'none' : 'block';
+    }
+}
+
 // Éléments de la modal et du bouton
 const modal = document.getElementById("agendaModal");
 const addButton = document.querySelector(".add-button");

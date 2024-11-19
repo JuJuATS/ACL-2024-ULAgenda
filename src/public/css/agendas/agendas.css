@@ -1,19 +1,59 @@
-/* Importations */
+/* =============================================================================
+   TABLE OF CONTENTS
+   -----------------------------------------------------------------------------
+   1. Base & Typography
+   2. Layout & Grid
+   3. Components
+      3.1 Sidebar
+      3.2 Calendar Cards
+      3.3 Badges & Labels
+      3.4 Buttons
+      3.5 Dropdowns
+   4. Modals & Overlays
+   5. Animations
+   6. Responsive Design
+============================================================================= */
+
+/* =============================================================================
+   1. Base & Typography
+============================================================================= */
 @import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
 
-/* ============================================================================
-                                GLOBAL
-============================================================================ */
+:root {
+    /* Colors */
+    --primary-color: #48B0D9;
+    --secondary-color: #45a049;
+    --dark-bg: #212a3f;
+    --calendar-bg: #495571;
+    --text-light: #ffffff;
+    --text-dark: #212a3f;
+    --text-muted: rgba(255, 255, 255, 0.8);
+    
+    /* Spacing */
+    --spacing-xs: 4px;
+    --spacing-sm: 8px;
+    --spacing-md: 16px;
+    --spacing-lg: 24px;
+    --spacing-xl: 32px;
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
 * {
     font-family: "Afacad Flux", sans-serif;
     font-weight: 600;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
 
 html, body {
     height: 100%;
     margin: 0;
     padding: 0;
-    background-color: #ffffff;
 }
 
 body {
@@ -22,9 +62,25 @@ body {
     font-family: Arial, sans-serif;
 }
 
-/* ============================================================================
-                                CONTAINER
-============================================================================ */
+.main-wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Ensure main content takes available space */
+main, .container {
+    flex: 1 0 auto;
+}
+
+/* Keep footer at bottom */
+footer {
+    flex-shrink: 0;
+}
+
+/* =============================================================================
+   2. Layout & Grid
+============================================================================= */
 .container {
     display: flex;
     flex-direction: column;
@@ -34,69 +90,6 @@ body {
     min-height: 1000px;
 }
 
-/* ============================================================================
-                                LEFT SIDEBAR
-============================================================================ */
-.left-sidebar {
-    border-radius: 8px;
-    margin-right: 16px;
-    width: 15%;
-    background-color: #212a3f;
-    padding: 20px;
-    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    margin-top: 5px;
-    min-height: 750px;
-    color: #fff;
-}
-
-.left-sidebar h2 {
-    color: #48B0D9;
-    margin-bottom: 20px;
-}
-
-.left-sidebar .filter {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.left-sidebar .filter label {
-    font-weight: bold;
-    margin-bottom: 5px;
-}
-
-.left-sidebar .filter input[type="text"],
-.left-sidebar .filter select {
-    padding: 8px;
-    border: none;
-    border-radius: 4px;
-    font-size: 1rem;
-    background-color: #3a475e;
-    color: #fff;
-}
-
-.left-sidebar .filter input[type="text"]::placeholder {
-    color: #aaa;
-}
-
-.left-sidebar .filter button {
-    padding: 10px;
-    border: none;
-    border-radius: 4px;
-    background-color: #48B0D9;
-    color: #fff;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.left-sidebar .filter button:hover {
-    background-color: #45a049;
-}
-
-/* ============================================================================
-                                MAIN CONTENT
-============================================================================ */
 .main-content {
     display: flex;
     flex-wrap: wrap;
@@ -104,20 +97,77 @@ body {
     align-items: flex-start;
 }
 
-#new-agenda-title {
-    color: #45a049;
+.calendar-info {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+    margin-top: auto;
+    padding-top: var(--spacing-sm);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
+.shared-by,
+.share-validity {
+    margin-top: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--spacing-xs);
+}
+
+.shared-by small,
+.share-validity small {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.8em;
+    line-height: 1.4;
+}
+
+/* 3.3 Badges & Labels */
+.access-level-badge {
+    position: absolute;
+    top: var(--spacing-sm);
+    left: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--spacing-xs);
+    font-size: 0.75rem;
+    font-weight: 500;
+    z-index: 2;
+}
+
+.access-level-badge.read {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.access-level-badge.contribute {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+}
+
+.access-level-badge.admin {
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+}
+
+.count-badge {
+    background: var(--primary-color);
+    color: var(--text-light);
+    padding: 0.25rem 0.75rem;
+    border-radius: 12px;
+    font-size: 0.875rem;
+    margin-left: 1rem;
+}
+
+/* 3.4 Buttons */
 .add-button {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 50px;
     height: 50px;
-    background-color: #48B0D9;
-    color: white;
+    background-color: var(--primary-color);
+    color: var(--text-light);
     font-size: 24px;
-    font-weight: bold;
     border: none;
     border-radius: 50%;
     cursor: pointer;
@@ -134,8 +184,8 @@ body {
 }
 
 .add-button:hover {
-    background-color: #45a049;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: var(--secondary-color);
+    box-shadow: var(--shadow-md);
 }
 
 .add-button:active {
@@ -257,9 +307,9 @@ body {
     transform: translateY(-50%) translateX(100%);
 }
 
-/* ============================================================================
-                                MODALS
-============================================================================ */
+/* =============================================================================
+   4. Modals & Overlays
+============================================================================= */
 .modal {
     display: none;
     position: fixed;
@@ -268,47 +318,24 @@ body {
     top: 0;
     width: 100%;
     height: 100%;
-    overflow: auto;
     background-color: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
 }
 
 .modal-content {
-    background-color: #ffffff;
+    background-color: var(--text-light);
     margin: 10% auto;
-    padding: 30px;
-    border: none;
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    padding: var(--spacing-xl);
+    border-radius: var(--spacing-sm);
+    box-shadow: var(--shadow-lg);
     width: 90%;
     max-width: 400px;
     text-align: center;
-    transition: transform 0.3s ease-in-out;
 }
 
 .modal-content h2 {
-    font-size: 1.5rem;
-    margin-bottom: 20px;
-    color: #212a3f;
-}
-
-.modal-content p {
-    margin-bottom: 20px;
-}
-
-.modal-content input[type="text"] {
-    width: calc(100% - 20px);
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-bottom: 20px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
-}
-
-.modal-content input[type="text"]:focus {
-    border-color: #00BBEC;
-    outline: none;
+    color: var(--text-dark);
+    margin-bottom: var(--spacing-lg);
 }
 
 .close-button {

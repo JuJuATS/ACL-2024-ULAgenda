@@ -15,7 +15,7 @@
     <div class="wrapper">
         <div class="container">
             <h1>Planifier un rendez-vous</h1>
-            <form id="rendezvous-form" data-agendaId="<%= agenda %>">
+            <form id="rendezvous-form" data-agenda-id="<%= agenda %>" data-access-level="<%= accessLevel %>">
                 <div class="form-group preset-group">
                     <label for="preset-select">Appliquer un préréglage:</label>
                     <div class="preset-container">
@@ -63,7 +63,7 @@
 
                 <div class="form-group">
                     <label for="rappel">Rappel:</label>
-                    <select id="rappel" name="rappel">
+                    <select id="rappel" name="rappel" <%= accessLevel === 'read' ? 'disabled' : '' %>>
                         <option value="">Aucun</option>
                         <option value="5">5 minutes avant</option>
                         <option value="10">10 minutes avant</option>
@@ -72,7 +72,11 @@
                         <option value="1440">1 jour avant</option>
                     </select>
                 </div>
-                <button type="submit" class="form-button" id="btn-placer">Placer le rendez-vous</button>
+                <button type="submit" class="form-button" id="btn-placer" 
+                    <%= accessLevel === 'read' ? 'disabled' : '' %>
+                    title="<%= accessLevel === 'read' ? 'Vous n\'avez pas les droits pour créer un rendez-vous' : '' %>">
+                    Placer le rendez-vous
+                </button>
             </form>
             <button type="button" class="form-button" id="btn-recurrence">RÉCURRENCES</button>
             <button type="button" class="form-button" id="btn-view-rdv">RENDEZ - VOUS</button>
