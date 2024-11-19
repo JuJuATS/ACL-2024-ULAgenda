@@ -34,17 +34,24 @@ passport.use(
 passport.serializeUser((user, done) => {
     done(null, user.id);
 });
-
 passport.deserializeUser(async (id, done) => {
     try {
         const foundUser = await User.findById(id);
         if (!foundUser) {
             return done(null, false);
         }
-        done(null, { id: foundUser._id, email: foundUser.email, pseudo: foundUser.pseudo });
+        // Inclure firstname et lastname dans l'objet renvoyé
+        done(null, {
+            id: foundUser._id,
+            email: foundUser.email,
+            pseudo: foundUser.pseudo,
+            firstname: foundUser.firstname,  
+            lastname: foundUser.lastname,    
+        });
     } catch (error) {
         done(error);
     }
 });
+
 
 module.exports = passport;
