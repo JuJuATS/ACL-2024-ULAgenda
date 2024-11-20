@@ -8,6 +8,7 @@ const apiRouter = express.Router();
 const mongoose = require("mongoose")
 const recurrence = require("../database/models/recurrence");
 const Rappel = require('../database/models/rappel');
+const Share = require('../database/models/share');
 // Route pour récupérer les informations d'un preset à partir de son id
 apiRouter.get('/presets/:id', isAuthentified, getPresetInfosById);
 
@@ -104,6 +105,12 @@ apiRouter.get('/search', isAuthentified, async (req, res) => {
 apiRouter.get("/getAgenda",isAuthentified,async(req,res)=>{
   let userId = req.user.id;
   const agendas = await Agenda.find({userId:userId});
+  const partages = await Share.find({sharedWith:req.user.id,shareType:"user",permission:"contribute"}).populate("agendaId")
+  
+  
+  partages.forEach(partage=>{
+    agendas.push(partage.agendaId);
+  })
   res.status(200).send(agendas);
 })
 
@@ -135,16 +142,19 @@ const getAgendaEvents = async (req, res, next) => {
    
 
     let events = await RDV.find({agendaId:decodedAgenda})
-
-
+    const partages = await Share.findOne({sharedWith:req.user.id,agendaId:decodedAgenda})
+    
     events = await Promise.all(events.map(async el=>{
       
+    const editable = partages ? partages.permission !== "read" : true;
+    console.log(editable)
       let rappel = await Rappel.findById(el.rappel);
       let rdv = {
         id:el._id,
         start:el.dateDebut,
         end:el.dateFin,
         backgroundColor:el.color,
+        editable: editable,
         extendedProps: {
           description: el.description,
           link:`/rendezvous/edit/${el._id}`,
@@ -156,7 +166,7 @@ const getAgendaEvents = async (req, res, next) => {
         title:el.name,
         duration:el.dateFin-el.dateDebut
       }
-      console.log(rdv)
+      
       if(el.recurrences){
           const recurrenceRdv = await recurrence.findById(el.recurrences);
           rdv.extendedProps = {...rdv.extendedProps,recurrences:recurrenceRdv}
@@ -202,7 +212,7 @@ const getAgendaEvents = async (req, res, next) => {
    
     // Envoi de la réponse
     res.status(200).json({ 
-      event: events
+      event: events,permission:partages ? partages.permission : "Owner"
     });
 
   } catch (error) {
