@@ -38,7 +38,7 @@
                 <!-- Form Fields -->
                 <div class="form-group">
                     <label for="nom">Nom du rendez-vous:</label>
-                    <input type="text" id="nom" name="nom" required>
+                    <input type="text" id="nom" nme="nom" required>
                 </div>
 
                 <div class="form-group">
@@ -58,9 +58,13 @@
 
                 <div class="form-group">
                     <label for="description">Description:</label>
-                    <textarea id="description" name="description" rows="4" required></textarea>
+                    <textarea id="description" name="description" rows="4"></textarea>
                 </div>
-
+                <div class="form-group">
+                    <label for="color">couleur:</label>
+                   
+                    <input type="color" id="color" name="rappel"> <div id="colorBackground" style="background-color: #2196F3; height: 25px; width: 25px; margin:0 auto 10px auto;"></div></input>
+                </div>
                 <div class="form-group">
                     <label for="rappel">Rappel:</label>
                     <select id="rappel" name="rappel">
@@ -136,30 +140,41 @@
 
 
                     <div id="week" class="tabcontent">
-                        <% ['Lundi',
-                            'Mardi',
-                            'Mercredi',
-                            'Jeudi',
-                            'Vendredi',
-                            'Samedi',
-                            'Dimanche'
-                        ].forEach((day, id) => { %>
-                            <button type=button class="wday" onclick="selectDay(this, <%= id %>)"><%= day %></button>
-                        <% }) %>
+                        <div>
+                            <button type=button class="clear-selection" onclick="selectAll()">Tout Sélectionner</button>
+                        </div>
+                        <div class="l-content">
+                            <% ['Lundi',
+                                'Mardi',
+                                'Mercredi',
+                                'Jeudi',
+                                'Vendredi',
+                                'Samedi',
+                                'Dimanche'
+                            ].forEach((day, id) => { %>
+                                <button type=button class="wday" onclick="selectDay(this, <%= id %>)"><%= day %></button>
+                            <% }) %>
+                        </div>
                     </div>
 
                     <div id="month" class="tabcontent">
-                        <% for (let i=1; i<=31; i++) { %>
-                            <button type=button class="mday" onclick="selectDay(this, <%= i %>)"><%= i %></button>
-                        <% } %>
+                        <div>
+                            <button type=button class="clear-selection" onclick="selectAll()">Tout Sélectionner</button>
+                        </div>
+                        <div class="l-content">
+                            <% for (let i=1; i<=31; i++) { %>
+                                <button type=button class="mday" onclick="selectDay(this, <%= i %>)"><%= i %></button>
+                            <% } %>
+                        </div>
                     </div>
 
                     <div id="year" class="tabcontent">
-                        <!--<label for="date">Date de la récurrence :</label>-->
                         <ul class="yearList"></ul>
                         <div class="selector-year-day">
                             <input type="date" id="dateYearRecurrence" name="date" placeholder="DD/MM">
-                            <button type=button id="addButton"></button>
+                            <button type=button id="addButton">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" viewBox="0 0 1024 1024" version="1.1"><path d="M810.65984 170.65984q18.3296 0 30.49472 12.16512t12.16512 30.49472q0 18.00192-12.32896 30.33088l-268.67712 268.32896 268.67712 268.32896q12.32896 12.32896 12.32896 30.33088 0 18.3296-12.16512 30.49472t-30.49472 12.16512q-18.00192 0-30.33088-12.32896l-268.32896-268.67712-268.32896 268.67712q-12.32896 12.32896-30.33088 12.32896-18.3296 0-30.49472-12.16512t-12.16512-30.49472q0-18.00192 12.32896-30.33088l268.67712-268.32896-268.67712-268.32896q-12.32896-12.32896-12.32896-30.33088 0-18.3296 12.16512-30.49472t30.49472-12.16512q18.00192 0 30.33088 12.32896l268.32896 268.67712 268.32896-268.67712q12.32896-12.32896 30.33088-12.32896z"/></svg>
+                            </button>
                         </div>
                     </div>
                 </div>

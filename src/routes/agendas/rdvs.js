@@ -6,6 +6,7 @@ const router = express.Router();
 const Recurrence = require("../../database/models/recurrence");
 const Agenda = require("../../database/models/agenda.js");
 const Preset = require('../../database/models/preset.js');
+const Rappel = require('../../database/models/rappel.js');
 
 async function verifOwner(agendaId, userId) {
   console.log("Testing ownership..");
@@ -43,6 +44,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
 
 router.get('/api/recurrence', authMiddleware, async (req, res) => {
+
   const {agendaId} = req.query
   const rdvUser = await Rdv.find({agendaId:agendaId})
   rdvUser.sort((a, b) => {
@@ -62,10 +64,12 @@ router.get('/api/recurrence', authMiddleware, async (req, res) => {
 
 // Route pour créer un nouveau rendez-vous.
 router.post('/', authMiddleware, async (req, res) => {
-  try {
 
-    const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence, priorite } = req.body;
+  try {
+    const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence,rappel,priorite,backgroundColor} = req.body;
+
     if (!name || !dateDebut || !dateFin || !agendaId ) {
+
       console.log("il manque quelque chose")
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
     }
@@ -83,13 +87,15 @@ router.post('/', authMiddleware, async (req, res) => {
       console.log("date pas valide")
       return res.status(400).json({ message: "La date de fin doit être après la date de début." });
     }
-
+    
+    const rappelEntity = rappel === 0 ? null : new Rappel({duree:rappel,envoye:false});
     const recurrence = new Recurrence({
       yearDay: recurrences["year"],
       monthDay: recurrences["month"],
       weekDay: recurrences["week"],
       dateDebut: debut,
       dateFin:finRecurrence ? new Date(finRecurrence) : null,
+      
     });
      console.log()
     const newRdv = new Rdv({
@@ -99,16 +105,14 @@ router.post('/', authMiddleware, async (req, res) => {
       dateFin: fin,
       agendaId:agendaId,
       recurrences: recurrence,
-      priority:priorite
-      
+      rappel:rappelEntity,
+      priority:priorite,
+      color:backgroundColor
     });
-
+    rappelEntity !== null ? await rappelEntity.save() : null; 
     await recurrence.save();
-
     await newRdv.save();
-
     agenda.rdvs.push(newRdv._id);
-
     await agenda.save();
 
     res.status(201).json({ok:true, rdv:newRdv});
@@ -120,38 +124,55 @@ router.post('/', authMiddleware, async (req, res) => {
 
 
 router.put('/:id', authMiddleware, async (req, res) => {
+  
     try {
         const rdvId = req.params.id;
-        const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence, priorite } = req.body;
+        const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence,backgroundColor,rappel,priorite } = req.body;
+        
         if (!name || !dateDebut || !dateFin) {
             return res.status(400).json({ message: "Fields 'name', 'dateDebut', 'dateFin' are required." });
         }
-
-        const rdv = await Rdv.findById(rdvId);
+        
+        const rdv = await Rdv.findById(rdvId)
         if (!rdv) {
             return res.status(404).json({ message: "Rendezvous not found" });
         }
-
-        const rec = await Recurrence.findById(recId);
-        if (!rec) {
-            return res.status(404).json({ message: "Recurrence not found" });
+        if(recId){
+          const rec = await Recurrence.findById(recId);
+          if (!rec) {
+              return res.status(404).json({ message: "Recurrence not found" });
+          }
+          if(recurrences !== null && Object.keys(recurrences).length !== 0){
+            console.log(Object.keys(recurrences).length)
+            rec.yearDay = recurrences.year
+            rec.monthDay = recurrences.month
+            rec.weekDay = recurrences.week
+            rec.dateDebut = new Date(dateDebut)
+            rec.dateFin = finRecurrence ? new Date(finRecurrence) : null;
+            await rec.save();
+          }
         }
-
+        let rappelEntity = await Rappel.findByIdAndDelete(rdv.rappel);;
+        console.log("rappel:",rappelEntity)
+        if(!rappelEntity && rappel !== 0){
+          rappelEntity = new Rappel({duree:+rappel,envoye:false})
+          rdv.rappel = rappelEntity
+          await rappelEntity.save();
+        }
         rdv.name = name;
         rdv.description = description;
         rdv.dateDebut = new Date(dateDebut);
         rdv.dateFin = new Date(dateFin);
-        rdv.priority= priorite;
-
         rec.yearDay = recurrences.year
         rec.monthDay = recurrences.month
         rec.weekDay = recurrences.week
         rec.dateDebut = new Date(dateDebut)
         rec.dateFin = finRecurrence ? new Date(finRecurrence) : null;
-        
         await rec.save();
-
+        rdv.color = backgroundColor;
+        rdv.priority = priorite
         await rdv.save();
+        console.log(rdv)
         res.status(200).json({ ok: true, rdv });
     } catch (error) {
         console.error("Error updating rendezvous:", error);
@@ -164,6 +185,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
         const rdvId = req.params.id;
         const rdv = await Rdv.findByIdAndDelete(rdvId);
         const rec = await Recurrence.findByIdAndDelete(rdv.recurrences);
+        
         if (!rdv) {
             return res.status(404).json({ message: "Rendezvous not found" });
         }
@@ -179,19 +201,19 @@ router.get('/edit/:id', authMiddleware, async (req, res) => {
   try {
       const rdvId = req.params.id;
       const rendezvous = await Rdv.findById(rdvId);
-
+      const rappel = await Rappel.findById(rendezvous.rappel)
       if (!rendezvous) {
           return res.status(404).json({ message: "Rendez-vous non trouvé" });
       }
       const rec = await Recurrence.findById(rendezvous.recurrences);
       if(rec !== null){
         const {yearDay, weekDay, monthDay, dateFin} = rec
-        yearDay.map(d => console.log(typeof d))
-        res.render('modifier_rendezvous', { rendezvous: rendezvous, rec: {yearDay, weekDay, monthDay, dateFin}, recIdd: rec.id });
+ 
+        res.render('modifier_rendezvous', { rendezvous: rendezvous, rec: {yearDay, weekDay, monthDay, dateFin}, recIdd: rec.id ,rappel:rappel});
       }
       else{
         const yearDay = [], weekDay = [], monthDay = [], dateFin = "";
-        res.render('modifier_rendezvous', { rendezvous: rendezvous,rec:{yearDay, weekDay, monthDay, dateFin},recIdd:null});
+        res.render('modifier_rendezvous', { rendezvous: rendezvous,rec:{yearDay, weekDay, monthDay, dateFin},recIdd:null,rappel:rappel});
       }
   } catch (error) {
       console.error("Erreur lors de la récupération du rendez-vous:", error);

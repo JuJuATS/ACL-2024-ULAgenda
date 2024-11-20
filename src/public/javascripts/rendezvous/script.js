@@ -5,17 +5,22 @@ const recurrences = {"week":[],"month":[],"year":[]}
 let currentTab = null;
 const popUp = document.querySelector(".pop-up-info");
 let rdvsOpen = false;
-
+const colorInput = document.querySelector("#color");
+console.log(colorInput)
+colorInput.addEventListener("input",(e)=>{
+    console.log(e.target.value)
+    const colorDiv = document.querySelector("#colorBackground");
+    colorDiv.style.backgroundColor = e.target.value
+})
 form.addEventListener('submit', async function(event) {
     event.preventDefault();
     const nom = document.getElementById('nom').value;
     const date = document.getElementById('date').value;
     const heureDebut = document.getElementById('heureDebut').value;
     const duree = parseFloat(document.getElementById('duree').value); // Lire la durée en heures
-    const description = document.getElementById('description').value;
+    const description = document.getElementById('description').value || "";
     const rappel = document.getElementById('rappel').value;
     const finRecurrence = document.getElementById('dateUntilRecurrence').value;
-    const priorite = document.getElementById('priority').value;
     if (nom && date && heureDebut && duree && description){
         const dateString = `${date}T${heureDebut}:00`; // ajoute les secondes, format ISO 8601
         const dateDebut = new Date(dateString);
@@ -33,7 +38,6 @@ form.addEventListener('submit', async function(event) {
                 agendaId:form.dataset.agendaid,
                 recurrences: recurrences,
                 finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
-                priorite: priorite,
             }
             await saveRendezVous(rendezvous);
         }
@@ -97,10 +101,27 @@ document.querySelector(".closer").addEventListener('click', function(event) {
 })
 
 function clearSelection() {
-    recurrences[currentTab] = []
-    document.querySelector("#dateUntilRecurrence").value = ''
-    Array.from(document.querySelector(`#${currentTab}`).children).forEach(c => {
-        c.classList.remove('selected')
+    if (currentTab) {
+        recurrences[currentTab] = []
+        document.querySelector("#dateUntilRecurrence").value = ''
+        Array.from(document.querySelector(`#${currentTab} > .l-content`).children).forEach(c => {
+            c.classList.remove('selected')
+        })
+    }
+
+}
+
+function selectAll() {
+    for (let k of Object.keys(recurrences)) {
+        if (k !== currentTab && recurrences[k].length > 0) {
+            afficherPopUp(`Récurrence ${k === 'year' ? "Année" : k === 'month' ? "Mois" : 'Semaine'} déjà défini`, false)
+            return 1;
+        }
+    }
+
+    recurrences[currentTab] = (currentTab === "month" ? [...Array(32).keys()].slice(1) : currentTab === "week" ? [...Array(7).keys()] : [])
+    Array.from(document.querySelector(`#${currentTab} > .l-content`).children).forEach(c => {
+        c.classList.add('selected')
     })
 }
 
@@ -328,7 +349,6 @@ document.addEventListener('DOMContentLoaded', async() => {
             form.description.value = presetData.description || '';
             form.rappel.value = presetData.reminder || '';
             form.heureDebut.value = presetData.startHour || '';
-            form.priorite.value = presetData.reminder || '';
         } catch (error) {
             console.error("Erreur:", error);
             afficherPopUp("Impossible d'appliquer le préréglage.", false);
@@ -356,10 +376,15 @@ document.addEventListener('DOMContentLoaded', async() => {
 }*/
 
 const addBoutton = document.querySelector("#addButton")
-addBoutton.addEventListener("click",addYearDay)
+addBoutton.addEventListener("click", addYearDay)
 
 function selectDay(e, day) {
-
+    for (let k of Object.keys(recurrences)) {
+        if (k !== currentTab && recurrences[k].length > 0) {
+            afficherPopUp(`Récurrence ${k === 'year' ? "Année" : k === 'month' ? "Mois" : 'Semaine'} déjà défini`, false)
+            return 1;
+        }
+    }
     e.classList.toggle("selected")
     const index = recurrences[currentTab].indexOf(day);
 
@@ -371,6 +396,13 @@ function selectDay(e, day) {
 }
 
 function addYearDay() {
+    for (let k of Object.keys(recurrences)) {
+        if (k !== currentTab && recurrences[k].length > 0) {
+            afficherPopUp(`Récurrence ${k === 'year' ? "Année" : k === 'month' ? "Mois" : 'Semaine'} déjà défini`, false)
+            return 1;
+        }
+    }
+
     const date = new Date(document.querySelector("#dateYearRecurrence").value)
     if (date.getDate()) {
         const index = recurrences.year.findIndex(e => e.toString() === date.toString());

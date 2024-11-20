@@ -6,7 +6,8 @@ const Fuse = require('fuse.js');
 const RDV = require("../database/models/rdv")
 const apiRouter = express.Router();
 const mongoose = require("mongoose")
-const recurrence = require("../database/models/recurrence")
+const recurrence = require("../database/models/recurrence");
+const Rappel = require('../database/models/rappel');
 // Route pour récupérer les informations d'un preset à partir de son id
 apiRouter.get('/presets/:id', isAuthentified, getPresetInfosById);
 
@@ -131,26 +132,33 @@ const getAgendaEvents = async (req, res, next) => {
         event: []
       });
     }
-    // Récupération des rendez-vous avec projection optimisée
+   
 
     let events = await RDV.find({agendaId:decodedAgenda})
 
 
     events = await Promise.all(events.map(async el=>{
+      
+      let rappel = await Rappel.findById(el.rappel);
       let rdv = {
         id:el._id,
         start:el.dateDebut,
         end:el.dateFin,
+        backgroundColor:el.color,
         extendedProps: {
-          description: el.description
+          description: el.description,
+          link:`/rendezvous/edit/${el._id}`,
+          agendaId:el.agendaId,
+          recId:el.recurrences,
+          rappel:rappel ? rappel.duree : 0
       },
         title:el.name,
         duration:el.dateFin-el.dateDebut
       }
-      
+      console.log(rdv)
       if(el.recurrences){
           const recurrenceRdv = await recurrence.findById(el.recurrences);
-        
+          rdv.extendedProps = {...rdv.extendedProps,recurrences:recurrenceRdv}
          if(recurrenceRdv!=null){
           if(recurrenceRdv.yearDay.length!==0){
             
@@ -190,7 +198,7 @@ const getAgendaEvents = async (req, res, next) => {
         return rdv 
       }
     ))
-    console.log(events)
+   
     // Envoi de la réponse
     res.status(200).json({ 
       event: events
