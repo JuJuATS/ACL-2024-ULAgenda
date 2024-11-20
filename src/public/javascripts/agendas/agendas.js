@@ -10,6 +10,7 @@ function updateAgendaCounts() {
 
     // Compter les agendas partagés
     const sharedAgendas = document.querySelectorAll('.shared-calendar[data-id]').length;
+    
     // Changer le sélecteur pour cibler spécifiquement la section des agendas partagés
     const sharedSection = document.querySelector('.agenda-section:nth-child(2)');
     const sharedCountBadge = sharedSection?.querySelector('.count-badge');
@@ -20,7 +21,7 @@ function updateAgendaCounts() {
     
     // Gérer l'affichage de la section des agendas partagés séparément
     if (sharedSection) {
-        sharedSection.style.display = sharedAgendas === 0 ? 'none' : 'block';
+        sharedSection.style.display = (sharedAgendas === 0) ? 'none' : 'block';
     }
 }
 
@@ -46,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     const agendaDivHTML = generateAgendaHTML(agenda);
                     const agendaDiv = generateAgendaDiv(agendaDivHTML, agenda);
                     personalContainer.appendChild(agendaDiv);
+                    updateAgendaCounts();
                 });
 
                 // Création des agendas partagés ici :
@@ -53,10 +55,9 @@ document.addEventListener("DOMContentLoaded", function() {
                 sharedAgendas.forEach(agenda => {
                     const agendaDivHTML = generateAgendaHTML(agenda);
                     const agendaDiv = generateAgendaDiv(agendaDivHTML, agenda, true); // Passe un flag pour "partagé"
-
                     setupSharedAgenda(agendaDiv, agenda);
-
                     sharedContainer.appendChild(agendaDiv);
+                    updateAgendaCounts();
                 });
 
             } catch (error) {
@@ -225,6 +226,7 @@ addAgendaButton.onclick = async () => {
             const agendaDivHTML = generateAgendaHTML(newAgenda);
             const agendaDiv = generateAgendaDiv(agendaDivHTML, newAgenda);
             personalContainer.appendChild(agendaDiv);
+            updateAgendaCounts();
 
             closeModal(createModal);
         } else {
