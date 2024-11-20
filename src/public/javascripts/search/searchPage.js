@@ -192,6 +192,7 @@ function appendRdvs(rdvs) {
     const fragment = document.createDocumentFragment();
     
     rdvs.forEach((rdv, index) => {
+        console.log(rdv);
         const li = document.createElement('li');
         li.className = 'rdv-item';
         li.innerHTML = `

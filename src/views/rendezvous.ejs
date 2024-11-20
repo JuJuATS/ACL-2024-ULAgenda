@@ -72,11 +72,23 @@
                         <option value="1440">1 jour avant</option>
                     </select>
                 </div>
+<<<<<<< HEAD
                 <button type="submit" class="form-button" id="btn-placer" 
                     <%= accessLevel === 'read' ? 'disabled' : '' %>
                     title="<%= accessLevel === 'read' ? 'Vous n\'avez pas les droits pour créer un rendez-vous' : '' %>">
                     Placer le rendez-vous
                 </button>
+=======
+                <div class="form-group">
+                    <label for="priority">Priorité:</label>
+                    <select id="priority" name="priority" required>
+                        <option value="Basse">Basse</option>
+                        <option value="Moyenne">Moyenne</option>
+                        <option value="Haute">Haute</option>
+                    </select>
+                </div>
+                <button type="submit" class="form-button" id="btn-placer">Placer le rendez-vous</button>
+>>>>>>> main
             </form>
             <button type="button" class="form-button" id="btn-recurrence">RÉCURRENCES</button>
             <button type="button" class="form-button" id="btn-view-rdv">RENDEZ - VOUS</button>

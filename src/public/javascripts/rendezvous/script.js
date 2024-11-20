@@ -15,6 +15,7 @@ form.addEventListener('submit', async function(event) {
     const description = document.getElementById('description').value;
     const rappel = document.getElementById('rappel').value;
     const finRecurrence = document.getElementById('dateUntilRecurrence').value;
+    const priorite = document.getElementById('priority').value;
     if (nom && date && heureDebut && duree && description){
         const dateString = `${date}T${heureDebut}:00`; // ajoute les secondes, format ISO 8601
         const dateDebut = new Date(dateString);
@@ -32,6 +33,7 @@ form.addEventListener('submit', async function(event) {
                 agendaId:form.dataset.agendaId,
                 recurrences: recurrences,
                 finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
+                priorite: priorite,
             }
             await saveRendezVous(rendezvous);
         }
@@ -339,6 +341,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             form.description.value = presetData.description || '';
             form.rappel.value = presetData.reminder || '';
             form.heureDebut.value = presetData.startHour || '';
+            form.priorite.value = presetData.reminder || '';
         } catch (error) {
             console.error("Erreur:", error);
             afficherPopUp("Impossible d'appliquer le préréglage.", false);

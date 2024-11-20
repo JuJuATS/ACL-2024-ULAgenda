@@ -68,7 +68,7 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
       dateDebut: debut,
       dateFin: new Date(finRecurrence)
     });
-
+     console.log()
     const newRdv = new Rdv({
       name: name,
       description: description,
@@ -180,5 +180,6 @@ router.get('/edit/:id', authMiddleware, checkAgendaAccess, checkModifyRights, as
     res.status(500).json({ message: "Erreur interne du serveur", error });
   }
 });
+
 
 module.exports = router;
