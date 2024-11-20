@@ -64,7 +64,7 @@ router.get('/api/recurrence', authMiddleware, async (req, res) => {
 router.post('/', authMiddleware, async (req, res) => {
   try {
 
-    const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence } = req.body;
+    const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence, priorite } = req.body;
     if (!name || !dateDebut || !dateFin || !agendaId ) {
       console.log("il manque quelque chose")
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
@@ -91,14 +91,16 @@ router.post('/', authMiddleware, async (req, res) => {
       dateDebut: debut,
       dateFin:finRecurrence ? new Date(finRecurrence) : null,
     });
-
+     console.log()
     const newRdv = new Rdv({
       name:name,
       description:description,
       dateDebut: debut,
       dateFin: fin,
       agendaId:agendaId,
-      recurrences: recurrence
+      recurrences: recurrence,
+      priority:priorite
+      
     });
 
     await recurrence.save();
@@ -120,7 +122,7 @@ router.post('/', authMiddleware, async (req, res) => {
 router.put('/:id', authMiddleware, async (req, res) => {
     try {
         const rdvId = req.params.id;
-        const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence } = req.body;
+        const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence, priorite } = req.body;
         if (!name || !dateDebut || !dateFin) {
             return res.status(400).json({ message: "Fields 'name', 'dateDebut', 'dateFin' are required." });
         }
@@ -139,12 +141,14 @@ router.put('/:id', authMiddleware, async (req, res) => {
         rdv.description = description;
         rdv.dateDebut = new Date(dateDebut);
         rdv.dateFin = new Date(dateFin);
+        rdv.priority= priorite;
 
         rec.yearDay = recurrences.year
         rec.monthDay = recurrences.month
         rec.weekDay = recurrences.week
         rec.dateDebut = new Date(dateDebut)
         rec.dateFin = finRecurrence ? new Date(finRecurrence) : null;
+        
         await rec.save();
 
         await rdv.save();
@@ -194,6 +198,7 @@ router.get('/edit/:id', authMiddleware, async (req, res) => {
       res.status(500).json({ message: "Erreur interne du serveur", error });
   }
 });
+
 
 
 module.exports = router;
