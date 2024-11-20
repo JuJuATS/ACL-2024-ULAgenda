@@ -30,7 +30,7 @@ form.addEventListener('submit', async function(event) {
                 dateDebut:dateDebut,
                 dateFin:dateFin,
                 description:description,
-                agendaId:form.dataset.agendaid,
+                agendaId:form.dataset.agendaId,
                 recurrences: recurrences,
                 finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
                 priorite: priorite,
@@ -142,7 +142,7 @@ function calculerHeureFin(dateDebut,heureDebut, duree) {
 async function saveRendezVous(rendezvous) {
 
     try {
-        const response = await fetch(`http://localhost:3000/rendezvous?agendaId=${form.dataset.agendaid}`, {
+        const response = await fetch(`http://localhost:3000/rendezvous?agendaId=${form.dataset.agendaId}`, {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json'
@@ -189,14 +189,14 @@ async function updateRdvList(opened) {
         })
     }
 }
+
 function createLiRdv(rendezvous, opened) {
-
-
     const li = document.createElement('li');
     if (opened) {
-        li.classList.add('rdv-open')
+        li.classList.add('rdv-open');
     }
 
+    // SVG pour les boutons de modification et suppression
     const svgModif = `
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
             <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
@@ -206,6 +206,7 @@ function createLiRdv(rendezvous, opened) {
             </g>
         </svg>
     `;
+    
     const svgDelete = `
         <svg xmlns="http://www.w3.org/2000/svg" width="512.000000pt" height="512.000000pt" viewBox="0 0 512.000000 512.000000" preserveAspectRatio="xMidYMid meet">
             <g transform="translate(0.000000,512.000000) scale(0.100000,-0.100000)" fill="#000000" stroke="none">
@@ -215,63 +216,76 @@ function createLiRdv(rendezvous, opened) {
             </g>
         </svg>
     `;
+
+    // Récupérer le niveau d'accès depuis l'attribut data
+    const accessLevel = form.dataset.accessLevel;
+
+    // Toujours créer les boutons, mais les désactiver si nécessaire
     const buttonDiv = document.createElement('div');
     buttonDiv.classList.add('modif-container');
 
     const editButton = document.createElement("button");
     editButton.classList.add("edit-rdv");
     editButton.innerHTML = svgModif;
-
-    editButton.addEventListener('click', () => window.location.href = `/rendezvous/edit/${rendezvous.id}`);
+    editButton.disabled = (accessLevel === 'read');
+    editButton.title = accessLevel === 'read' ? 'Vous n\'avez pas les droits pour modifier ce rendez-vous' : '';
+    editButton.addEventListener('click', () => {
+        if (!editButton.disabled) {
+            window.location.href = `/rendezvous/edit/${rendezvous.id}`;
+        }
+    });
 
     const deleteButton = document.createElement("button");
     deleteButton.classList.add("delete-rdv");
     deleteButton.innerHTML = svgDelete;
+    deleteButton.disabled = (accessLevel === 'read');
+    deleteButton.title = accessLevel === 'read' ? 'Vous n\'avez pas les droits pour supprimer ce rendez-vous' : '';
     deleteButton.addEventListener('click', async (event) => {
-        if (confirm("Êtes-vous sûr de vouloir supprimer ce rendez-vous ?")) {
-            try {
-                const response = await fetch(`http://localhost:3000/rendezvous/${rendezvous.id}`, {
-                    method: 'DELETE',
-                    credentials: 'include'
-                });
-                const json = await response.json();
-                if (json.ok) {
-                    afficherPopUp(json.message, true)
-                    li.remove();
-                    await updateRdvList(rdvsOpen)
+        if (!deleteButton.disabled) {
+            if (confirm("Êtes-vous sûr de vouloir supprimer ce rendez-vous ?")) {
+                try {
+                    const response = await fetch(`http://localhost:3000/rendezvous/${rendezvous.id}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                    const json = await response.json();
+                    if (json.ok) {
+                        afficherPopUp(json.message, true);
+                        li.remove();
+                        await updateRdvList(rdvsOpen);
+                    }
+                } catch (error) {
+                    console.error('Erreur lors de la suppression:', error);
+                    afficherPopUp("Une erreur s'est produite lors de la suppression du rendez-vous.", false);
                 }
-            } catch (error) {
-                console.error('Erreur lors de la suppression:', error);
-                afficherPopUp("Une erreur s'est produite lors de la suppression du rendez-vous.", false);
             }
         }
     });
 
-
     buttonDiv.appendChild(deleteButton);
     buttonDiv.appendChild(editButton);
-    li.appendChild(buttonDiv)
+    li.appendChild(buttonDiv);
 
+    // Informations du rendez-vous
     const title = document.createElement('h3');
     title.textContent = rendezvous.name;
     li.appendChild(title);
 
     const dateDiv = document.createElement('div');
-
     const startDate = document.createElement('p');
     startDate.innerHTML = `Date de début : <span>${new Date(rendezvous.dateDebut).toLocaleString('fr-FR')}</span>`;
     dateDiv.appendChild(startDate);
+    
     const endDate = document.createElement('p');
     endDate.innerHTML = `Date de fin : <span>${new Date(rendezvous.dateFin).toLocaleString('fr-FR')}</span>`;
     dateDiv.appendChild(endDate);
-
     li.appendChild(dateDiv);
-
 
     const descriptionText = document.createElement('p');
     descriptionText.textContent = rendezvous.description;
     li.appendChild(descriptionText);
-    //////////
+
+    // Section des récurrences
     const recurrenceDiv = document.createElement('div');
     recurrenceDiv.classList.add('recurrence-list-rdv');
 
@@ -286,23 +300,22 @@ function createLiRdv(rendezvous, opened) {
         div.appendChild(title);
 
         let ul = document.createElement('ul');
-        if(rendezvous.recurrence)
-        {
-        rendezvous.recurrence["yearDay"] = rendezvous?.recurrence["yearDay"].map(date => new Date(date).toDateString())
-        rendezvous.recurrence[name === "Année" ? 'yearDay' : name === "Mois" ? 'monthDay' : 'weekDay'].forEach((recurrence) => {
-            const weekLi = document.createElement('li');
-            weekLi.textContent = recurrence;
-            ul.appendChild(weekLi);
-        });}
+        if(rendezvous.recurrence) {
+            rendezvous.recurrence["yearDay"] = rendezvous?.recurrence["yearDay"].map(date => new Date(date).toDateString());
+            rendezvous.recurrence[name === "Année" ? 'yearDay' : name === "Mois" ? 'monthDay' : 'weekDay'].forEach((recurrence) => {
+                const weekLi = document.createElement('li');
+                weekLi.textContent = recurrence;
+                ul.appendChild(weekLi);
+            });
+        }
         div.appendChild(ul);
         recurrenceDiv.appendChild(div);
-    })
+    });
 
     li.appendChild(recurrenceDiv);
 
     return li;
 }
-
 
 
 document.addEventListener('DOMContentLoaded', async() => {

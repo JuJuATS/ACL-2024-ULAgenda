@@ -1,5 +1,31 @@
-// Éléments de la modal et du bouton
-const modal = document.getElementById("agendaModal");
+// Fonction pour mettre à jour les compteurs
+function updateAgendaCounts() {
+    // Compter les agendas personnels
+    const ownedAgendas = document.querySelectorAll('.calendar[data-id]').length - document.querySelectorAll('.shared-calendar[data-id]').length;
+    const ownedCountBadge = document.querySelector('.agenda-section:first-child .count-badge');
+    
+    if (ownedCountBadge) {
+        ownedCountBadge.innerHTML = ownedAgendas;
+    }
+
+    // Compter les agendas partagés
+    const sharedAgendas = document.querySelectorAll('.shared-calendar[data-id]').length;
+    // Changer le sélecteur pour cibler spécifiquement la section des agendas partagés
+    const sharedSection = document.querySelector('.agenda-section:nth-child(2)');
+    const sharedCountBadge = sharedSection?.querySelector('.count-badge');
+    
+    if (sharedCountBadge) {
+        sharedCountBadge.innerHTML = sharedAgendas;
+    }
+    
+    // Gérer l'affichage de la section des agendas partagés séparément
+    if (sharedSection) {
+        sharedSection.style.display = sharedAgendas === 0 ? 'none' : 'block';
+    }
+}
+
+// Éléments de la page
+const createModal = document.getElementById("createNewAgendaModal");
 const addButton = document.querySelector(".add-button");
 const closeButton = document.querySelector(".close-button");
 const agendaNameInput = document.getElementById("agendaName");
@@ -7,16 +33,32 @@ const addAgendaButton = document.getElementById("addAgendaButton");
 const mainContent = document.querySelector(".main-content");
 
 document.addEventListener("DOMContentLoaded", function() {
+    // Appel à l'endpoint pour récupérer les agendas
     fetch("/agendas/getAgendas")
         .then(response => response.text())
         .then(text => {
             try {
-                const agendas = JSON.parse(text);
-                agendas.forEach(agenda => {
-                    const agendaDiv = generateAgendaDiv(
-                        generateAgendaHTML(agenda), agenda
-                    );
+                const { ownedAgendas, sharedAgendas } = JSON.parse(text); // Récupère les deux listes
+
+                // Création des agendas personnels ici :
+                const personalContainer = document.querySelector('.calendars-grid.personal');
+                ownedAgendas.forEach(agenda => {
+                    const agendaDivHTML = generateAgendaHTML(agenda);
+                    const agendaDiv = generateAgendaDiv(agendaDivHTML, agenda);
+                    personalContainer.appendChild(agendaDiv);
                 });
+
+                // Création des agendas partagés ici :
+                const sharedContainer = document.querySelector('.calendars-grid.shared');
+                sharedAgendas.forEach(agenda => {
+                    const agendaDivHTML = generateAgendaHTML(agenda);
+                    const agendaDiv = generateAgendaDiv(agendaDivHTML, agenda, true); // Passe un flag pour "partagé"
+
+                    setupSharedAgenda(agendaDiv, agenda);
+
+                    sharedContainer.appendChild(agendaDiv);
+                });
+
             } catch (error) {
                 console.error('Erreur lors de la conversion de la réponse en JSON:', error);
             }
@@ -61,21 +103,11 @@ function openCloseOptions(container) {
 }
 
 /* ====================================================================== 
-                                    MODAL
+                                MODALS
    ====================================================================== */
 
 addButton.onclick = function() {
-    modal.style.display = "block";
-}
-
-closeButton.onclick = function() {
-    modal.style.display = "none";
-}
-
-window.onclick = function(event) {
-    if (event.target === modal) {
-        modal.style.display = "none";
-    }
+    createModal.style.display = "block";
 }
 
 function closeModal(modal) {
@@ -96,28 +128,75 @@ function generateAgendaHTML(agenda) {
             <div class="tab">Ｏ Ｏ Ｏ</div>
 
             <div id="layer2-content">
-                <button class="agenda-but share-but">Partager</button>
+                <a class="agenda-but share-but" href="/agendas/${agenda._id}/share"> Partager </a>
                 <button class="agenda-but rdv-but" onclick="redirectToRendezVous('${agenda._id}')">Nouveau Rendez-vous</button>
                 <button class="agenda-but modify-but" onclick="renameAgenda(this, event)">Renommer</button>
                 <button class="agenda-but delete-but" onclick="removeAgenda(this, event)">Supprimer</button>
             </div>
             
         </div>
-
     `;
 }
 
-function generateAgendaDiv(htmlCode, agenda) {
+function generateAgendaDiv(agendaHTML, agenda, isShared = false) {
     const agendaDiv = document.createElement('div');
-    agendaDiv.className = "calendar";
-    agendaDiv.setAttribute('data-id', agenda._id);
-    agendaDiv.innerHTML = htmlCode;
+    agendaDiv.className = `calendar ${isShared ? 'shared-calendar' : ''}`;
+    agendaDiv.dataset.id = agenda._id;
+    agendaDiv.innerHTML = agendaHTML;
+
+    if (isShared) {
+        const badge = document.createElement('span');
+        badge.className = `access-level-badge ${agenda.accessLevel}`;
+        badge.textContent = agenda.accessLevel; // Ajoute le niveau d'accès pour les agendas partagés
+        agendaDiv.prepend(badge); // Place le badge en haut de l'agenda
+    }
 
     openCloseOptions(agendaDiv);
 
-    mainContent.appendChild(agendaDiv);
-
     return agendaDiv;
+}
+
+function setupSharedAgenda(agendaDiv, agenda) {
+    const layer1 = agendaDiv.getElementsByClassName('layer1')[0];
+
+    // Vérifie si des informations de partage existent
+    const calendarInfoDiv = document.createElement('div');
+    calendarInfoDiv.classList.add('calendar-info');
+
+    if (agenda.sharedBy) {
+        const sharedByDiv = document.createElement('div');
+        sharedByDiv.classList.add('shared-by');
+        sharedByDiv.innerHTML = `
+            <small>
+                Partagé par : ${agenda.sharedBy.pseudo}
+            </small>
+        `;
+        calendarInfoDiv.appendChild(sharedByDiv);
+    }
+
+    if (agenda.settings && (agenda.settings.validFrom || agenda.settings.validUntil)) {
+        const shareValidityDiv = document.createElement('div');
+        shareValidityDiv.classList.add('share-validity');
+        let validityText = '<small>';
+
+        if (agenda.settings.validFrom) {
+            validityText += `À partir du ${new Date(agenda.settings.validFrom).toLocaleDateString()}`;
+        }
+
+        if (agenda.settings.validUntil) {
+            validityText += `${agenda.settings.validFrom ? ' - ' : ''}Jusqu'au ${new Date(agenda.settings.validUntil).toLocaleDateString()}`;
+        }
+
+        validityText += '</small>';
+        shareValidityDiv.innerHTML = validityText;
+        calendarInfoDiv.appendChild(shareValidityDiv);
+    }
+
+    // Modifie la classe layer1 par layer-shared
+    layer1.className = 'layer1-shared';
+
+    // Ajoute les informations à la div de l'agenda existant
+    layer1.appendChild(calendarInfoDiv);
 }
 
 // Fonction pour ajouter l'agenda à la liste
@@ -142,11 +221,12 @@ addAgendaButton.onclick = async () => {
         if (response.ok) {
             const newAgenda = await response.json();
 
-            const agendaDiv = generateAgendaDiv(
-                generateAgendaHTML(newAgenda), newAgenda
-            );
+            const personalContainer = document.querySelector('.calendars-grid.personal');
+            const agendaDivHTML = generateAgendaHTML(newAgenda);
+            const agendaDiv = generateAgendaDiv(agendaDivHTML, newAgenda);
+            personalContainer.appendChild(agendaDiv);
 
-            modal.style.display = "none";
+            closeModal(createModal);
         } else {
             const errorData = await response.json();
             alert(errorData.message + ' : ' + JSON.stringify(errorData.error));
@@ -166,7 +246,6 @@ let agendaToDelete = null;
 const confirmDeleteModal = document.getElementById("confirmDeleteModal");
 
 function removeAgenda(button, event) {
-    event.stopPropagation();
     event.preventDefault();
 
     agendaToDelete = button.closest('.calendar');
@@ -187,7 +266,7 @@ confirmDeleteButton.onclick = async function() {
 
             if (response.ok) {
                 agendaToDelete.remove();
-                closeConfirmDeleteModal();
+                closeModal(confirmDeleteModal);
                 agendaToDelete = null;
             } else {
                 const errorData = await response.json();
@@ -213,7 +292,6 @@ const confirmRenameButton = document.getElementById("confirmRenameButton");
 const inputAgendaName = document.getElementById("inputAgendaName");
 
 function renameAgenda(button, event) {
-    event.stopPropagation();
     event.preventDefault();
 
     agendaToRename = button.closest('.calendar');
@@ -276,35 +354,3 @@ function redirectToRendezVous(agendaId) {
 function stopEventPropagation(event) {
     event.stopPropagation();
 }
-
-/* ====================================================================== 
-                                MODE SOMBRE
-   ====================================================================== */
-
-/*
-
-// Bascule du mode sombre
-const toggleSwitch = document.getElementById('darkModeToggle');
-const body = document.body;
-
-// Vérifie si l'utilisateur a déjà un mode préféré
-const currentTheme = localStorage.getItem('theme');
-if (currentTheme) {
-    if (currentTheme === 'dark') {
-        body.classList.add('dark-mode');
-        toggleSwitch.checked = true;
-    }
-}
-
-// Gère la bascule
-toggleSwitch.addEventListener('change', () => {
-    if (toggleSwitch.checked) {
-        body.classList.add('dark-mode');
-        localStorage.setItem('theme', 'dark');
-    } else {
-        body.classList.remove('dark-mode');
-        localStorage.setItem('theme', 'light');
-    }
-});
-
-*/
