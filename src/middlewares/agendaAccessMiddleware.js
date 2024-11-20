@@ -46,9 +46,10 @@ const checkAgendaAccess = async (req, res, next) => {
         next();
 
     } catch (error) {
+        const message = error.message;
         console.error('Erreur lors de la vérification des droits d\'accès:', error);
         res.status(500).json({
-            error: 'Erreur lors de la vérification des droits d\'accès'
+            error : 'Erreur lors de la vérification des droits d\'accès', message
         });
     }
 };

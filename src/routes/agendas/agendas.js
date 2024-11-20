@@ -12,6 +12,10 @@ const router = express.Router();
 
 // Route pour afficher la page d'agenda
 router.get('/', authMiddleware, async (req, res) => {
+    res.render('agendas');
+});
+
+router.get('/getAgendas', authMiddleware, async (req, res) => {
     try {
         // Rechercher les agendas dont l'utilisateur est propriétaire
         const ownedAgendas = await Agenda.find({ userId: req.user.id });
@@ -38,29 +42,19 @@ router.get('/', authMiddleware, async (req, res) => {
                 }
             }));
 
-        const agendas = [
-            ...ownedAgendas.map(agenda => ({
+        const response = {
+            ownedAgendas: ownedAgendas.map(agenda => ({
                 ...agenda.toObject(),
                 accessLevel: 'owner'
             })),
-            ...sharedAgendas
-        ];
+            sharedAgendas
+        };
 
-        res.render('agendas', { agendas });
+        res.status(200).json(response);
     } catch (error) {
         console.error('Erreur lors de la récupération des agendas:', error);
         res.status(500).json({ error: 'Erreur serveur' });
     }
-});
-
-router.get('/getAgendas', authMiddleware, async (req, res) => {
-  try {
-    const agendas = await Agenda.find({ userId: req.user.id });
-    res.json(agendas);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Erreur lors de la récupération des agendas" });
-  }
 });
 
 // Route pour mettre à jour le titre d'un agenda
