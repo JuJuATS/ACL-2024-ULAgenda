@@ -1,6 +1,6 @@
-import { 
-    updateHiddenFields, 
-    updateYearlyDatesList, 
+import {
+    updateHiddenFields,
+    updateYearlyDatesList,
     updateRecurrenceSummary,
     restoreBackup,
     createBackup,
@@ -40,7 +40,7 @@ function initializeModal() {
             const type = button.dataset.type;
             typeButtons.forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
-            
+
             Object.entries(sections).forEach(([key, section]) => {
                 section.classList.toggle('hide', key !== type);
             });
@@ -49,11 +49,12 @@ function initializeModal() {
 
     document.querySelectorAll('.pattern-item').forEach(item => {
         item.addEventListener('click', () => {
-            item.classList.toggle('selected');
             const type = document.querySelector('.recurrence-type.active').dataset.type;
             const day = parseInt(item.dataset.day);
-            
-            updateRecurrenceData(type, day, item.classList.contains('selected'));
+
+            if (updateRecurrenceData(type, day, item.classList.contains('selected'))) {
+                item.classList.toggle('selected');
+            }
             updateHiddenFields();
         });
     });
@@ -64,7 +65,7 @@ function initializeModal() {
     addYearlyDateButton.addEventListener('click', () => {
         const date = yearlyDateInput.value;
         if (date) {
-            updateRecurrenceData('yearly', date, true);
+            updateRecurrenceData('yearly', date, false);
             updateYearlyDatesList();
             yearlyDateInput.value = '';
             updateHiddenFields();

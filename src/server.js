@@ -145,12 +145,28 @@ app.get('/verify-email', routes.signup.verifyEmail);
 // Route de connection
 app
   .get("/signin",routes.signin.signin)
-  .post("/signin", passport.authenticate('local', {
+  .post('/signin', (req, res, next) => {
+  passport.authenticate('local',{
     successRedirect: '/',
     failureRedirect: '/signin',
-    failureFlash: true
-  }));
-
+    failureFlash: true,
+    
+  },(err, user, info)=> {
+    if (err) {
+      return next(err); // will generate a 500 error
+    }
+    // Generate a JSON response reflecting authentication status
+    if (! user) {
+      return res.json({ success : false, message : info.message });
+    }
+    req.login(user, function(err){
+      if(err){
+        return next(err);
+      }
+      return res.json({ success : true, message : 'authentication succeeded' });        
+    });
+  })(req, res, next);
+});
 // Route pour récuperer son mot de passe
 app.get("/forgotten-password",routes.signin.forgottenPassword).post("/forgotten-password",routes.signin.forgottenPasswordLinkMaker);
 app.get("/reset-password",routes.signin.resetPassword).post("/reset-password",routes.signin.changePassword);

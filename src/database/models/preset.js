@@ -22,7 +22,7 @@ const presetSchema = new mongoose.Schema({
             },
             message: props => `${props.value} n'est pas un code couleur hexadécimal valide.`
         },
-        default: '#0000cd', // La couleur par défaut est bleue
+        default: '#2196F3', // La couleur par défaut est bleue
     },
     priority: {
         type: String,

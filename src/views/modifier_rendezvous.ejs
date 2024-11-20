@@ -39,7 +39,60 @@
 
                 <div class="form-group">
                     <label for="description">Description:</label>
-                    <textarea id="description" name="description" rows="4" required><%= rendezvous.description %></textarea>
+                    <textarea id="description" name="description" rows="4"><%= rendezvous.description %></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="color">Couleur:</label>
+                    <input id="color" name="color" type="color" value="<%= rendezvous.color %>">
+                </div>
+               
+                <div class="form-group">
+                    <label for="rappel">Rappel:</label>
+                    <select id="rappel" name="rappel">
+                            <% if(!rappel){ %>
+                                <option value="" selected>Aucun</option> 
+                                <option value="5" >5 minutes avant</option>
+                                <option value="10" >10 minutes avant</option>
+                                <option value="25">25 minutes avant</option>
+                                <option value="60">1 heure avant</option>
+                                <option value="1440">1 jour avant</option>
+                            <% } else{ %>
+                           
+                                <option value="">Aucun</option> 
+                                <% if(rappel.duree == 5){ %>
+                                    <option value="5" selected >5 minutes avant</option>
+                                 <% } else{%>
+                                 
+                                    <option value="5" >5 minutes avant</option>
+                                  <% } %>
+                                  <% if(rappel.duree == 10){ %>
+                                    <option value="10" selected>10 minutes avant</option>
+                                 <% } else{ %>
+                                    <option value="10" >10 minutes avant</option>
+                                  <% } %>
+                                  <% if(rappel.duree == 25){ %>
+                                    <option value="25" selected>25 minutes avant</option>
+                                 <% } else{ %>
+                                    <option value="25">25 minutes avant</option>
+                                  <% } %>
+                                  <% if(rappel.duree == 60){ %>
+                                    <option value="60" selected > 1 heure avant</option>
+                                 <% } else{ %>
+                                    <option value="60">1 heure avant</option>
+                                  <% } %>
+                                  <% if(rappel.duree == 1440){ %>
+                                    <option value="1440" selected>1 jour avant</option>
+                                 <% } else{ %>
+                                    <option value="1440">1 jour avant</option>
+                                  <% } %>
+                              <% } %>
+    
+                         
+                     
+                       
+                        
+                        
+                    </select>
                 </div>
                 <div class="form-group">
                     <label for="priority">Priorité:</label>
@@ -82,31 +135,40 @@
                             </div>
 
                             <div id="week" class="tabcontent">
-                                <% ['Lundi',
-                                    'Mardi',
-                                    'Mercredi',
-                                    'Jeudi',
-                                    'Vendredi',
-                                    'Samedi',
-                                    'Dimanche'
-                                ].forEach((day, id) => { %>
-                                    <% if (rec.weekDay.includes(id)) { %>
-                                        <button type=button class="wday selected" onclick="selectDay(this, <%= id %>)"><%= day %></button>
-                                    <% } else { %>
-                                        <button type=button class="wday" onclick="selectDay(this, <%= id %>)"><%= day %></button>
-                                    <% } %>
-                                <% }) %>
+                                <div>
+                                    <button type=button class="clear-selection" onclick="selectAll()">Tout Sélectionner</button>
+                                </div>
+                                <div class="l-content">
+                                    <% ['Lundi',
+                                        'Mardi',
+                                        'Mercredi',
+                                        'Jeudi',
+                                        'Vendredi',
+                                        'Samedi',
+                                        'Dimanche'
+                                    ].forEach((day, id) => { %>
+                                        <% if (rec.weekDay.includes(id)) { %>
+                                            <button type=button class="wday selected" onclick="selectDay(this, <%= id %>)"><%= day %></button>
+                                        <% } else { %>
+                                            <button type=button class="wday" onclick="selectDay(this, <%= id %>)"><%= day %></button>
+                                        <% } %>
+                                    <% }) %>
+                                </div>
                             </div>
 
                             <div id="month" class="tabcontent">
-                                <% for (let i=1; i<=31; i++) { %>
-                                    <% if (rec.monthDay.includes(i)) { %>
-                                        <button type=button class="mday selected" onclick="selectDay(this, <%= i %>)"><%= i %></button>
-                                    <% } else { %>
-                                        <button type=button class="mday" onclick="selectDay(this, <%= i %>)"><%= i %></button>
+                                <div>
+                                    <button type=button class="clear-selection" onclick="selectAll()">Tout Sélectionner</button>
+                                </div>
+                                <div class="l-content">
+                                    <% for (let i=1; i<=31; i++) { %>
+                                        <% if (rec.monthDay.includes(i)) { %>
+                                            <button type=button class="mday selected" onclick="selectDay(this, <%= i %>)"><%= i %></button>
+                                        <% } else { %>
+                                            <button type=button class="mday" onclick="selectDay(this, <%= i %>)"><%= i %></button>
+                                        <% } %>
                                     <% } %>
-
-                                <% } %>
+                                </div>
                             </div>
 
                             <div id="year" class="tabcontent">
@@ -121,7 +183,9 @@
                                 </ul>
                                 <div class="selector-year-day">
                                     <input class="annee" type="date" id="dateYearRecurrence" name="date" placeholder="DD/MM">
-                                    <button type=button id="addButton"></button>
+                                    <button type=button id="addButton">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="svg-icon" viewBox="0 0 1024 1024" version="1.1"><path d="M810.65984 170.65984q18.3296 0 30.49472 12.16512t12.16512 30.49472q0 18.00192-12.32896 30.33088l-268.67712 268.32896 268.67712 268.32896q12.32896 12.32896 12.32896 30.33088 0 18.3296-12.16512 30.49472t-30.49472 12.16512q-18.00192 0-30.33088-12.32896l-268.32896-268.67712-268.32896 268.67712q-12.32896 12.32896-30.33088 12.32896-18.3296 0-30.49472-12.16512t-12.16512-30.49472q0-18.00192 12.32896-30.33088l268.67712-268.32896-268.67712-268.32896q-12.32896-12.32896-12.32896-30.33088 0-18.3296 12.16512-30.49472t30.49472-12.16512q18.00192 0 30.33088 12.32896l268.32896 268.67712 268.32896-268.67712q12.32896-12.32896 30.33088-12.32896z"/></svg>
+                                    </button>
                                 </div>
                                 
                             </div>
@@ -133,21 +197,44 @@
     </div>
 
     <script>
+        const colorInput = document.querySelector("#color");
+       
+  
         const agendaId = "<%= rendezvous.agendaId %>";
         const recId = "<%= recIdd %>";
         const ya = <%- JSON.stringify(rec.yearDay) %>;
         const recurrencesD = {"week": [<%= rec.weekDay %>] ,"month":[<%= rec.monthDay %>],"year":ya}
         const addBoutton = document.querySelector("#addButton")
+        let currentTab = null;
         addBoutton.addEventListener("click",addYearDay)
         function clearSelection() {
-            document.querySelector("#dateUntilRecurrence").value = ''
-            recurrencesD[currentTab] = []
-            Array.from(document.querySelector(`#${currentTab}`).children).forEach(c => {
-                c.classList.remove('selected')
+            if (currentTab) {
+                document.querySelector("#dateUntilRecurrence").value = ''
+                recurrencesD[currentTab] = []
+                Array.from(document.querySelector(`#${currentTab} > .l-content`).children).forEach(c => {
+                    c.classList.remove('selected')
+                })
+            }
+        }
+        function selectAll() {
+            for (let k of Object.keys(recurrencesD)) {
+                if (k !== currentTab && recurrencesD[k].length > 0) {
+                    afficherPopUp(`Récurrence ${k === 'year' ? "Année" : k === 'month' ? "Mois" : 'Semaine'} déjà défini`, false)
+                    return 1;
+                }
+            }
+            recurrencesD[currentTab] = (currentTab === "month" ? [...Array(32).keys()].slice(1) : currentTab === "week" ? [...Array(7).keys()] : [])
+            Array.from(document.querySelector(`#${currentTab} > .l-content`).children).forEach(c => {
+                c.classList.add('selected')
             })
         }
         function selectDay(e, day) {
-
+            for (let k of Object.keys(recurrencesD)) {
+                if (k !== currentTab && recurrencesD[k].length > 0) {
+                    afficherPopUp(`Récurrence ${k === 'year' ? "Année" : k === 'month' ? "Mois" : 'Semaine'} déjà défini`, false)
+                    return 1;
+                }
+            }
             e.classList.toggle("selected")
             const index = recurrencesD[currentTab].indexOf(day);
 
@@ -162,6 +249,13 @@
             document.querySelector(`.yearList li[data-index="${index}"]`).remove();
         }
         function addYearDay() {
+
+            for (let k of Object.keys(recurrencesD)) {
+                if (k !== currentTab && recurrencesD[k].length > 0) {
+                    afficherPopUp(`Récurrence ${k === 'year' ? "Année" : k === 'month' ? "Mois" : 'Semaine'} déjà défini`, false)
+                    return 1;
+                }
+            }
             const date = new Date(document.querySelector("#dateYearRecurrence").value)
             if (date.getDate()) {
                 const index = recurrencesD.year.findIndex(e => e.toString() === date.toString());
@@ -249,24 +343,22 @@
         document.getElementById('edit-rendezvous-form').addEventListener('submit', async function(event) {
             event.preventDefault();
             const rdvId = this.dataset.id;
-
             const nom = document.getElementById('nom').value;
             const date = document.getElementById('date').value;
             const heureDebut = document.getElementById('heureDebut').value;
             const duree = parseFloat(document.getElementById('duree').value); // Lire la durée en heures
             const description = document.getElementById('description').value;
-
-
+            const rappel = document.getElementById("rappel").value;
             const finRecurrence = document.getElementById('dateUntilRecurrence').value;
-            const priorite = document.getElementById('priority').value;
-
-            if (nom && date && heureDebut && duree && description){
+            const color = document.getElementById("color").value
+            if (nom && date && heureDebut && duree){
                 const dateString = `${date}T${heureDebut}:00`; // ajoute les secondes, format ISO 8601
                 const dateDebut = new Date(dateString);
-                // Calculer l'heure de fin à partir de l'heure de début et de la durée en heures
+                // Calculer. l'heure de fin à partir de l'heure de début et de la durée en heures
                 const dateFin = calculerHeureFin(date,heureDebut, duree);
+                console.log(!finRecurrence || dateDebut <= new Date(finRecurrence))
                 if (!finRecurrence || dateDebut <= new Date(finRecurrence)){
-
+                    console.log("ca part")
                     const rendezvous = {
                         name:nom,
                         dateDebut:dateDebut,
@@ -276,9 +368,11 @@
                         recurrences: recurrencesD,
                         finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
                         priorite: priorite,
+                        rappel:rappel,
+                        backgroundcolor:color
                     }
                     try {
-                        const response = await fetch(`http://localhost:3000/rendezvous/${rdvId}`, {
+                        const response = await fetch(`/rendezvous/${rdvId}`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json'
@@ -288,7 +382,7 @@
                         });
                         if (response.ok) {
                             afficherPopUp("Rendez-vous modifié avec succès !", true);
-                            window.location.href = `/rendezvous?agendaId=${agendaId}`;
+                            window.location.href = document.referrer;
                         }
                     } catch (error) {
                         console.error('Erreur lors de la modification:', error);

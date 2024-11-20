@@ -6,7 +6,7 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #686289;
+    background-color: #5f748a;
     display: flex;
     height:100vh;
     max-height: 100%;
@@ -387,19 +387,42 @@ form {
 }
 
 .tabcontent {
-    display: none;
-    padding: 30px;
+    display: none;      /* flex*/
+    /*padding: 30px;
     background: #1e273d;
     flex-wrap: wrap;
     border-top: none;
     gap:5px;
-    justify-content: flex-start;
+    justify-content: flex-start;*/
+    flex-direction: column;
 }
-.tabcontent#Année {
+.tabcontent > div:first-child {
+    width: 100%;
+    height:50px;
+    align-items: flex-end;
+    border:none;
+    border-radius: 0;
+    display:flex;
+    justify-content: center;
+}
+.tabcontent > div:first-child button {
+    width: 80%;
+}
+.l-content {
+    border:none !important;
+    display:flex;
+    border-radius: 0 !important;
+
+    padding: 15px;
+    flex-wrap: wrap;
+    gap:5px;
+    justify-content: space-evenly;
+}
+.tabcontent#year {
+    background:#1e273d;
     align-items: center;
     flex-wrap: nowrap;
     padding: 10px;
-    flex-direction: column;
 }
 .tabcontent label {
     padding:5px 10px;
@@ -448,8 +471,8 @@ form {
     width:100%;
     display:flex;
     align-items: center;
-    padding: 0 5px;
-    gap:5px;
+    padding: 10px 15px;
+    gap:0 10px;
 }
 
 .selector-year-day input::-webkit-calendar-picker-indicator, #dateUntilRecurrence::-webkit-calendar-picker-indicator {
@@ -469,15 +492,22 @@ form {
 }
 
 .selector-year-day button {
-    width:45px;
-    height:40px;
-    border:none;
-    clip-path: polygon(35% 0%,65% 0%,65% 35%,100% 35%,100% 60%,65% 60%,65% 100%,35% 100%,35% 60%,0% 60%,0% 35%,35% 35%);
-    background: #00BBEC;
+    width:50px;
+    height:50px;
+    border:none !important;
+    transform: rotate(45deg);
+    fill: currentColor;
+    background: none !important;
+    transition: filter 0.3s ease;
 }
+.selector-year-day button * {
+     border:none !important;
+     background: none !important;
+}
+
 .selector-year-day button:hover {
     border:none;
-    background: #cfbff7;
+    filter: brightness(0) saturate(100%) invert(69%) sepia(61%) saturate(313%) hue-rotate(209deg) brightness(105%) contrast(94%);
 }
 .tabcontent * {
     border-radius: 10px;
@@ -494,7 +524,7 @@ form {
     border: 1px solid #cfbff7;
 }
 .tabcontent button.selected {
-    border:none;
+    border: 1px solid #cfbff7;
     background-color: #cfbff7;
     color: #1e273d !important;
 }
