@@ -41,6 +41,14 @@
                     <label for="description">Description:</label>
                     <textarea id="description" name="description" rows="4" required><%= rendezvous.description %></textarea>
                 </div>
+                <div class="form-group">
+                    <label for="priority">Priorité:</label>
+                    <select id="priority" name="priority" required>
+                        <option value="Basse">Basse</option>
+                        <option value="Moyenne">Moyenne</option>
+                        <option value="Haute">Haute</option>
+                    </select>
+                </div>
 
                 <div class="form-group">
                     <button type="submit" class="btn-modifier">Modifier le rendez-vous</button>
@@ -115,6 +123,7 @@
                                     <input class="annee" type="date" id="dateYearRecurrence" name="date" placeholder="DD/MM">
                                     <button type=button id="addButton"></button>
                                 </div>
+                                
                             </div>
                         </div>
                     </form>
@@ -247,7 +256,9 @@
             const duree = parseFloat(document.getElementById('duree').value); // Lire la durée en heures
             const description = document.getElementById('description').value;
 
+
             const finRecurrence = document.getElementById('dateUntilRecurrence').value;
+            const priorite = document.getElementById('priority').value;
 
             if (nom && date && heureDebut && duree && description){
                 const dateString = `${date}T${heureDebut}:00`; // ajoute les secondes, format ISO 8601
@@ -264,6 +275,7 @@
                         recId: recId,
                         recurrences: recurrencesD,
                         finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
+                        priorite: priorite,
                     }
                     try {
                         const response = await fetch(`http://localhost:3000/rendezvous/${rdvId}`, {
