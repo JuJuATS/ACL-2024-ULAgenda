@@ -794,7 +794,7 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
     document.querySelector("#rendezvous-form").addEventListener('submit', async(e) => {
        
         e.preventDefault()
-        console.log(agendas[rdv.agendaId].event)
+     
         if(rdv.agendaId){
             document.querySelector("#rendezvous-form").classList.toggle('hide');
             const checkBoxs = Array.from(document.querySelectorAll(".checkAgenda"))

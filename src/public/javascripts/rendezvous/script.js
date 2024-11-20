@@ -186,7 +186,7 @@ async function saveRendezVous(rendezvous) {
 
 async function updateRdvList(opened) {
 
-    const response = await fetch(`http://localhost:3000/rendezvous/api/recurrence?agendaId=${agendaid}`, {
+    const response = await fetch(`/rendezvous/api/recurrence?agendaId=${agendaid}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json'
@@ -261,12 +261,16 @@ function createLiRdv(rendezvous, opened) {
     deleteButton.innerHTML = svgDelete;
     deleteButton.disabled = (accessLevel === 'read');
     deleteButton.title = accessLevel === 'read' ? 'Vous n\'avez pas les droits pour supprimer ce rendez-vous' : '';
+
     deleteButton.addEventListener('click', async (event) => {
+        console.log("wesh")
         if (!deleteButton.disabled) {
+            
             if (confirm("Êtes-vous sûr de vouloir supprimer ce rendez-vous ?")) {
+                console.log(rendezvous.id)
                 try {
-                    const response = await fetch(`http://localhost:3000/rendezvous/${rendezvous.id}`, {
-                        method: 'DELETE',
+                    const response = await fetch(`rendezvous/${rendezvous.id}?agendaId=${form.dataset.agendaId}`, {
+                        method: 'delete',
                         credentials: 'include'
                     });
                     const json = await response.json();

@@ -150,7 +150,8 @@ const getAgendaEvents = async (req, res, next) => {
           link:`/rendezvous/edit/${el._id}`,
           agendaId:el.agendaId,
           recId:el.recurrences,
-          rappel:rappel ? rappel.duree : 0
+          rappel:rappel ? rappel.duree : 0,
+          priorite:el.priority
       },
         title:el.name,
         duration:el.dateFin-el.dateDebut

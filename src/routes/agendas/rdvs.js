@@ -49,7 +49,7 @@ router.get('/api/recurrence', authMiddleware, checkAgendaAccess, async (req, res
 // Route pour créer un nouveau rendez-vous
 router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
   try {
-    const { name, description, dateDebut, dateFin, recurrences, finRecurrence } = req.body;
+    const { name, description, dateDebut, dateFin, recurrences, finRecurrence,backgroundColor,priorite,rappel } = req.body;
     
     if (!name || !dateDebut || !dateFin) {
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
@@ -63,21 +63,21 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
     }
     
     const rappelEntity = rappel === 0 ? null : new Rappel({duree:rappel,envoye:false});
+    
     const recurrence = new Recurrence({
       yearDay: recurrences["year"],
       monthDay: recurrences["month"],
       weekDay: recurrences["week"],
       dateDebut: debut,
       dateFin:finRecurrence ? new Date(finRecurrence) : null,
-      
     });
-     console.log()
+     
     const newRdv = new Rdv({
       name: name,
       description: description,
       dateDebut: debut,
       dateFin: fin,
-      agendaId:req.agendaId,
+      agendaId:req.agenda,
       recurrences: recurrence,
       rappel:rappelEntity,
       priority:priorite,
@@ -86,7 +86,7 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
     rappelEntity !== null ? await rappelEntity.save() : null; 
     await recurrence.save();
     await newRdv.save();
-
+    
     req.agenda.rdvs.push(newRdv._id);
     await req.agenda.save();
 
@@ -98,15 +98,15 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
 });
 
 // Route pour modifier un rendez-vous
-router.put('/:id', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
-  try {
-    const rdvId = req.params.id;
-    const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence } = req.body;
+router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
 
+  try {
+    const rdvId = req.params.idf;
+    const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence,backgroundColor,priorite,rappel } = req.body;
+  
     if (!name || !dateDebut || !dateFin) {
       return res.status(400).json({ message: "Les champs requis sont manquants." });
     }
-
     const rdv = await Rdv.findById(rdvId);
     if (!rdv || !rdv.agendaId.equals(req.agenda._id)) {
       return res.status(404).json({ message: "Rendez-vous non trouvé" });
@@ -116,24 +116,35 @@ router.put('/:id', authMiddleware, checkAgendaAccess, checkModifyRights, async (
     if (!rec) {
       return res.status(404).json({ message: "Récurrence non trouvée" });
     }
-
+    let rappelEntity = await Rappel.findByIdAndDelete(rdv.rappel);
+  
+    if(!rappel && rappel !==0 ){
+      rappelEntity = new Rappel({duree:rappel,envoye:false});
+      rappelEntity.save(); 
+      rdv.rappel = rappelEntity
+    }
     // Mise à jour du rendez-vous
+    console.log(name,description,dateDebut,dateFin,priorite,backgroundColor,rappelEntity)
     Object.assign(rdv, {
       name,
       description,
       dateDebut: new Date(dateDebut),
-      dateFin: new Date(dateFin)
+      dateFin: new Date(dateFin),
+      priority:priorite,
+      color:backgroundColor
     });
 
     // Mise à jour de la récurrence
-    Object.assign(rec, {
-      yearDay: recurrences.year,
-      monthDay: recurrences.month,
-      weekDay: recurrences.week,
-      dateDebut: finRecurrence,
-      dateFin: new Date(dateDebut)
-    });
-
+    if(Object.keys(recurrences).length !==0){
+      Object.assign(rec, {
+        yearDay: recurrences.year,
+        monthDay: recurrences.month,
+        weekDay: recurrences.week,
+        dateFin: finRecurrence,
+        dateDebut: new Date(dateDebut)
+      });  
+    }
+  
     await rec.save();
     await rdv.save();
     
@@ -145,9 +156,10 @@ router.put('/:id', authMiddleware, checkAgendaAccess, checkModifyRights, async (
 });
 
 // Route pour supprimer un rendez-vous
-router.delete('/:id', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
+router.delete('/:ids', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
+  console.log("toto")
   try {
-    const rdvId = req.params.id;
+    const rdvId = req.params.ids;
     const rdv = await Rdv.findById(rdvId);
     
     if (!rdv || !rdv.agendaId.equals(req.agenda._id)) {
