@@ -44,7 +44,7 @@ router.get('/', authMiddleware, async (req, res) => {
 
 
 router.get('/api/recurrence', authMiddleware, async (req, res) => {
-  console.log("on veut ajouter un rdv")
+
   const {agendaId} = req.query
   const rdvUser = await Rdv.find({agendaId:agendaId})
   rdvUser.sort((a, b) => {
@@ -64,10 +64,12 @@ router.get('/api/recurrence', authMiddleware, async (req, res) => {
 
 // Route pour créer un nouveau rendez-vous.
 router.post('/', authMiddleware, async (req, res) => {
-  try {
 
-    const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence,rappel,priorite} = req.body;
+  try {
+    const { name, description, dateDebut, dateFin, agendaId, recurrences, finRecurrence,rappel,priorite,backgroundColor} = req.body;
+
     if (!name || !dateDebut || !dateFin || !agendaId ) {
+
       console.log("il manque quelque chose")
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
     }
@@ -104,13 +106,15 @@ router.post('/', authMiddleware, async (req, res) => {
       agendaId:agendaId,
       recurrences: recurrence,
       rappel:rappelEntity,
-      priority:priorite
+      priority:priorite,
+      color:backgroundColor
     });
-    rappelEntity !== null ? await rappelEntity.save : null; 
+    rappelEntity !== null ? await rappelEntity.save() : null; 
     await recurrence.save();
     await newRdv.save();
     agenda.rdvs.push(newRdv._id);
     await agenda.save();
+
     res.status(201).json({ok:true, rdv:newRdv});
   } catch (error) {
     console.log(error)
@@ -120,16 +124,16 @@ router.post('/', authMiddleware, async (req, res) => {
 
 
 router.put('/:id', authMiddleware, async (req, res) => {
-    console.log("on veut modifer un rendez vous")
+  
     try {
         const rdvId = req.params.id;
-        console.log(req.body)
-        const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence,color,rappel } = req.body;
+        const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence,backgroundColor,rappel,priorite } = req.body;
+        
         if (!name || !dateDebut || !dateFin) {
             return res.status(400).json({ message: "Fields 'name', 'dateDebut', 'dateFin' are required." });
         }
-
-        const rdv = await Rdv.findById(rdvId);
+        
+        const rdv = await Rdv.findById(rdvId)
         if (!rdv) {
             return res.status(404).json({ message: "Rendezvous not found" });
         }
@@ -138,34 +142,34 @@ router.put('/:id', authMiddleware, async (req, res) => {
           if (!rec) {
               return res.status(404).json({ message: "Recurrence not found" });
           }
+          if(recurrences !== null && Object.keys(recurrences).length !== 0){
+            console.log(Object.keys(recurrences).length)
+            rec.yearDay = recurrences.year
+            rec.monthDay = recurrences.month
+            rec.weekDay = recurrences.week
+            rec.dateDebut = new Date(dateDebut)
+            rec.dateFin = finRecurrence ? new Date(finRecurrence) : null;
+            await rec.save();
+          }
         }
-        let rappelEntity=null;
-        if(!rdv.rappel && rappel!==0){
-          rappelEntity = new Rappel({duree:rappel,envoye:false})
+        let rappelEntity = await Rappel.findByIdAndDelete(rdv.rappel);;
+        console.log("rappel:",rappelEntity)
+        if(!rappelEntity && rappel !== 0){
+          rappelEntity = new Rappel({duree:+rappel,envoye:false})
           rdv.rappel = rappelEntity
           await rappelEntity.save();
-        }
-        else{
-          if(rdv.rappel){
-            rdv.rappel.duree = rappel
-          }
         }
         
         rdv.name = name;
         rdv.description = description || rdv.description;
         rdv.dateDebut = new Date(dateDebut);
         rdv.dateFin = new Date(dateFin);
-        rdv.color = color || rdv.color;
-        if(recurrences){
-          rec.yearDay = recurrences.year
-          rec.monthDay = recurrences.month
-          rec.weekDay = recurrences.week
-          rec.dateDebut = new Date(dateDebut)
-          rec.dateFin = finRecurrence ? new Date(finRecurrence) : null;
-          await rec.save();
-        }
+        rdv.color = backgroundColor || rdv.color;
+        rdv.priority = priorite || rdv.priority
+       
 
         await rdv.save();
+        console.log(rdv)
         res.status(200).json({ ok: true, rdv });
     } catch (error) {
         console.error("Error updating rendezvous:", error);
@@ -178,6 +182,7 @@ router.delete('/:id', authMiddleware, async (req, res) => {
         const rdvId = req.params.id;
         const rdv = await Rdv.findByIdAndDelete(rdvId);
         const rec = await Recurrence.findByIdAndDelete(rdv.recurrences);
+        
         if (!rdv) {
             return res.status(404).json({ message: "Rendezvous not found" });
         }
@@ -193,19 +198,19 @@ router.get('/edit/:id', authMiddleware, async (req, res) => {
   try {
       const rdvId = req.params.id;
       const rendezvous = await Rdv.findById(rdvId);
-
+      const rappel = await Rappel.findById(rendezvous.rappel)
       if (!rendezvous) {
           return res.status(404).json({ message: "Rendez-vous non trouvé" });
       }
       const rec = await Recurrence.findById(rendezvous.recurrences);
       if(rec !== null){
         const {yearDay, weekDay, monthDay, dateFin} = rec
-        yearDay.map(d => console.log(typeof d))
-        res.render('modifier_rendezvous', { rendezvous: rendezvous, rec: {yearDay, weekDay, monthDay, dateFin}, recIdd: rec.id });
+ 
+        res.render('modifier_rendezvous', { rendezvous: rendezvous, rec: {yearDay, weekDay, monthDay, dateFin}, recIdd: rec.id ,rappel:rappel});
       }
       else{
         const yearDay = [], weekDay = [], monthDay = [], dateFin = "";
-        res.render('modifier_rendezvous', { rendezvous: rendezvous,rec:{yearDay, weekDay, monthDay, dateFin},recIdd:null});
+        res.render('modifier_rendezvous', { rendezvous: rendezvous,rec:{yearDay, weekDay, monthDay, dateFin},recIdd:null,rappel:rappel});
       }
   } catch (error) {
       console.error("Erreur lors de la récupération du rendez-vous:", error);

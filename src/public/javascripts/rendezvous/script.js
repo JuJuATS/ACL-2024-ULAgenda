@@ -5,7 +5,13 @@ const recurrences = {"week":[],"month":[],"year":[]}
 let currentTab = null;
 const popUp = document.querySelector(".pop-up-info");
 let rdvsOpen = false;
-
+const colorInput = document.querySelector("#color");
+console.log(colorInput)
+colorInput.addEventListener("input",(e)=>{
+    console.log(e.target.value)
+    const colorDiv = document.querySelector("#colorBackground");
+    colorDiv.style.backgroundColor = e.target.value
+})
 form.addEventListener('submit', async function(event) {
     event.preventDefault();
     const nom = document.getElementById('nom').value;
@@ -15,6 +21,7 @@ form.addEventListener('submit', async function(event) {
     const description = document.getElementById('description').value || "";
     const rappel = document.getElementById('rappel').value;
     const finRecurrence = document.getElementById('dateUntilRecurrence').value;
+    const color = document.querySelector("#colorBackground").style.backgroundColor
     if (nom && date && heureDebut && duree){
         const dateString = `${date}T${heureDebut}:00`; // ajoute les secondes, format ISO 8601
         const dateDebut = new Date(dateString);
@@ -32,7 +39,8 @@ form.addEventListener('submit', async function(event) {
                 agendaId:form.dataset.agendaid,
                 recurrences: recurrences,
                 finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
-                rappel:rappel
+                rappel:rappel,
+                color:color, 
             }
             await saveRendezVous(rendezvous);
         }
@@ -344,6 +352,8 @@ document.addEventListener('DOMContentLoaded', async() => {
             form.description.value = presetData.description || '';
             form.rappel.value = presetData.reminder || '';
             form.heureDebut.value = presetData.startHour || '';
+            document.querySelector("#colorBackground").style.backgroundColor = presetData.color;
+
         } catch (error) {
             console.error("Erreur:", error);
             afficherPopUp("Impossible d'appliquer le préréglage.", false);

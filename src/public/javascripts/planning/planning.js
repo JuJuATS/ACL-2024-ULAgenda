@@ -1,16 +1,27 @@
-
+function hexToRgb(hex) {
+    const r = parseInt(hex.substring(1, 3), 16);
+    const g = parseInt(hex.substring(3, 5), 16);
+    const b = parseInt(hex.substring(5, 7), 16);
+    return [r, g, b];
+  }
+//modèle d'un rdv 
+let rdv = {
+    name:"",
+    backgroundColor:"#3788d8",
+    realEvent:null,
+    id:null,
+    dateDebut:new Date(),
+    dateFin:new Date(),
+    rappel:0,
+    agendaId:null,
+    description:"",
+    recId:null,
+    recurrences:{},
+    priorite:"Moyenne",
+  }
 const agendas = []
-const fetchEvent = async (el) => {
-    
-  if (!agendas[el.dataset.id]) {
-    const data = await fetch(`/api/getDate?agenda=${el.dataset.id}`).then(res => res.json())
-    agendas[el.dataset.id] = { event: data.event, visible: true }
-  }
-  else {
-    agendas[el.dataset.id].visible = true;
-  }
-    
-}
+let popupActivated = false;
+
 const handleCheckBox = (checkBox)=>{
   const checkBoxs = JSON.stringify(localStorage.getItem("checkBox"));
   if(checkBoxs.includes(checkBox.dataset.id)){
@@ -18,7 +29,6 @@ const handleCheckBox = (checkBox)=>{
     fetchEvent(checkBox);
   }
 }
-
 const saveAgenda =(el)=>{
   let checkBox = JSON.parse(localStorage.getItem("checkBox")) || [];     
   !checkBox.includes(el.dataset.id) ?  checkBox.push(el.dataset.id) : null;
@@ -34,23 +44,6 @@ const unSaveAgenda = (el)=>{
     localStorage.setItem("checkBox",JSON.stringify(checkBox));
   }
 }
-const refetch = async (el, calendar) => {
-  if (el.checked) {
-    saveAgenda(el)
-    fetchEvent(el)
-  }
-  else {
-    agendas[el.dataset.id].visible = false;
-    unSaveAgenda(el)
-    }
-    calendar.refetchEvents()
-  }
-let popupActivated = false;
-let allAgenda = null;
-(async () => {
-    let response = await fetch(`/api/getAgenda`)
-    allAgenda = await response.json();
-})()
 function showTooltip(eventRect, event, size) {
     const tooltip = document.getElementById('event-tooltip') ||
         document.createElement('div');
@@ -82,48 +75,99 @@ function showTooltip(eventRect, event, size) {
         document.body.appendChild(tooltip);
     }
 }
+const fetchEvent = async (el,calendar) => {
+    console.log(!agendas[el.dataset.id])
+    if (!agendas[el.dataset.id]) {
+      const data = await fetch(`/api/getDate?agenda=${el.dataset.id}`).then(res => res.json())
+      
+      agendas[el.dataset.id] = { event: data.event, visible: true }
+      
+    }
+    else {
+      agendas[el.dataset.id].visible = true;
+    }
+    calendar.refetchEvents();
+  }
+const refetch = async (el, calendar) => {
+    if (el.checked) {
+      saveAgenda(el)
+      fetchEvent(el,calendar)
+    }
+    else {
+      agendas[el.dataset.id].visible = false;
+      unSaveAgenda(el)
+      }
+      calendar.refetchEvents()
+    }
+let allAgenda = null;
+(async () => {
+    let response = await fetch(`/api/getAgenda`)
+    allAgenda = await response.json();
+})()
+
+function togglePopUp(x, y) {
+    document.querySelectorAll("button").forEach(b => {
+        b.disabled = !b.disabled;
+    })
+    document.querySelectorAll("input[type='checkbox']").forEach(b => {
+        b.disabled = !b.disabled;
+    })
+    document.querySelector("#popup-rdv").querySelectorAll("button").forEach(b => {
+        b.disabled = !b.disabled;
+    })
+
+    if (x && y) {
+        if (x < 600) { // a droite
+            document.querySelector("#popup-rdv").style.left = (x+400) * 100 / window.innerWidth + "%";
+        } else {    // a gauche
+            document.querySelector("#popup-rdv").style.left = (x-400) * 100 / window.innerWidth + "%";
+        }
+    }
+
+    document.querySelector("#popup-rdv").classList.toggle("display-pop-up")
+
+}
+
 document.addEventListener('DOMContentLoaded', function () {
   const selectAllButton = document.querySelector(".selectAll");
   const unSelectAllbutton = document.querySelector(".unSelectAll");  
   
-    const rdv = {
-        name:"",
-        color:'',
-        realEvent:null,
-        id:null,
-        dateDebut:new Date(),
-        dateFin:new Date(),
-        rappel:0,
-        extendedProps: {agenda_id:null},
-        description:"",
-        recId:null,
-        recurrences:{},
-        priorite:0,
+    
+
+  const fetchModif = async (rdv)=>{
+    //je recherche s'il existe un rendez-vous dejà enregistré dans le cache
+    let index = agendas[rdv.agendaId].event.findIndex(el=>el.id===rdv.id)
+    if(index!==-1){
+        console.log(agendas[rdv.agendaId].event)
+        agendas[rdv.agendaId].event.splice(index, 1);
+        console.log(index)
+        console.log(agendas[rdv.agendaId].event)
+    }
+
+    let event = agendas[rdv.agendaId]?.event ? [...agendas[rdv.agendaId]?.event ,rdv.realEvent] : [rdv.realEvent] 
+    agendas[rdv.agendaId] = { event: event, visible: true }
+    const fetchOptions = {
+        method: 'put',
+        headers: {
+            'Content-Type': 'application/json'
+                },
+        credentials: 'include',
+        body: JSON.stringify(rdv),
       }
-    initPopUpRdv(rdv)
-
-
-    document.querySelector("#MICHAEL").addEventListener('click', async() => {
+    fetch(`/rendezvous/${rdv.id}`,fetchOptions).then((data)=>{
+        if(popupActivated){
+            popupActivated = false;
+            togglePopUp()
+        }
+        
+    })
+    console.log(rdv.realEvent)
+    //rdv.realEvent.setProp("backgroundColor",rdv.backgroundColor)  
+}
+    document.querySelector("#MICHAEL").addEventListener('click',() => {
         console.log(rdv)
     })
-    const fetchModif = async (rdv)=>{
-        //je recherche s'il existe un rendez-vous dejà enregistré dans le cache
-        let index = agendas[rdv.extendedProps.agenda_id].event.findIndex(el=>el.id===rdv.id)
-        if(index!==-1){
-            agendas[rdv.extendedProps.agenda_id].event.splice(index, 1)
-        }
-        let event = agendas[rdv.extendedProps.agenda_id]?.event ? [...agendas[rdv.extendedProps.agenda_id]?.event ,rdv.realEvent] : [rdv.realEvent] 
-        agendas[rdv.extendedProps.agenda_id] = { event: event, visible: true }
-        const fetchOptions = {
-            method: 'put',
-            headers: {
-                'Content-Type': 'application/json'
-                    },
-            credentials: 'include',
-            body: JSON.stringify(rdv),
-          }
-        fetch(`/rendezvous/${rdv.id}`,fetchOptions);
-    }
+   
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
         eventSources: [
@@ -134,7 +178,6 @@ document.addEventListener('DOMContentLoaded', function () {
                         events = [...events, ...agendas[agenda].event]
                     }
                 }
-
                 return events;
             }
         ],
@@ -183,9 +226,9 @@ document.addEventListener('DOMContentLoaded', function () {
             popup.remove()
         },
         eventClick: (info) => {
-            console.log(info)
+            
             if (info.view.type === "timeGridWeek"){
-              console.log("c'est eventCLick")
+           
                 drawPopUpRdv(rdv, info, false, calendar)
             }
            /* window.location.href = `${info.event.extendedProps.link}`;*/
@@ -195,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
         /** DRAG DROP ET Pop-up **/
 
         dateClick: (info) => {
-            console.log("click")
+           
             if (info.view.type === "timeGridWeek") {
                 drawPopUpRdv(rdv, info, true, calendar)
 
@@ -225,14 +268,12 @@ document.addEventListener('DOMContentLoaded', function () {
         dragScroll: true,
 
         eventDragStart: function(info) {
-            console.log("drag")
+            
             info.el.style.opacity = '0.5';
             if(popupActivated && info.event.id !=="null"){
-                console.log(info.event.id!== null)
-                console.log(info.event.id)
-                console.log(popupActivated)
+               
                 
-                console.log("je ferme la popup");
+                
                 rdv.realEvent.remove()
                 popupActivated = false;
                 togglePopUp()
@@ -241,24 +282,26 @@ document.addEventListener('DOMContentLoaded', function () {
         eventDrop: async function(info) {
             console.log("drop")
             info.el.style.opacity = '1';
-            console.log(info)
+         
             const event = info.event;
             const newStart = event.start;
             const newEnd = event.end;
           
-            console.log(info)
             const rdv = {
               name:event.title, 
               realEvent:event,
               id:info.event.id,
               dateDebut:newStart,
               dateFin:newEnd,
-              color:info.event.color,
-              extendedProps: {agenda_id:event.extendedProps.agenda_id},
+              backgroundColor:info.event.backgroundColor,
+              agendaId:event.extendedProps.agendaId,
+              recurrences:{},
+              rappel:info.event.extendedProps.rappel
             }
+           
             const popup = document.querySelector("#event-tooltip") 
             popup !==null ? popup.remove():null
-          
+            
             updateRdvEvent(rdv)
             if(rdv.id === "null"){
               updatePopUp(rdv)
@@ -281,7 +324,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         },*/
         eventResize: function(info) {
-            console.log("resize")
+           
             
             const event = info.event;
             const newStart = event.start;
@@ -293,15 +336,22 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateRdvEvent(rdv)
             }
             else{
+               console.log(event)
                 const rdv = {
-                    name:event.title, 
+                    name:event.title,
+                    backgroundColor:event.backgroundColor,
                     realEvent:event,
-                    id:info.event.id,
+                    id:event.id,
                     dateDebut:newStart,
                     dateFin:newEnd,
-                    color:info.event.color,
-                    extendedProps: {agenda_id:event.extendedProps.agenda_id},
+                    rappel:event.extendedProps.rappel,
+                    agendaId:event.extendedProps.agendaId,
+                    description:event.extendedProps.description,
+                    recId:event.extendedProps.recId,
+                    recurrences:event.extendedProps.recurrences,
+                    priorite:event.extendedProps.priorite,
                   }
+                console.log(rdv)
                   updateRdvEvent(rdv)
                   fetchModif(rdv)
             }
@@ -312,8 +362,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     });
-
-
+ 
+    initPopUpRdv(calendar,refetch,fetchModif)
     const sideBar = document.querySelector(".sideBar");
     calendar.render();
     const menu = document.querySelector(".menu");
@@ -323,104 +373,98 @@ document.addEventListener('DOMContentLoaded', function () {
             calendar.updateSize();
         }, 500)
     })
-
+    
     const checkBoxs = document.querySelectorAll(".listAgenda input");
     const saveChecboxs = JSON.stringify(localStorage.getItem("checkBox"))
     checkBoxs.forEach(checkBox => {
         if(saveChecboxs.includes(checkBox.dataset.id)){
           checkBox.checked = true;
-          fetchEvent(checkBox)
+          fetchEvent(checkBox,calendar)
         }
         checkBox.addEventListener("change", (el) => {
             refetch(el.target, calendar)
         })
     });
- 
+   
     selectAllButton.addEventListener("click",(e)=>{
-  
       const checkBoxs = document.querySelectorAll(".checkAgenda");
       checkBoxs.forEach(checkBox=>{
         checkBox.checked = true
         saveAgenda(checkBox)
-        fetchEvent(checkBox)
+        fetchEvent(checkBox,calendar)
       })
     })
     unSelectAllbutton.addEventListener("click",(e)=>{
-      console.log("toto2")
       const checkBoxs = document.querySelectorAll(".checkAgenda");
-      
       checkBoxs.forEach(checkBox=>{
         checkBox.checked = false
         agendas[checkBox.dataset.id].visible = false;
-        unSaveAgenda(checkBox)
+        unSaveAgenda(checkBox,calendar)
       })
       calendar.refetchEvents()
     })
- 
-     dateSelector.addEventListener("change",(e)=>{
+    dateSelector.addEventListener("change",(e)=>{
       calendar.gotoDate(e.target.value)
      })
 });
 
-
+// fonction d'initalisation d'un rdv selon la création ou modifiation d'un agenda 
 function drawPopUpRdv(rdv2, info, click, calendar) {
     if (!popupActivated) {
         popupActivated = true
         let eventStart
         let eventEnd
-    
-        if (click) {
-            
+        if (click) { 
             eventStart = info.date;
             eventStart.setMinutes(0, 0, 0);
             eventEnd = new Date(eventStart.getTime() + 3600000);
            rdv = {
             name:"",
-            color:'',
+            backgroundColor:"#3788d8",
             realEvent:null,
             id:"null",
             dateDebut:eventStart,
             dateFin:eventEnd,
             rappel:0,
-            extendedProps: {agenda_id:null},
+            agendaId:null,
             description:"",
             recId:null,
             recurrences:{},
-            priorite:0,
+            priorite:"Moyenne",
           }
         const newEvent = {
                 id:"null",
-                title: 'Nouveau Evenement',
+                title: '',
                 start: eventStart,
                 end: eventEnd,
-                color:"#3788d8",
+                backgroundColor:"#3788d8",
                 editable: true,
                 extendedProps:{
-                    agenda_id:null,
+                    agendaId:null,
                     recId:null,
                     rappel:0,
-                    priorite:"basse"
+                    priorite:"Moyenne",
+                    recurrences:{}
                 },
                 duration:eventEnd-eventStart
             };
-            console.log("c'est clique")
+            
             rdv.realEvent = calendar.addEvent(newEvent)
             rdv.name = newEvent.title;
             rdv.dateDebut = newEvent.start;
             rdv.dateFin = newEvent.end;
-            rdv.color = newEvent.backgroundColor;
-            console.log(rdv)
-        } else {
-            console.log("c'est pas clique")
+            rdv.backgroundColor = newEvent.backgroundColor;
+            
+        } else {      
             rdv = {
                 name:info.event.title,
-                color:info.event.color,
+                backgroundColor:info.event.backgroundColor,
                 realEvent:info.event,
                 id:info.event.id,
                 dateDebut:info.event.start,
                 dateFin:info.event.end,
                 rappel:info.event.extendedProps.rappel,
-                extendedProps: {agenda_id:info.event.extendedProps.agenda_id},
+                agendaId:info.event.extendedProps.agendaId,
                 description:info.event.extendedProps.description,
                 recId:info.event.extendedProps.recId,
                 recurrences:info.event.extendedProps.recurrences,
@@ -470,29 +514,19 @@ function afficherPopUp(text, good) {
     }, 5000)
 }
 
-function togglePopUp(x, y) {
-    document.querySelectorAll("button").forEach(b => {
-        b.disabled = !b.disabled;
-    })
-    document.querySelectorAll("input[type='checkbox']").forEach(b => {
-        b.disabled = !b.disabled;
-    })
-    document.querySelector("#popup-rdv").querySelectorAll("button").forEach(b => {
-        b.disabled = !b.disabled;
-    })
 
-    if (x && y) {
-        if (x < 600) { // a droite
-            document.querySelector("#popup-rdv").style.left = (x+400) * 100 / window.innerWidth + "%";
-        } else {    // a gauche
-            document.querySelector("#popup-rdv").style.left = (x-400) * 100 / window.innerWidth + "%";
-        }
-    }
-
-    document.querySelector("#popup-rdv").classList.toggle("display-pop-up")
-
+const toggleBtn = document.getElementById('toggleBtn');
+const menuIcon = document.querySelector('.menu-icon');
+const closeIcon = document.querySelector('.close-icon');
+const textareaContainer = document.getElementById('textareaContainer');
+const labelText = document.getElementById('labelText');
+const textarea = document.querySelector(".description-textarea")
+const toggleDescription = ()=>{
+    const isOpen = textareaContainer.classList.toggle('open');
+    menuIcon.style.display = isOpen ? 'none' : 'block';
+    closeIcon.style.display = isOpen ? 'block' : 'none';
+    labelText.textContent = isOpen ? 'Description' : 'Description';
 }
-
 
 function updatePopUp(rdv, newEvent) {
 
@@ -502,12 +536,28 @@ function updatePopUp(rdv, newEvent) {
     //selection agenda
     //priorite
     //rappel
+    document.querySelector("#namerdv").value = rdv.name
+    if(rdv.description !== ""){
+        toggleDescription()
+        textarea.value = rdv.description
+    }
+    agendaButton.querySelector('.agenda-name').innerText = `Sélectionner un agenda`;
+    Array.from(document.querySelectorAll("#priorite option")).forEach(e=>e.selected = e.value === rdv.priorite)
+    allAgenda.forEach(agenda=>{
+        if(agenda._id === rdv.agendaId){
+            agendaButton.querySelector('.agenda-name').innerText = `${agenda.name}`;
+        }
+    })
+    Array.from(document.querySelectorAll("#rappel option")).forEach(e=>{if(+e.value === rdv.rappel){e.selected=true}})
+    document.querySelector(".selected-color").style.backgroundColor = rdv.backgroundColor;
+    
+    
     document.querySelector('#date').value = rdv.dateDebut.toLocaleString('en-CA').split(',')[0];
     document.querySelector('#startrdvtime').value = rdv.dateDebut.toTimeString().slice(0, 5);
     document.querySelector('#endrdvtime').value = rdv.dateFin.toTimeString().slice(0, 5);
 
 }
-function initPopUpRdv(rdv) {
+function initPopUpRdv(calendar,refetch,fetchModif) {
 
     const container = document.querySelector('.infoDate');
     const pickers = container.querySelectorAll('.time-picker');
@@ -565,22 +615,15 @@ function initPopUpRdv(rdv) {
     });
 
 
-    const toggleBtn = document.getElementById('toggleBtn');
-    const menuIcon = document.querySelector('.menu-icon');
-    const closeIcon = document.querySelector('.close-icon');
-    const textareaContainer = document.getElementById('textareaContainer');
-    const labelText = document.getElementById('labelText');
-
     toggleBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        const isOpen = textareaContainer.classList.toggle('open');
-        menuIcon.style.display = isOpen ? 'none' : 'block';
-        closeIcon.style.display = isOpen ? 'block' : 'none';
-        labelText.textContent = isOpen ? 'Description' : 'Description';
+        toggleDescription()
     });
 
     document.querySelector(".closer").addEventListener('click', function(event) {
-        rdv.realEvent.remove()
+        if(rdv.realEvent.id === "null"){
+            rdv.realEvent.remove();
+        }
         popupActivated = false;
         togglePopUp()
     })
@@ -615,23 +658,42 @@ function initPopUpRdv(rdv) {
           ${color.hex === selectedColor ? '<span class="checkmark">✓</span>' : ''}
         </div>
       `;
-
         option.addEventListener('click', () => {
             selectedColor = color.hex;
             selectedColorDot.style.backgroundColor = color.hex;
 
             document.querySelectorAll('.color-dot').forEach(dot => {
-                dot.innerHTML = dot.style.backgroundColor === color.hex ? '<span class="checkmark">✓</span>' : '';
+                const [r,g,b] =hexToRgb(selectedColor)
+                dot.innerHTML = dot.style.backgroundColor === `rgb(${r}, ${g}, ${b})` ? '<span class="checkmark">✓</span>' : '';
             });
 
             colorDropdown.classList.remove('show');
-            rdv.color = selectedColor
+            rdv.backgroundColor = selectedColor
             updateRdvEvent(rdv)
 
         });
 
         colorDropdown.appendChild(option);
     });
+    const option = document.createElement('div');
+    option.className = 'color-option';
+    option.innerHTML = `<input type="color">`
+    colorDropdown.appendChild(option); 
+    
+  
+    document.querySelector(".color-option input").addEventListener("input", function(e) {
+        selectedColor = e.target.value
+        
+        selectedColorDot.style.backgroundColor = selectedColor;
+
+        document.querySelectorAll('.color-dot').forEach(dot => {
+            const [r,g,b] =hexToRgb(selectedColor)
+                dot.innerHTML = dot.style.backgroundColor === `rgb(${r}, ${g}, ${b})` ? '<span class="checkmark">✓</span>' : '';
+        });
+        rdv.backgroundColor = selectedColor
+        updateRdvEvent(rdv)
+        
+    }, false); 
 
     colorButton.addEventListener('click', (e) => {
         e.preventDefault()
@@ -651,7 +713,7 @@ function initPopUpRdv(rdv) {
             option.innerHTML = `
               <span>${agenda.name}</span>
             `;
-
+            
             option.addEventListener('click', () => {
                 const buttonContent = agendaButton.querySelector('.agenda-name');
                 buttonContent.innerHTML = `
@@ -661,7 +723,7 @@ function initPopUpRdv(rdv) {
                 agendaDropdown.classList.remove('show');
 
                 console.log('Selected agenda:', agenda);
-                rdv.extendedProps.agenda_id = agenda._id;
+                rdv.agendaId = agenda._id;
             });
 
             agendaDropdown.appendChild(option);
@@ -678,7 +740,7 @@ function initPopUpRdv(rdv) {
 
     document.querySelector("#date").addEventListener('change', (e) => {
         let t = rdv.dateDebut
-        let t2 = rdv.dateDebut
+        let t2 = rdv.dateFin
         rdv.dateDebut = new Date(e.target.value)
         rdv.dateDebut.setHours(t.getHours(), t.getMinutes());
         rdv.dateFin = new Date(e.target.value)
@@ -690,48 +752,115 @@ function initPopUpRdv(rdv) {
         updateRdvEvent(rdv)
     })
 
+    document.querySelector("#rappel").addEventListener('change', (e) => {
+        rdv.rappel = +(e.target.value)
+        console.log(e.target.value)
+        updateRdvEvent(rdv)
+    })
 
+    document.querySelector("#priorite").addEventListener('change', (e) => {
+        rdv.priorite = e.target.value
+        updateRdvEvent(rdv)
+    })
+    textarea.addEventListener("input",(e)=>{
+        console.log(e.target.value)
+        rdv.description = e.target.value
+        
+        updateRdvEvent(rdv)
+    })
+    document.querySelector("#preset-select").addEventListener("change",async (e)=>{
+        const response = await fetch(`/api/presets/${e.target.value}`);
+        const presetData = await response.json();
+        rdv.name=presetData.eventName || ""
+        rdv.backgroundColor = presetData.color || "#3788d8";
+        rdv.description = presetData.description || "";
+        rdv.priorite = presetData.priority || "Moyenne";
+        rdv.rappel = +presetData.reminder || 0;
+        if(presetData.startHour){
+            let dateDebut = new Date();
+            let [heures,minutes] = presetData.startHour.split(":");
+            dateDebut.setHours(heures);
+            dateDebut.setMinutes(minutes);
+            rdv.dateDebut = dateDebut;
+            if(presetData.duration){
+                let dateFin = new Date(dateDebut);
+                dateFin.setMinutes(dateFin.getMinutes() + presetData.duration);
+                rdv.dateFin = dateFin;
+            }
+        }
+        updateRdvEvent(rdv)
+        updatePopUp(rdv)
+    })
     document.querySelector("#rendezvous-form").addEventListener('submit', async(e) => {
+       
         e.preventDefault()
-        document.querySelector("#rendezvous-form").classList.toggle('hide');
-        rdv.description = document.querySelector("#textareaContainer").value
-        let index = agendas[rdv.extendedProps.agenda_id].event.indexOf(el=>el.id===rdv.id)
-        if(index!=-1){
-            agenda[rdv.extendedProps.agenda_id].splice(index, 1)
+        console.log(agendas[rdv.agendaId].event)
+        if(rdv.agendaId){
+            document.querySelector("#rendezvous-form").classList.toggle('hide');
+            const checkBoxs = Array.from(document.querySelectorAll(".checkAgenda"))
+                    checkBoxs.forEach(e=>{
+                        if(e.dataset.id === rdv.agendaId){
+                            e.checked = true;
+                            refetch(e,calendar)
+                    }})   
+           
+            
+            if(rdv.id !== "null"){
+                
+                fetchModif(rdv);
+                calendar.refetchEvents();
+            }
+            else{
+                 //comme on utilise index si on a aucun rendez-vous dans l'agenda 
+            if(!agendas[rdv.agendaId]){
+                agendas[rdv.agendaId]={event:[],visible:true};
+            }
+            let index = agendas[rdv.agendaId].event.indexOf(el=>el.id===rdv.id)
+            if(index!=-1){
+                agenda[rdv.agendaId].splice(index, 1)
+            }
+            let event = [...agendas[rdv.agendaId]?.event,rdv.realEvent]
+            agendas[rdv.agendaId] = { event: event, visible: true }
+                console.log(rdv)
+                const fetchOptions = {
+                    method: 'post',
+                    headers: {
+                        'Content-Type': 'application/json'
+                            },
+                    credentials: 'include',
+                    body: JSON.stringify(rdv),
+                }
+                fetch(`/rendezvous`,fetchOptions).then(res=>res.json()).then(data=>{
+                    togglePopUp();
+                    console.log(data.rdv)
+                    //check la checkbox associé
+                    rdv.realEvent.setProp('title', data.rdv.name)
+                    //rdv.realEvent.setProp('backgroundColor', data.rdv.backgroundColor)
+                    rdv.realEvent.setStart(data.rdv.dateDebut)
+                    rdv.realEvent.setEnd(data.rdv.dateFin)
+                    rdv.realEvent.setExtendedProp('extendedProps',{
+                        ...rdv.realEvent.extendedProps,
+                        id:data.rdv.id,                                             
+                        agendaId:data.rdv.agendaId,
+                        recId:data.rdv.recurrences._id
+                    })
+                    //completer les informations manquante du realEvent voir modèles RDV 
+                    /* name:info.event.title,
+                    color:info.event.color,
+                    realEvent:info.event,
+                    id:info.event.id,
+                    dateDebut:info.event.start,
+                    dateFin:info.event.end,
+                    rappel:info.event.extendedProps.rappel,
+                    extendedProps: {agenda_id:info.event.extendedProps.agenda_id},
+                    description:info.event.extendedProps.description,
+                    recId:info.event.extendedProps.recId,
+                    recurrences:info.event.extendedProps.recurrences,
+                    priorite:info.event.extendedProps.priorite,*/
+                })
+            }
         }
-        let event = agendas[rdv.extendedProps.agenda_id]?.event ? [...agendas[rdv.extendedProps.agenda_id]?.event,rdv.realEvent] : rdv.realEvent 
-        agendas[rdv.extendedProps.agenda_id] = { event: event, visible: true }
-        console.log("FINAL RDV : ", rdv)
-        if(rdv.id !== "null"){
-            //completer les champs avec rappel et priorité
-            fetchModif(rdv);
-        }
-        else{
-            const fetchOptions = {
-                method: 'put',
-                headers: {
-                    'Content-Type': 'application/json'
-                        },
-                credentials: 'include',
-                body: JSON.stringify(rdv),
-              }
-            fetch(`/rendezvous}`,fetchOptions).then(res=>res.json()).then(data=>{
-                togglePopUp();
-                //completer les informations manquante du realEvent voir modèles RDV 
-                /* name:info.event.title,
-                color:info.event.color,
-                realEvent:info.event,
-                id:info.event.id,
-                dateDebut:info.event.start,
-                dateFin:info.event.end,
-                rappel:info.event.extendedProps.rappel,
-                extendedProps: {agenda_id:info.event.extendedProps.agenda_id},
-                description:info.event.extendedProps.description,
-                recId:info.event.extendedProps.recId,
-                recurrences:info.event.extendedProps.recurrences,
-                priorite:info.event.extendedProps.priorite,*/
-            })
-        }
+        
         
     })
 }
@@ -740,9 +869,17 @@ function initPopUpRdv(rdv) {
 function updateRdvEvent(rdv) {
    
     rdv.realEvent.setProp('title', rdv.name)
-    rdv.realEvent.setProp('backgroundColor', rdv.color)
+    console.log(rdv.backgroundColor)
+    rdv.realEvent.setProp('backgroundColor', rdv.backgroundColor)
     rdv.realEvent.setStart(rdv.dateDebut)
     rdv.realEvent.setEnd(rdv.dateFin)
-
+    rdv.realEvent.setExtendedProp('extendedProps',{
+        agendaId:rdv.agendaId,
+        recId:rdv.recId,
+        rappel:rdv.rappel,
+        priorite:rdv.priorite,
+        description:rdv.description
+    })
+    
 }
 

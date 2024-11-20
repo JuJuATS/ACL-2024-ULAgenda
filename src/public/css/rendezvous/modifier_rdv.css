@@ -43,7 +43,7 @@ input[type="text"],
 input[type="date"],
 input[type="time"],
 input[type="number"],
-textarea {
+textarea,select {
     width: 100%;
     padding: 10px;
     font-size: 14px;

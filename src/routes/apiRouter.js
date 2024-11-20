@@ -133,7 +133,7 @@ const getAgendaEvents = async (req, res, next) => {
         event: []
       });
     }
-    // Récupération des rendez-vous avec projection optimisée
+   
 
     let events = await RDV.find({agendaId:decodedAgenda})
 
@@ -145,19 +145,18 @@ const getAgendaEvents = async (req, res, next) => {
         id:el._id,
         start:el.dateDebut,
         end:el.dateFin,
-        color:el.color,
+        backgroundColor:el.color,
         extendedProps: {
           description: el.description,
           link:`/rendezvous/edit/${el._id}`,
-          agenda_id:el.agendaId,
+          agendaId:el.agendaId,
           recId:el.recurrences,
           rappel:rappel ? rappel.duree : 0
-
       },
         title:el.name,
         duration:el.dateFin-el.dateDebut
       }
-      
+      console.log(rdv)
       if(el.recurrences){
           const recurrenceRdv = await recurrence.findById(el.recurrences);
           rdv.extendedProps = {...rdv.extendedProps,recurrences:recurrenceRdv}
@@ -200,7 +199,7 @@ const getAgendaEvents = async (req, res, next) => {
         return rdv 
       }
     ))
-    console.log(events)
+   
     // Envoi de la réponse
     res.status(200).json({ 
       event: events

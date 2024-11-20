@@ -41,7 +41,59 @@
                     <label for="description">Description:</label>
                     <textarea id="description" name="description" rows="4"><%= rendezvous.description %></textarea>
                 </div>
-
+                <div class="form-group">
+                    <label for="color">Couleur:</label>
+                    <input id="color" name="color" type="color" value="<%= rendezvous.color %>">
+                </div>
+               
+                <div class="form-group">
+                    <label for="rappel">Rappel:</label>
+                    <select id="rappel" name="rappel">
+                            <% if(!rappel){ %>
+                                <option value="" selected>Aucun</option> 
+                                <option value="5" >5 minutes avant</option>
+                                <option value="10" >10 minutes avant</option>
+                                <option value="25">25 minutes avant</option>
+                                <option value="60">1 heure avant</option>
+                                <option value="1440">1 jour avant</option>
+                            <% } else{ %>
+                           
+                                <option value="">Aucun</option> 
+                                <% if(rappel.duree == 5){ %>
+                                    <option value="5" selected >5 minutes avant</option>
+                                 <% } else{%>
+                                 
+                                    <option value="5" >5 minutes avant</option>
+                                  <% } %>
+                                  <% if(rappel.duree == 10){ %>
+                                    <option value="10" selected>10 minutes avant</option>
+                                 <% } else{ %>
+                                    <option value="10" >10 minutes avant</option>
+                                  <% } %>
+                                  <% if(rappel.duree == 25){ %>
+                                    <option value="25" selected>25 minutes avant</option>
+                                 <% } else{ %>
+                                    <option value="25">25 minutes avant</option>
+                                  <% } %>
+                                  <% if(rappel.duree == 60){ %>
+                                    <option value="60" selected > 1 heure avant</option>
+                                 <% } else{ %>
+                                    <option value="60">1 heure avant</option>
+                                  <% } %>
+                                  <% if(rappel.duree == 1440){ %>
+                                    <option value="1440" selected>1 jour avant</option>
+                                 <% } else{ %>
+                                    <option value="1440">1 jour avant</option>
+                                  <% } %>
+                              <% } %>
+    
+                         
+                     
+                       
+                        
+                        
+                    </select>
+                </div>
                 <div class="form-group">
                     <button type="submit" class="btn-modifier">Modifier le rendez-vous</button>
                 </div>
@@ -135,6 +187,9 @@
     </div>
 
     <script>
+        const colorInput = document.querySelector("#color");
+       
+  
         const agendaId = "<%= rendezvous.agendaId %>";
         const recId = "<%= recIdd %>";
         const ya = <%- JSON.stringify(rec.yearDay) %>;
@@ -284,16 +339,17 @@
             const heureDebut = document.getElementById('heureDebut').value;
             const duree = parseFloat(document.getElementById('duree').value); // Lire la durée en heures
             const description = document.getElementById('description').value;
-            const rappel = document.getElementById
+            const rappel = document.getElementById("rappel").value;
             const finRecurrence = document.getElementById('dateUntilRecurrence').value;
-
-            if (nom && date && heureDebut && duree && description){
+            const color = document.getElementById("color").value
+            if (nom && date && heureDebut && duree){
                 const dateString = `${date}T${heureDebut}:00`; // ajoute les secondes, format ISO 8601
                 const dateDebut = new Date(dateString);
-                // Calculer l'heure de fin à partir de l'heure de début et de la durée en heures
+                // Calculer. l'heure de fin à partir de l'heure de début et de la durée en heures
                 const dateFin = calculerHeureFin(date,heureDebut, duree);
+                console.log(!finRecurrence || dateDebut <= new Date(finRecurrence))
                 if (!finRecurrence || dateDebut <= new Date(finRecurrence)){
-
+                    console.log("ca part")
                     const rendezvous = {
                         name:nom,
                         dateDebut:dateDebut,
@@ -302,7 +358,8 @@
                         recId: recId,
                         recurrences: recurrencesD,
                         finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
-                        rappel
+                        rappel:rappel,
+                        backgroundcolor:color
                     }
                     try {
                         const response = await fetch(`/rendezvous/${rdvId}`, {
