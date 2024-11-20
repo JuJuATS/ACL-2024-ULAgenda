@@ -550,8 +550,10 @@ function updatePopUp(rdv, newEvent) {
     })
     Array.from(document.querySelectorAll("#rappel option")).forEach(e=>{if(+e.value === rdv.rappel){e.selected=true}})
     document.querySelector(".selected-color").style.backgroundColor = rdv.backgroundColor;
-    
-    
+    document.querySelectorAll('.color-dot').forEach(dot => {
+        const [r,g,b] =hexToRgb(rdv.backgroundColor)
+        dot.innerHTML = dot.style.backgroundColor === `rgb(${r}, ${g}, ${b})` ? '<span class="checkmark">✓</span>' : '';
+    });
     document.querySelector('#date').value = rdv.dateDebut.toLocaleString('en-CA').split(',')[0];
     document.querySelector('#startrdvtime').value = rdv.dateDebut.toTimeString().slice(0, 5);
     document.querySelector('#endrdvtime').value = rdv.dateFin.toTimeString().slice(0, 5);
