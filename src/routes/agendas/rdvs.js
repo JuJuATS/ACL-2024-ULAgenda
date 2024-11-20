@@ -48,6 +48,9 @@ router.get('/api/recurrence', authMiddleware, checkAgendaAccess, async (req, res
 
 // Route pour créer un nouveau rendez-vous
 router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
+
+  console.log(req.agenda);
+
   try {
     const { name, description, dateDebut, dateFin, recurrences, finRecurrence,backgroundColor,priorite,rappel } = req.body;
     
@@ -71,7 +74,7 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
       dateDebut: debut,
       dateFin:finRecurrence ? new Date(finRecurrence) : null,
     });
-     
+
     const newRdv = new Rdv({
       name: name,
       description: description,

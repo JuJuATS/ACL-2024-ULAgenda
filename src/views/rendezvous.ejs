@@ -76,6 +76,7 @@
                         <option value="1440">1 jour avant</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label for="priority">Priorité:</label>
                     <select id="priority" name="priority" required>
@@ -84,6 +85,7 @@
                         <option value="Haute">Haute</option>
                     </select>
                 </div>
+
                 <button type="submit" class="form-button" id="btn-placer" 
                     <%= accessLevel === 'read' ? 'disabled' : '' %>
                     title="<%= accessLevel === 'read' ? 'Vous n\'avez pas les droits pour créer un rendez-vous' : '' %>">
