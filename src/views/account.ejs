@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Compte</title>
+    <%- include('./partials/head', {pageName: "ULAgenda"}); %>
+    <link rel="stylesheet" href="/css/account/account.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="main-container">
+        <div class="profile-container">
+            <img src="images/profil.png" alt="Image de profil" class="profile-image">
+            <h1>Mon Compte</h1>
+
+            <!-- Champ de saisie pour le nom -->
+            <div class="info" id="lastname-field">
+                <label>Nom :</label>
+                <input type="text" name="lastname" value="<%= user.lastname %>" disabled> 
+            </div>
+
+            <!-- Champ de saisie pour le prénom -->
+            <div class="info" id="firstname-field">
+                <label>Prenom :</label>
+                <input type="text" name="firstname" value="<%= user.firstname %>" disabled>
+            </div>
+
+            <!-- Champ de saisie pour l'email -->
+            <div class="info" id="email-field">
+                <label>Email :</label>
+                <input type="email" name="email" value="<%= user.email %>"disabled> 
+            </div>
+
+            <!-- Champ de saisie pour le pseudo -->
+            <div class="info" id="pseudo-field">
+                <label>Pseudo :</label>
+                <input type="text" name="pseudo" value="<%= user.pseudo %>" disabled>
+            </div>
+
+            <!-- Champ de saisie pour le mot de passe -->
+            <div class="info" id="password-field">
+                <label>Mot de passe :</label>
+                <input type="password" name="password" value="<%= user.password %>" id="password-input" placeholder="*************" disabled>
+
+                <span id="eye-icon" style="display: none; cursor: pointer; margin-left: 10px;">👁️</span>
+            </div>
+
+            <!-- Champ de saisie pour confirmer le mot de passe -->
+            <div id="confirm-password-container" class="info" style="display: none !important;">
+                <label for="confirm-password">Confirmer le mot de passe :</label>
+                <input type="password" name="confirmPassword" value="" id="confirm-password-input" >
+                <span id="eye-icon-confirm" style="display: none; cursor: pointer; margin-left: 10px;">👁️</span>
+            </div>
+            
+            <!-- Section des boutons d'action -->
+            <div class="action-buttons" style="margin-top: 40px;">
+                <button class="edit" style="margin-right: 100px;">Modifier</button>
+                <button class="sauvegarde" style="display: none; margin-right: 100px;">Sauvegarder</button>
+                <button class="annuler"  style="display: none;">Annuler</button>
+                <button class="logout">Se déconnecter</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Script JS -->
+    <script src="/javascripts/account/account.js"></script>
+</body>
+</html>
