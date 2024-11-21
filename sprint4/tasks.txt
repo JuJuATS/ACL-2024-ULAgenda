@@ -1,0 +1,7 @@
+tâches : 
+	Retravaille le planning 
+	Adapter vues en fonction des droits sur les agendas
+	Précompletion des récurrences à partir d'un preset
+	Refaire la page d'accueil
+	Homogénéiser le style global du site
+	Cocher automatiquement l'agenda sélectionné sur les plannings depuis la page des agendas
