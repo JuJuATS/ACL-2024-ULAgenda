@@ -191,13 +191,15 @@ router.get('/edit/:id', authMiddleware, checkAgendaAccess, checkModifyRights, as
     }
 
     const rec = await Recurrence.findById(rendezvous.recurrences);
+    const rappel = await Rappel.findById(rendezvous.rappel);
     const { yearDay, weekDay, monthDay, dateFin } = rec;
 
     res.render('modifier_rendezvous', { 
       rendezvous, 
       rec: { yearDay, weekDay, monthDay, dateFin }, 
       recIdd: rec.id,
-      accessLevel: req.accessLevel
+      accessLevel: req.accessLevel,
+      rappel :rappel
     });
   } catch (error) {
     console.error("Erreur:", error);

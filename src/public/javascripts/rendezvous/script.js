@@ -252,7 +252,8 @@ function createLiRdv(rendezvous, opened) {
     editButton.title = accessLevel === 'read' ? 'Vous n\'avez pas les droits pour modifier ce rendez-vous' : '';
     editButton.addEventListener('click', () => {
         if (!editButton.disabled) {
-            window.location.href = `/rendezvous/edit/${rendezvous.id}`;
+            console.log(`/rendezvous/edit/${rendezvous.id}?agendaId=${form.dataset.agendaId}`)
+            window.location.href = `/rendezvous/edit/${rendezvous.id}?agendaId=${form.dataset.agendaId}`;
         }
     });
 
@@ -263,7 +264,6 @@ function createLiRdv(rendezvous, opened) {
     deleteButton.title = accessLevel === 'read' ? 'Vous n\'avez pas les droits pour supprimer ce rendez-vous' : '';
 
     deleteButton.addEventListener('click', async (event) => {
-        console.log("wesh")
         if (!deleteButton.disabled) {
             
             if (confirm("Êtes-vous sûr de vouloir supprimer ce rendez-vous ?")) {

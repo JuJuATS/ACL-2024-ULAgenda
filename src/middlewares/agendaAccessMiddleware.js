@@ -2,27 +2,26 @@ const Agenda = require('../database/models/agenda');
 const Share = require('../database/models/share');
 
 const checkAgendaAccess = async (req, res, next) => {
-    console.log("je passe la dedans")
     try {
         // Récupérer l'ID de l'agenda depuis les différentes sources possibles
-        console.log("et là ?")
         const agendaId = req.query.agendaId || req.params.id || req.params.agendaId || req.body.agendaId;
-        
+        console.log(agendaId)
         const userId = req.user.id;
-        console.log("ok");
+
         if (!agendaId) {
            
            
             return res.status(400).json({ message: 'ID de l\'agenda manquant' });
         }
-        console.log("allo")
+        
         // Récupérer l'agenda
         const agenda = await Agenda.findById(agendaId);
-        
+        console.log(agenda)
         if (!agenda) {
+            console.log("ca casse ici")
             return res.status(404).json({ message: 'Agenda non trouvé' });
         }
-        console.log("allo2")
+       
         // Vérifier si l'utilisateur est le propriétaire
         if (agenda.userId.equals(userId)) {
             req.accessLevel = 'owner';
@@ -62,7 +61,7 @@ const checkAgendaAccess = async (req, res, next) => {
 };
 
 const checkModifyRights = (req, res, next) => {
-    console.log("je passe là")
+
     // Les propriétaires et les utilisateurs avec droits contribute/admin peuvent modifier
     if (req.accessLevel === 'owner' || req.accessLevel === 'contribute' || req.accessLevel === 'admin') {
         return next();
