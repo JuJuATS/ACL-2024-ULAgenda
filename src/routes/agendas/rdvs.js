@@ -102,7 +102,7 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
 
 // Route pour modifier un rendez-vous
 router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
-
+  console.log("coucou")
   try {
     const rdvId = req.params.idf;
     const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence,backgroundColor,priorite,rappel } = req.body;
@@ -114,13 +114,27 @@ router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async 
     if (!rdv || !rdv.agendaId.equals(req.agenda._id)) {
       return res.status(404).json({ message: "Rendez-vous non trouvé" });
     }
-
-    const rec = await Recurrence.findById(recId);
-    if (!rec) {
-      return res.status(404).json({ message: "Récurrence non trouvée" });
+    if(recId){
+      const rec = await Recurrence.findById(recId);
+      if (!rec) {
+        console.log("coucou")
+        return res.status(404).json({ message: "Récurrence non trouvée" });
+      }
+      // Mise à jour de la récurrence
+    if(Object.keys(recurrences).length !==0){
+      Object.assign(rec, {
+        yearDay: recurrences.year,
+        monthDay: recurrences.month,
+        weekDay: recurrences.week,
+        dateFin: finRecurrence,
+        dateDebut: new Date(dateDebut)
+      });  
     }
+    await rec.save();
+    }
+   
     let rappelEntity = await Rappel.findByIdAndDelete(rdv.rappel);
-  
+    
     if(!rappel && rappel !==0 ){
       rappelEntity = new Rappel({duree:rappel,envoye:false});
       rappelEntity.save(); 
@@ -137,18 +151,7 @@ router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async 
       color:backgroundColor
     });
 
-    // Mise à jour de la récurrence
-    if(Object.keys(recurrences).length !==0){
-      Object.assign(rec, {
-        yearDay: recurrences.year,
-        monthDay: recurrences.month,
-        weekDay: recurrences.week,
-        dateFin: finRecurrence,
-        dateDebut: new Date(dateDebut)
-      });  
-    }
-  
-    await rec.save();
+    
     await rdv.save();
     
     res.status(200).json({ ok: true, rdv });
