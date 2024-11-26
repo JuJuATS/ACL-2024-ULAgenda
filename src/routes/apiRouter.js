@@ -105,7 +105,7 @@ apiRouter.get('/search', isAuthentified, async (req, res) => {
 apiRouter.get("/getAgenda",isAuthentified,async(req,res)=>{
   let userId = req.user.id;
   const agendas = await Agenda.find({userId:userId});
-  const partages = await Share.find({sharedWith:req.user.id,shareType:"user",permission:"contribute"}).populate("agendaId")
+  const partages = await Share.find({sharedWith:req.user.id,shareType:"user",$or: [{permission:"contribute" }, { permission: "admin" }]}).populate("agendaId")
   
   
   partages.forEach(partage=>{
@@ -141,7 +141,12 @@ const getAgendaEvents = async (req, res, next) => {
     }
    
 
-    let events = await RDV.find({agendaId:decodedAgenda})
+    let events = await RDV.find({
+      agendaId:decodedAgenda,dateDebut:{ 
+        $gte: new Date(start),
+        $lte: new Date(end)
+      }
+    })
     const partages = await Share.findOne({sharedWith:req.user.id,agendaId:decodedAgenda})
     
     events = await Promise.all(events.map(async el=>{

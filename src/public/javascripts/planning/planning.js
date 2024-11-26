@@ -77,10 +77,15 @@ function showTooltip(eventRect, event, size) {
 }
 const fetchEvent = async (el,calendar) => {
     console.log(!agendas[el.dataset.id])
-    if (!agendas[el.dataset.id]) {
+    let date = calendar.getDate().start
+    //je regarde si j'ai déjà récuperer les 
+    if (!agendas[el.dataset.id] || agendas[el.dataset.id]?.weeks.includes(date)) {
+        const fetchOptions = {
+            body:JSON.stringify({weekStart:date.start,weekEnd:date.end})
+        }
       const data = await fetch(`/api/getDate?agenda=${el.dataset.id}`).then(res => res.json())
       
-      agendas[el.dataset.id] = { event: data.event, visible: true,permissions:data.permisssion }
+      agendas[el.dataset.id] = { event: [...this.event,data.event], visible: true,permissions:data.permisssion,weeks:[...this.weeks,date.start] }
       
     }
     else {
@@ -147,7 +152,6 @@ document.addEventListener('DOMContentLoaded', function () {
     rdv.realEvent
     let event = agendas[rdv.agendaId]?.event ? [...agendas[rdv.agendaId]?.event ,rdv.realEvent] : [rdv.realEvent] 
     agendas[rdv.agendaId] = { event: event, visible: true }
-    console.log("apres",agendas[rdv.agendaId])
     const fetchOptions = {
         method: 'put',
         headers: {
@@ -169,13 +173,15 @@ document.addEventListener('DOMContentLoaded', function () {
     /*document.querySelector("#MICHAEL").addEventListener('click',() => {
         console.log(rdv)
     })*/
-   
+ 
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
-        
+        datesSet:(dateInfo)=>{
+            const checkBoxs = document.querySelectorAll(".listAgenda input");
+            checkBoxs.forEach((el)=>fetchEvent(el,this))
+        },
         eventSources: [
             async (info, success, fail) => {
-                console.log("je mets à jour")
                 let events = []
                 for (agenda in agendas) {
                     if (agendas[agenda].visible) {
@@ -275,9 +281,6 @@ document.addEventListener('DOMContentLoaded', function () {
             
             info.el.style.opacity = '0.5';
             if(popupActivated && info.event.id !=="null"){
-               
-                
-                
                 rdv.realEvent.remove()
                 popupActivated = false;
                 togglePopUp()
@@ -367,7 +370,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     });
- 
+
     initPopUpRdv(calendar,refetch,fetchModif)
     const sideBar = document.querySelector(".sideBar");
     calendar.render();
