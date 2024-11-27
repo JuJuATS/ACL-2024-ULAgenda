@@ -76,12 +76,12 @@ function showTooltip(eventRect, event, size) {
     }
 }
 const fetchEvent = async (el,calendar) => {
-    console.log(!agendas[el.dataset.id])
+   
     let date = calendar.getDate().start
     //je regarde si j'ai déjà récuperer les 
     if (!agendas[el.dataset.id] || agendas[el.dataset.id]?.weeks.includes(date)) {
         const fetchOptions = {
-            body:JSON.stringify({weekStart:date.start,weekEnd:date.end})
+            body:JSON.stringify({weekStart:date,weekEnd:date})
         }
       const data = await fetch(`/api/getDate?agenda=${el.dataset.id}`).then(res => res.json())
       
@@ -176,7 +176,8 @@ document.addEventListener('DOMContentLoaded', function () {
  
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
-        datesSet:(dateInfo)=>{
+        datesSet:function(dateInfo){
+            
             const checkBoxs = document.querySelectorAll(".listAgenda input");
             checkBoxs.forEach((el)=>fetchEvent(el,this))
         },

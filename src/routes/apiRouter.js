@@ -116,6 +116,8 @@ apiRouter.get("/getAgenda",isAuthentified,async(req,res)=>{
 
 
 const getAgendaEvents = async (req, res, next) => {
+  const {weekStart,weekEnd} = req.body
+  console.log(weekStart,weekEnd)
   const { agenda } = req.query;
   if (!agenda) {
     return res.status(400).json({ 
@@ -143,10 +145,11 @@ const getAgendaEvents = async (req, res, next) => {
 
     let events = await RDV.find({
       agendaId:decodedAgenda,dateDebut:{ 
-        $gte: new Date(start),
-        $lte: new Date(end)
+        $gte: new Date(weekStart),
+        $lte: new Date(weekEnd)
       }
     })
+    //je récupère le partage afin de connaitre sa permission
     const partages = await Share.findOne({sharedWith:req.user.id,agendaId:decodedAgenda})
     
     events = await Promise.all(events.map(async el=>{
