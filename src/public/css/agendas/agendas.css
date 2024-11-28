@@ -1,83 +1,366 @@
 /* =============================================================================
-   TABLE OF CONTENTS
-   -----------------------------------------------------------------------------
-   1. Base & Typography
-   2. Layout & Grid
-   3. Components
-      3.1 Sidebar
-      3.2 Calendar Cards
-      3.3 Badges & Labels
-      3.4 Buttons
-      3.5 Dropdowns
-   4. Modals & Overlays
-   5. Animations
-   6. Responsive Design
-============================================================================= */
-
-/* =============================================================================
    1. Base & Typography
 ============================================================================= */
-@import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;500;700&display=swap');
 
 :root {
     /* Colors */
-    --primary-color: #48B0D9;
-    --secondary-color: #45a049;
-    --dark-bg: #212a3f;
-    --calendar-bg: #495571;
-    --text-light: #ffffff;
-    --text-dark: #212a3f;
-    --text-muted: rgba(255, 255, 255, 0.8);
+    --primary-color: #00BBEC; /* Cyan vif */
+    --secondary-color: #48B0D9; /* Bleu lumineux */
+    --dark-bg: #111828; /* Bleu nuit */
+    --calendar-bg: #1e273d; /* Gris foncé */
+    --text-light: #FFFFFF; /* Blanc pur */
+    --text-dark: #111828; /* Bleu nuit foncé */
+    --text-muted: rgba(255, 255, 255, 0.6); /* Blanc légèrement atténué */
     
     /* Spacing */
-    --spacing-xs: 4px;
-    --spacing-sm: 8px;
-    --spacing-md: 16px;
-    --spacing-lg: 24px;
-    --spacing-xl: 32px;
+    --spacing-xs: 8px;
+    --spacing-sm: 16px;
+    --spacing-md: 24px;
+    --spacing-lg: 32px;
+    --spacing-xl: 48px;
 
     /* Shadows */
-    --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 8px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.2);
+    --shadow-sm: 0 4px 8px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.2);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 * {
-    font-family: "Afacad Flux", sans-serif;
-    font-weight: 600;
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
 }
 
 html, body {
     height: 100%;
-    margin: 0;
-    padding: 0;
+    font-size: 16px;
 }
 
 body {
+    background-color: var(--dark-bg);
+    color: var(--text-light);
+    line-height: 1.6;
     display: flex;
     flex-direction: column;
-    font-family: Arial, sans-serif;
 }
 
 .main-wrapper {
     flex: 1;
+    padding: var(--spacing-lg);
     display: flex;
     flex-direction: column;
-    margin: 1%;
-    padding: 1%;
+    margin-top: 30px;
 }
 
-/* Ensure main content takes available space */
 main, .container {
     flex: 1 0 auto;
 }
 
-/* Keep footer at bottom */
 footer {
     flex-shrink: 0;
+}
+
+/* ============================================================================
+                                CALENDAR
+============================================================================ */
+
+.calendar {
+    position: relative;
+    width: 100%;
+    max-width: 320px;
+    height: 200px;
+    border-radius: 20px; /* Bordure plus arrondie */
+    overflow: hidden;
+
+    /* Dégradé bleu sombre pour le fond */
+   /* background: linear-gradient(145deg, rgba(50, 60, 85, 0.3), rgba(30, 39, 61, 0.85));
+
+    /* Bordure plus douce avec une couleur bleutée discrète */
+    border: 3px solid  #00BBEC;
+    background: linear-gradient(145deg, rgba(0, 187, 236, 0.2), rgba(30, 39, 61, 0.8));
+    
+    /* Effet de transition fluide */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+}
+
+.calendar:hover {
+    transform: scale(1.05); /* Zoom léger au survol */
+    box-shadow: 0 8px 20px rgba(0, 137, 255, 0.7); /* Ombre bleu clair renforcée */
+}
+
+
+
+.tab {
+    position: absolute;
+    left: 235px;
+    top: 2%;
+    width: 22px;
+    height: 15%;
+    font-size: medium;
+    padding: 10px 15px; /* Espacement interne pour un rendu propre */
+    background: linear-gradient(135deg, #303f5f, #1f2a40); /* Dégradé subtil */
+    color: var(--text-light); /* Couleur du texte */
+    font-size: 0.85rem; /* Taille de texte équilibrée */
+    font-weight: 500; /* Poids du texte pour le rendre lisible */
+    border-radius: 0; /* Coins arrondis pour un look moderne */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Ombre portée pour un effet de profondeur */
+    display: flex;
+    flex-direction: column; /* Permet d'empiler le contenu */
+    align-items: center; /* Centre le contenu horizontalement */
+    justify-content: center; /* Centre le contenu verticalement */
+    cursor: pointer; /* Change le curseur pour indiquer une interactivité */
+    transition: background 0.3s ease, box-shadow 0.3s ease; /* Transitions fluides sans effet de mouvement */
+    z-index: 5; /* Au-dessus des autres éléments */
+}
+
+
+
+.tab:hover {
+    transform: scale(1.05); /* Légèrement plus grand au survol */
+    background: linear-gradient(135deg, #1f2a40, #303f5f); /* Inverse le dégradé au survol */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4); /* Ombre renforcée au survol */
+} 
+
+
+
+
+
+
+
+.layer1, .layer2 {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /**color: #00BBEC;*/
+    color: var(--text-light);
+    font-weight: 600; /* Police semi-gras pour une meilleure lisibilité */
+    text-align: center;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+}
+
+.layer1 {
+    background-color: #41537b;
+}
+
+.calendar .tab{
+    margin-top: 58px;
+    margin-left: 2px;
+}
+
+.layer1 .title-section {
+    display: flex;           /* Active le Flexbox */
+    align-items: flex-start !important; /* Aligne l'élément en haut (vertical) */
+    justify-content: center; /* Centre l'élément horizontalement */
+    margin-top: -135px;
+}
+
+.layer1 .title-section #agendaName {
+    position: relative; /* Nécessaire pour positionner le pseudo-élément */
+    padding-bottom: 10px; /* Espacement sous le titre */
+}
+
+.layer1 .title-section #agendaName::after {
+    content: ''; /* Nécessaire pour créer un élément vide */
+    position: absolute;
+    bottom: 0; /* Aligner la bordure en bas du texte */
+    left: -60%; /* Commencer à gauche */
+    width: 250%; /* Agrandir la bordure à 120% de la largeur du texte (vous pouvez ajuster la valeur) */
+    height: 2px; /* Épaisseur de la bordure */
+    background-color: var(--primary-color); /* Couleur de la bordure */
+}
+
+
+
+.calendar .layer1 {
+    border-radius: 20px; /* Bordure arrondie */
+    overflow: hidden;
+
+    /* Dégradé bleu plus lumineux et plus doux */
+    background: linear-gradient(145deg, rgba(50, 60, 85, 0.3), rgba(30, 39, 61, 0.85));*/
+
+    /* Effet de brillance interne léger avec une couleur bleue douce */
+    box-shadow: inset 0 0 15px rgba(0, 145, 255, 0.3);
+}
+
+
+
+.layer1-shared {
+    position:relative;
+    max-width: 150%;
+    height: 100%;
+    margin-left: -2px;
+    display: flex;
+    color: var(--text-light);
+    border-top: 20px; /* Bordure plus arrondie */
+    overflow: hidden;
+
+    /* Ajout de dégradé harmonieux */
+   /* background: linear-gradient(145deg, rgba(72, 176, 217, 0.5), rgba(17, 24, 40, 0.9));
+    
+    /* Bordure et ombre */
+    border: 2px solid var(--primary-color);
+    border-right: 0px !important;
+    background: linear-gradient(145deg, rgba(50, 60, 85, 0.3), rgba(30, 39, 61, 0.85));
+
+    box-shadow: 0 4px 15px rgba(0, 187, 236, 0.5);
+
+    /* Effet de transition fluide */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+    cursor: pointer;
+}
+
+.shared-calendar .tab {
+    margin-top: 25px;
+    margin-left: 4px;
+}
+
+.shared{
+    margin-top: 15px;
+}
+
+
+.layer1-shared .title-section {
+    text-align: center;
+    font-size: 0px;/* Taille de texte réduite pour le titre */
+    
+}
+
+/* Effet au survol de layer1-shared */
+.layer1-shared:hover {
+    /*background-color: var(--secondary-color); /* Changement de fond au survol */
+    /*box-shadow: var(--shadow-lg); /* Ombre plus marquée au survol */
+}
+
+/* Style pour les informations de partage */
+.layer1-shared .calendar-info {
+    margin-top: 60px;
+    margin-left: 10px;
+    justify-content: center;
+    font-size: 0.995rem; /* Taille de texte réduite pour les informations secondaires */
+    color: var(--text-light);
+}
+
+/* Style pour la section "Partagé par" */
+.layer1-shared .shared-by {
+    font-weight: 500;
+    margin-bottom: var(--spacing-xs); /* Marge inférieure pour espacer les éléments */
+}
+
+/* Style pour la validité du partage */
+.layer1-shared .share-validity {
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.8); /* Légèrement moins intense pour ne pas surcharger */
+}
+
+
+.layer2 {
+    
+    transform: translateX(100%);
+    margin-top: 2px;
+    margin-left: -2px;
+    gap:2px;
+}
+
+.shared-calendar .layer2{
+    margin-top: -195px;
+    margin-left: 1px;
+    
+}
+
+.calendar.open .layer2 {
+    transform: translateX(0);
+}
+
+.agenda-but {
+    width: 80%;
+    height: 11.1%;
+    background-color: var(--primary-color);
+    border-radius: 20px;
+    color: var(--text-light);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    border: none;
+}
+
+.agenda-but:hover {
+    background-color: var(--secondary-color);
+    transform: scale(1.05);
+}
+
+.agenda-but.share-but {
+    margin-left: -20px;
+    margin-top: 30px;
+    padding-right: 20px;
+    background-color: var(--primary-color);
+    text-indent: 10px;
+}
+
+.agenda-but.rdv-but {
+    margin-left: 10px;
+    margin-top: 30px;
+    background-color: var(--secondary-color);
+}
+
+.agenda-but.modify-but {
+    margin-left: -20px;
+    margin-top: 20px;
+    padding-right: -10px;
+    background-color: #495571;
+    width: auto;
+    padding-right: 15px;
+    text-indent: 1px;
+}
+
+.agenda-but.delete-but {
+    margin-left: 10px;
+    margin-top: 20px;
+    background-color: #dc3545;
+   
+}
+
+#layer2-content{
+    margin-top: 25px;
+    
+}
+
+
+
+.top-row, .bottom-row {
+    display: flex;
+    gap: 10px; /* Espacement entre les boutons de chaque ligne */
+}
+
+.top-row {
+    justify-content: flex-start; /* Les boutons sur la première ligne sont alignés à gauche */
+    justify-content: space-between;
+}
+
+.bottom-row {
+    justify-content: flex-start; /* Les boutons sur la deuxième ligne sont également alignés à gauche */
+    justify-content: space-between;
+}
+
+.agenda-but {
+    padding: 8px 12px; /* Espacement interne pour les boutons */
+    font-size: 14px; /* Taille de la police */
+    cursor: pointer; /* Curseur pointer pour les boutons */
+}
+
+.shared-calendar .layer2{
+    background-color: var(--calendar-bg);
+}
+
+.shared-calendar .layer2 #layer2-content{
+    margin-top: -18px;
 }
 
 /* =============================================================================
@@ -86,59 +369,88 @@ footer {
 .agenda-sections {
     display: flex;
     flex-direction: column;
-    flex-wrap: wrap;
-    padding: 16px;
-    gap: 64px;
+    gap: var(--spacing-lg);
     min-height: 1000px;
 }
 
 .calendars-grid {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1%;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
 }
 
-.calendar-info {
+/* Nouveau design pour la section des agendas */
+.agenda-section {
+    background-color: #1f2a40; /* Gris clair */
+    border-radius: 10px;
+    padding: var(--spacing-lg);
+    box-shadow: var(--shadow-md);
     display: flex;
     flex-direction: column;
     gap: var(--spacing-sm);
-    margin-top: auto;
-    padding-top: var(--spacing-sm);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.shared-by,
-.share-validity {
-    margin-top: var(--spacing-sm);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: var(--spacing-xs);
+
+
+.agenda-section h2 {
+    font-size: 1.5rem;
+    margin-bottom: var(--spacing-md);
+    color: var(--text-light);
 }
 
-.shared-by small,
-.share-validity small {
-    display: block;
-    color: var(--text-muted);
-    font-size: 0.8em;
-    line-height: 1.4;
+
+.addCalendarBody {
+    display: flex;             /* Active Flexbox */
+    justify-content: center;   /* Centre horizontalement */
+    align-items: center;       /* Centre verticalement */
+    height: 100%;              /* Optionnel : Assurez-vous que le conteneur a une hauteur suffisante */
 }
 
-/* 3.3 Badges & Labels */
+.add-button {
+    background-color: var(--primary-color);
+    color: var(--text-light);
+    font-size: 24px;
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s, box-shadow 0.3s;
+    display: flex;             /* Ajouté pour s'assurer que le contenu du bouton est centré aussi */
+    justify-content: center;
+    align-items: center;
+}
+
+
+.add-button:hover {
+    background-color: var(--secondary-color);
+    box-shadow: var(--shadow-lg);
+    transform: scale(1.1);
+}
+
+.add-button:active {
+    background-color: #3e8e41;
+    transform: translateY(2px);
+}
+
+
+/* =============================================================================
+   3. Badges & Labels
+============================================================================= */
 .access-level-badge {
     position: absolute;
     top: var(--spacing-sm);
     left: var(--spacing-sm);
     padding: var(--spacing-xs) var(--spacing-sm);
-    border-radius: var(--spacing-xs);
-    font-size: 0.75rem;
+    border-radius: 0;
+    font-size: 0.85rem;
     font-weight: 500;
     z-index: 2;
+    text-transform: uppercase;
 }
 
 .access-level-badge.read {
-    background-color: #e9ecef;
-    color: #495057;
+    background-color: rgba(255, 255, 255, 0.15);
+    color: var(--text-muted);
 }
 
 .access-level-badge.contribute {
@@ -149,180 +461,16 @@ footer {
 .access-level-badge.admin {
     background-color: var(--dark-bg);
     color: var(--text-light);
+   
 }
 
 .count-badge {
-    background: var(--primary-color);
+    background-color: var(--secondary-color);
     color: var(--text-light);
     padding: 0.25rem 0.75rem;
     border-radius: 12px;
     font-size: 0.875rem;
-    margin-left: 1rem;
-}
-
-/* 3.4 Buttons */
-.add-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 50px;
-    height: 50px;
-    background-color: var(--primary-color);
-    color: var(--text-light);
-    font-size: 24px;
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: background-color 0.3s, box-shadow 0.3s;
-}
-
-#layer2-content {
-    display: flex;
-    justify-content: space-evenly; /* Espacement uniforme entre les boutons */
-    flex-direction: column; /* Alignement vertical */
-    align-items: center;
-    height: 100%; /* S'assurer que le conteneur occupe toute la hauteur de layer2 */
-    padding-left: 20px;
-}
-
-.add-button:hover {
-    background-color: var(--secondary-color);
-    box-shadow: var(--shadow-md);
-}
-
-.add-button:active {
-    background-color: #3e8e41;padding-top: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-    transform: translateY(2px);
-}
-
-/* ============================================================================
-                                CALENDAR
-============================================================================ */
-.calendar {
-    position: relative;
-    width: 15.8%;
-    height: 160px;
-    overflow: hidden;
-    border-radius: 8px;
-    margin-bottom: 1%;
-}
-
-.tab {
-    position: absolute;
-    left: -20px;
-    top: 50%;
-    width: 20px;
-    height: 100%;
-    right: 0;
-    transform: translateY(-50%);
-    background-color: #303f5f;
-    color: white;
-    display: flex;
-    cursor: pointer;
-    transition: right 0.5s ease;
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
-}
-
-.layer1 {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    background-color: #41537b;
-    display: flex;
-    justify-content: center;
-    color: #ffff;
-    align-items: center;
-    cursor: pointer;
-    transition: transform 0.5s ease;
-}
-
-.layer1-shared {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    padding-top: 5%;
-    padding-bottom: 5%;
-    background-color: #41537b;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: #ffff;
-    align-items: center;
-    cursor: pointer;
-    transition: transform 0.5s ease;
-}
-
-.layer2 {
-    position: absolute;
-    width: 101%;
-    height: 100%;
-    background-color: #d1e7dd;
-    transform: translateX(100%);
-    cursor: default;
-    transition: transform 0.5s ease;
-}
-
-.calendar .layer2,
-.calendar .tab {
-    transition: transform 0.3s ease-in-out;
-}
-
-.calendar.open .layer2 {
-    transform: translateX(0);
-}
-
-.calendar.open .tab {
-    right: 100%;
-    transform: translateY(-50%) translateX(100%);
-}
-
-.agenda-but {
-    width: 80%;
-    height: 11.1%;
-    border-radius: 20px;
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    border: none;
-}
-
-/* Effet de survol sur les boutons */
-.agenda-but:hover {
-    background-color: #0056b3; /* Changer la couleur au survol */
-}
-
-/* Couleurs spécifiques des boutons */
-.share-but {
-    background-color: #28a745;
-}
-
-.rdv-but {
-    background-color: #6f42c1;
-}
-
-.modify-but {
-    background-color: #6c757d;
-}
-
-.delete-but {
-    background-color: #dc3545;
-}
-
-.container.open .layer2 {
-    transform: translateX(0);
-}
-
-.container.open .tab {
-    right: 100%;
-    transform: translateY(-50%) translateX(100%);
+    margin-left: var(--spacing-sm);
 }
 
 /* =============================================================================
@@ -338,78 +486,217 @@ footer {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
+    
 }
 
 .modal-content {
-    background-color: var(--text-light);
+    background: linear-gradient(135deg, #445a77, #2b3d56);
     margin: 10% auto;
     padding: var(--spacing-xl);
     border-radius: var(--spacing-sm);
     box-shadow: var(--shadow-lg);
     width: 90%;
-    max-width: 400px;
+    max-width: 500px;
+    color: var(--text-light);
     text-align: center;
+    transform: translateY(-50px);
+    transition: transform 0.3s ease-in-out;
 }
 
 .modal-content h2 {
-    color: var(--text-dark);
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-md);
+    font-size: 1.8rem;
+    color: #FFFFFF; /* Couleur principale pour le titre */
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); 
 }
 
 .close-button {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    color: #fff;
+    font-size: 1.5rem;
     cursor: pointer;
+    transition: color 0.3s ease;
 }
 
-/* ============================================================================
-                                OTHER
-============================================================================ */
+.close-button:hover {
+    color: red;
+}
+
+.modal-content input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: var(--spacing-sm) 0;
+    border: 1px solid var(--secondary-color);
+    border-radius: 8px;
+    background: linear-gradient(135deg, #ffffff, #f7f7f7);
+    color: #333;
+    font-size: 1rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+
+.modal-content .modal-action-button {
+    background: linear-gradient(135deg, #3498db, #2980b9); /* Dégradé pour les boutons */
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 10px 20px;
+    margin: var(--spacing-sm) 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.modal-content .modal-action-button:hover {
+    background: linear-gradient(135deg, #2980b9, #1f6ea5);
+    transform: translateY(-2px);
+}
 
 .newAgenda {
-    display : flex;
-    justify-content: center;
-    align-items: center;
-    cursor: default;
-    background-color: #417b68;
+    background-color: var(--calendar-bg);
+    padding: var(--spacing-lg);
+    border-radius: 12px;
+    box-shadow: var(--shadow-md);
+    transition: background-color 0.3s ease;
 }
 
-.addCalendarBody {
-    display : flex;
-    justify-content: center;
+
+
+/* =============================================================================
+   5. Custom Hover and Focus
+============================================================================= */
+a:hover,
+button:hover,
+input:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease, background-color 0.3s ease;
 }
 
-.agendasOptions {
-    background-color: #212a3f;
-    height: 30px;
+button:focus,
+input:focus {
+    outline: none;
+    border: 2px solid var(--primary-color);
+}
+
+/* =============================================================================
+   STYLE POUR layer1-shared (Agenda partagé)
+============================================================================= */
+
+.badge-container {
     display: flex;
+    align-items: center; /* Aligne verticalement */
+    justify-content: center; /* Place les éléments à gauche */
+    gap: 16px; /* Ajoute un espace fixe entre le badge et le nom */
+    margin-left: 10px; /* Ajuste la position globale pour la lisibilité */
+    width: 100%; /* Assure un comportement cohérent */
+    border-radius: 0px !important;
+}
+
+
+.access-level-badge {
+    margin-left: -15px !important;
+    margin-top:12px;
+   
+}
+
+.agenda-name {
+    /*margin-left: 80px;*/ /* Ajustez la valeur selon vos besoins */
     align-items: center;
-    width: 100%;
+    justify-content: center;
+    justify-items: center;
 }
 
 .search-link {
-    padding-left: 10px;
-    color: white;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #445a77, #2b3d56); /* Dégradé plus subtil pour la modernité */
+    color: #ffffff; /* Couleur blanche pour un contraste clair */
+    font-size: 0.9rem; /* Taille légèrement plus grande pour la lisibilité */
+    font-weight: 600; /* Texte plus épais pour l'importance */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure légère et subtile */
+    border-radius: 6px; /* Coins légèrement arrondis pour un effet doux */
+    text-decoration: none; /* Supprime le soulignement */
+    display: flex;
+    align-items: center; /* Aligne le contenu verticalement */
+    gap: 8px; /* Espacement entre l'icône et le texte */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1); /* Ombre externe + effet interne */
+    cursor: pointer; /* Indicateur de clic */
+    transition: all 0.3s ease; /* Transitions fluides pour le hover */
+    z-index: 10;
 }
 
-.shared-by,
-.share-validity {
-    margin-top: var(--spacing-sm);
-    padding: var(--spacing-xs) var(--spacing-sm);
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: var(--spacing-xs);
+.search-link i {
+    font-size: 1.2rem; /* Taille de l'icône légèrement augmentée */
+    color: #c5d8ed; /* Couleur douce pour l'icône */
+    transition: transform 0.3s ease, color 0.3s ease; /* Effet au survol */
 }
 
-.shared-by small,
-.share-validity small {
-    display: block;
-    color: var(--text-muted);
-    font-size: 0.8em;
-    line-height: 1.4;
+.search-link:hover {
+    background: linear-gradient(135deg, #2b3d56, #445a77); /* Inversion du dégradé */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Accentue la bordure */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.2); /* Ombre renforcée */
+    transform: translateY(-2px); /* Légère élévation */
 }
+
+.search-link:hover i {
+    transform: scale(1.2); /* Agrandit l'icône au survol */
+    color: #ffffff; /* Icône entièrement blanche */
+}
+
+.search-link:active {
+    transform: translateY(1px); /* Effet d'appui */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1); /* Réduction de l'ombre */
+}
+
 
 .section-header {
-    padding-bottom: 10px;
+    position: relative; /* Nécessaire pour positionner .search-link à l'intérieur */
+    display: flex;
+    align-items: center;
+    justify-content: space-between; /* Pour aligner le titre à gauche et le lien à droite */
 }
+
+
+.section-header h2 {
+    display: inline-flex; /* Affiche les éléments enfants sur une seule ligne */
+    align-items: center; /* Centre verticalement les icônes et le texte */
+    padding: 10px 20px; /* Ajoute de l'espacement interne */
+    background: linear-gradient(135deg, #445a77, #2b3d56); /* Dégradé harmonieux */
+    color: #ffffff; /* Couleur blanche */
+    font-size: 1.2rem; /* Taille de texte équilibrée pour un titre */
+    font-weight: 600; /* Met en évidence le texte */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure subtile */
+    border-radius: 6px; /* Coins légèrement arrondis */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1); /* Ombres douces */
+    transition: all 0.3s ease; /* Transitions fluides */
+    gap: 10px; /* Espacement entre l'icône et le texte */
+    cursor: pointer; /* Pas de curseur interactif pour un titre */
+}
+
+.section-header h2 i {
+    font-size: 1.5rem; /* Taille légèrement supérieure pour l'icône */
+    color: #c5d8ed; /* Couleur douce */
+    transition: color 0.3s ease, transform 0.3s ease; /* Transition au hover */
+}
+
+.section-header h2:hover {
+    background: linear-gradient(135deg, #2b3d56, #445a77); /* Inverse le dégradé */
+    border: 1px solid rgba(255, 255, 255, 0.5); /* Accentue la bordure */
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35), inset 0 2px 0 rgba(255, 255, 255, 0.2); /* Renforce l'ombre */
+}
+
+.section-header h2:hover i {
+    color: #ffffff; /* Icône blanche au hover */
+    transform: scale(1.2); /* Grossit l'icône légèrement */
+}
+
+
+
+
+
+

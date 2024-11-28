@@ -875,3 +875,18 @@ function updateRdvEvent(rdv) {
     
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+
+    // Sélection de la barre d'outils pour ajuster son positionnement
+    const toolbar = document.querySelector('.fc-header-toolbar');
+    const menuWrapper = document.querySelector('.menu-wrapper');
+
+    if (toolbar && menuWrapper) {
+        // Ajoute un style pour ajuster la marge gauche de la barre d'outils
+        toolbar.style.marginLeft = '50px';
+    }
+});
+
+
+  
