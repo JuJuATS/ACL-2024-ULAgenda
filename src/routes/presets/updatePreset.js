@@ -15,7 +15,8 @@ const updatePreset = async (req, res) => {
             description,
             weekDays,
             monthDays,
-            yearDays
+            yearDays,
+            recurrenceEndDate
         } = req.body;
 
         const preset = await Preset.findById(presetId);
@@ -45,24 +46,33 @@ const updatePreset = async (req, res) => {
             }
         }
 
+        // Vérifier s'il y a des récurrences définies
+        const parsedWeekDays = JSON.parse(weekDays || '[]');
+        const parsedMonthDays = JSON.parse(monthDays || '[]');
+        const parsedYearDays = JSON.parse(yearDays || '[]');
+        const hasRecurrences = parsedWeekDays.length > 0 || parsedMonthDays.length > 0 || parsedYearDays.length > 0;
 
-        let recurrenceData = {
-            weekDay: JSON.parse(weekDays || '[]'),
-            monthDay: JSON.parse(monthDays || '[]'),
-            yearDay: JSON.parse(yearDays || '[]'),
-            dateDebut: new Date(),
-        };
+        if (hasRecurrences) {
+            const recurrenceData = {
+                weekDay: parsedWeekDays,
+                monthDay: parsedMonthDays,
+                yearDay: parsedYearDays,
+                dateDebut: new Date(),
+                dateFin: recurrenceEndDate ? new Date(recurrenceEndDate) : null
+            };
 
-        // Si le preset a déjà une récurrence, la mettre à jour
-        if (preset.recurrence) {
-            await Recurrence.findByIdAndUpdate(preset.recurrence, recurrenceData);
-        } else {
-            // Sinon, en créer une nouvelle
-            const newRecurrence = new Recurrence(recurrenceData);
-            await newRecurrence.save();
-            preset.recurrence = newRecurrence._id;
+            if (preset.recurrence) {
+                await Recurrence.findByIdAndUpdate(preset.recurrence, recurrenceData);
+            } else {
+                const newRecurrence = new Recurrence(recurrenceData);
+                await newRecurrence.save();
+                preset.recurrence = newRecurrence._id;
+            }
+        } else if (preset.recurrence) {
+            // Aucune récurrence définie mais il en existe une : on la supprime
+            await Recurrence.findByIdAndDelete(preset.recurrence);
+            preset.recurrence = null;
         }
-
 
         preset.name = name || preset.name;
         preset.eventName = eventName !== undefined ? eventName : preset.eventName;

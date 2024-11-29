@@ -58,6 +58,11 @@
                             <button type="button" class="recurrence-type" data-type="yearly">Annuelle</button>
                         </div>
 
+                        <div class="common">
+                            <label>Récurrence active jusqu'au : </label>
+                            <input type="date" id="dateUntilRecurrence" name="recurrenceEndDate">
+                        </div>
+
                         <div class="recurrence-content">
                             <!-- Section hebdomadaire -->
                             <div id="weekly-section">
@@ -124,7 +129,7 @@
                     <option value="" <%= reminder === null ? 'selected' : '' %>>Aucun</option>
                     <option value="5" <%= reminder === 5 ? 'selected' : '' %>>5 minutes</option>
                     <option value="10" <%= reminder === 10 ? 'selected' : '' %>>10 minutes</option>
-                    <option value="30" <%= reminder === 30 ? 'selected' : '' %>>30 minutes</option>
+                    <option value="25" <%= reminder === 25 ? 'selected' : '' %>>25 minutes</option>
                     <option value="60" <%= reminder === 60 ? 'selected' : '' %>>1 heure</option>
                     <option value="1440" <%= reminder === 1440 ? 'selected' : '' %>>1 jour</option>
                 </select>

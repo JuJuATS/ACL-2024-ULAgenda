@@ -6,12 +6,10 @@ let currentTab = null;
 const popUp = document.querySelector(".pop-up-info");
 let rdvsOpen = false;
 const colorInput = document.querySelector("#color");
-console.log(colorInput)
-colorInput.addEventListener("input",(e)=>{
-    console.log(e.target.value)
+colorInput.addEventListener("input", (e) => {
     const colorDiv = document.querySelector("#colorBackground");
-    colorDiv.style.backgroundColor = e.target.value
-})
+    colorDiv.style.backgroundColor = e.target.value;
+});
 form.addEventListener('submit', async function(event) {
     event.preventDefault();
     const nom = document.getElementById('nom').value;
@@ -349,7 +347,7 @@ document.addEventListener('DOMContentLoaded', async() => {
     presetSelect.addEventListener('change', async () => {
         const presetId = presetSelect.value;
         if (!presetId) return;
-
+    
         const confirmApply = confirm("Voulez-vous vraiment appliquer ce préréglage ? Cela remplacera les valeurs actuelles du formulaire.");
         if (!confirmApply) {
             presetSelect.value = "";
@@ -358,14 +356,84 @@ document.addEventListener('DOMContentLoaded', async() => {
         try {
             const response = await fetch(`/api/presets/${presetId}`);
             if (!response.ok) throw new Error("Erreur lors de la récupération du préréglage");
-
+    
             const presetData = await response.json();
+            
             // Remplit les champs du formulaire avec les données du préréglage sélectionné
             form.nom.value = presetData.eventName || '';
             form.duree.value = presetData.duration;
             form.description.value = presetData.description || '';
-            form.rappel.value = presetData.reminder || '';
+            document.getElementById('rappel').value = presetData.reminder || '';
             form.heureDebut.value = presetData.startHour || '';
+            form.priority.value = presetData.priority || '';
+            form.color.value = presetData.color || '';
+
+            // Mettre à jour l'aperçu de la couleur
+            if (presetData.color) {
+                document.querySelector('#colorBackground').style.backgroundColor = presetData.color;
+            }
+    
+            // Réinitialiser toutes les récurrences actuelles
+            recurrences.week = [];
+            recurrences.month = [];
+            recurrences.year = [];
+            
+            // Effacer les sélections visuelles actuelles
+            document.querySelectorAll('.wday, .mday').forEach(button => {
+                button.classList.remove('selected');
+            });
+            document.querySelector('.yearList').innerHTML = '';
+
+            // Auto-complétion des récurrences
+            if (presetData.recurrence) {
+                // Récurrences hebdomadaires
+                if (presetData.recurrence.weekDay?.length > 0) {
+                    recurrences.week = [...presetData.recurrence.weekDay];
+                    document.querySelectorAll('.wday').forEach(button => {
+                        const day = parseInt(button.getAttribute('onclick').match(/\d+/)[0]);
+                        if (recurrences.week.includes(day)) {
+                            button.classList.add('selected');
+                        }
+                    });
+                }
+    
+                // Récurrences mensuelles
+                if (presetData.recurrence.monthDay?.length > 0) {
+                    recurrences.month = [...presetData.recurrence.monthDay];
+                    document.querySelectorAll('.mday').forEach(button => {
+                        const day = parseInt(button.getAttribute('onclick').match(/\d+/)[0]);
+                        if (recurrences.month.includes(day)) {
+                            button.classList.add('selected');
+                        }
+                    });
+                }
+    
+                // Récurrences annuelles
+                if (presetData.recurrence.yearDay?.length > 0) {
+                    recurrences.year = presetData.recurrence.yearDay.map(date => new Date(date));
+                    const yearList = document.querySelector('.yearList');
+                    recurrences.year.forEach(date => {
+                        const li = document.createElement('li');
+                        li.textContent = date.toLocaleDateString('en-GB', { day: '2-digit', month: '2-digit' });
+                        const button = document.createElement('button');
+                        button.type = 'button';
+                        button.addEventListener('click', function(e) {
+                            const index = recurrences.year.indexOf(date);
+                            recurrences.year.splice(index, 1);
+                            e.currentTarget.parentNode.remove();
+                        });
+                        li.appendChild(button);
+                        yearList.appendChild(li);
+                    });
+                }
+    
+                // Date de fin de récurrence
+                if (presetData.recurrence.dateFin) {
+                    const date = new Date(presetData.recurrence.dateFin);
+                    document.getElementById('dateUntilRecurrence').value = date.toISOString().split('T')[0];
+                }
+            }
+    
         } catch (error) {
             console.error("Erreur:", error);
             afficherPopUp("Impossible d'appliquer le préréglage.", false);

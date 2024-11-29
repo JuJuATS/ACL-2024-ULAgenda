@@ -31,6 +31,7 @@ const getPresetEditionPage = async (req, res) => {
                 weekDays: preset.recurrence?.weekDay || [],
                 monthDays: preset.recurrence?.monthDay || [],
                 yearDays: preset.recurrence?.yearDay || [],
+                endDate: preset.recurrence?.dateFin || null,
             },
             startHour: preset.startHour || '',
             duration: preset.duration,

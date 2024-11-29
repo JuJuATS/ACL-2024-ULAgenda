@@ -4,7 +4,8 @@ const getPresetInfosById = async (req, res) => {
     try {
         const presetId = req.params.id;
 
-        const preset = await Preset.findById(presetId);
+        const preset = await Preset.findById(presetId)
+            .populate('recurrence');
 
         if (!preset) {
             return res.status(404).json({ message: 'Preset non trouvé' });
