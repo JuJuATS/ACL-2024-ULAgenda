@@ -13,11 +13,27 @@ function initializeModal() {
     const cancelButton = modal.querySelector('.btn-cancel');
     const saveButton = modal.querySelector('.btn-save');
     const typeButtons = document.querySelectorAll('.recurrence-type');
+    const dateInput = document.getElementById('dateUntilRecurrence');
     const sections = {
         weekly: document.getElementById('weekly-section'),
         monthly: document.getElementById('monthly-section'),
         yearly: document.getElementById('yearly-section')
     };
+    let lastValidDate = dateInput.value;
+
+    dateInput.addEventListener('change', () => {
+        const today = new Date().toISOString().split('T')[0];
+        const selectedDate = dateInput.value;
+    
+        if (selectedDate < today) {
+            alert('La date de fin de récurrence ne peut pas être antérieure à aujourd\'hui');
+            dateInput.value = lastValidDate;
+            return;
+        }
+        
+        lastValidDate = dateInput.value;
+        updateHiddenFields();
+    });
 
     recurrenceButton.addEventListener('click', () => {
         createBackup();
