@@ -1,12 +1,31 @@
 /* Importation de la police depuis common.css */
 @import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
 
+
 /* Styles globaux */
 body {
     font-family: "Afacad Flux", sans-serif;
     font-weight: 600;
-    background-color: #eef2f3;
+    background-image: radial-gradient(50% 176%, #253854 80%, #061922 100%);
+    /* Fond sombre */
+    color: #e0e0e0; /* Texte clair */
     overflow-x: hidden;
+    overflow-y: hidden;
+    height: 100vh;
+}
+
+
+
+/* Style du titre */
+h1 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    margin-top: -5px;
+    text-transform: uppercase;
+    color: #00BBEC;
+    /*text-shadow: 0 0 15px #007bff, 0 0 30px #007bff, 0 0 45px #0ff;
+    /*animation: neonPulse 2s infinite;*/
+    margin-left: 95px;
 }
 
 header {
@@ -14,178 +33,442 @@ header {
     width: 100%;
     left: 0;
     right: 0;
+    background-color: #1f2a40; /* Fond sombre pour le header */
+   /* box-shadow: 0 1px 1px #181818;*/
 }
 
 .content {
     flex: 1;
     padding-top: 90px;
+    /* Fond plus sombre pour le contenu */
+    /*display: flex; /* Active Flexbox */
+  background-image: radial-gradient(50% 176%, #253854 80%, #061922 100%);
+ 
+  
+  z-index: 2 !important;
+  height: 100vh;
+  
+    
 }
 
 /* Amélioration du conteneur principal */
 .search-container {
     margin: 20px auto;
     max-width: 800px;
-    background-color: #ffffff;
+    background-color: #2c2c2c; /* Fond gris foncé pour le conteneur */
+    /*background-color: #2a3b4f;*/
     padding: 30px;
     border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    height : 87vh;
+    z-index: 10 !important;
 }
 
 /* Styles des contrôles de recherche */
 .search-controls {
     margin-bottom: 20px;
     padding: 20px;
-    background: #f8f9fa;
+    background: #333333; /* Fond plus sombre pour les contrôles */
     border-radius: 8px;
 }
 
 /* Champ de recherche */
 .search-input {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-bottom: 15px;
+    margin-left: -10px;
     font-size: 16px;
-    border: 1px solid #ced4da;
-    border-radius: 4px;
+    border: 1px solid #007bff !important;
+    border-radius: 6px;
+    border-color: #007bff !important;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    outline: none;
 }
-
+.search-input:focus {
+    border-color: #007bff !important; /* Bordure bleue pour correspondre au thème */
+    box-shadow: 0 0 5px rgba(79, 158, 171, 0.6); /* Légère ombre bleue pour le focus */
+}
+.search-input::placeholder {
+    color: #888888;
+}
 /* Filtres de date */
 .date-filters {
+    margin-top: 10px;
     display: flex;
-    gap: 10px;
-    margin-bottom: 10px;
+    flex-direction: column; /* Organisation verticale pour un meilleur espacement */
+    gap: 15px; /* Plus d'espace entre les éléments */
+    margin-bottom: 15px; /* Espacement supplémentaire en bas */
 }
 
+/* Label des filtres */
 .date-filters label {
     font-weight: bold;
-    margin-right: 5px;
+    margin-left: 2px;
+    margin-bottom: 5px; /* Espacement entre le label et l'input */
+    color: #b0b0b0; /* Texte clair et doux pour les labels */
+    font-size: 16px; /* Taille du texte du label pour plus de visibilité */
 }
 
+/* Champ de saisie de date */
 .date-filters input[type="date"] {
-    border: 1px solid #ced4da;
-    border-radius: 4px;
-    padding: 5px;
+    border: 1px solid #007bff; /* Bordure sombre */
+    cursor: pointer;
+    margin-left: -10px;
+    border-radius: 6px; /* Bordures arrondies */
+    padding: 12px; /* Plus de padding pour plus de confort */
+    background-color: #222222; /* Fond sombre pour l'input */
+    color: #f0f0f0; /* Texte clair */
+    font-size: 16px; /* Taille de police pour une meilleure lisibilité */
+    transition: border-color 0.3s ease, background-color 0.3s ease; /* Transition douce */
+    width: 100%; /* Remplir la largeur disponible */
 }
 
-/* Filtres de durée */
+/* Effet de focus sur le champ de saisie */
+.date-filters input[type="date"]:focus {
+    border-color: #007bff; /* Changer la bordure au focus en bleu */
+    background-color: #333333; /* Légère modification du fond */
+    outline: none; /* Supprimer le contour par défaut */
+}
+
+/* Effet de survol pour l'input */
+.date-filters input[type="date"]:hover {
+    border-color: #007bff; /* Bordure bleue au survol */
+    background-color: #333333; /* Fond légèrement modifié */
+    outline: none; /* Supprimer le contour par défaut */
+}
+
 .duration-filters {
-    margin-bottom: 10px;
+    margin-top: 25px;
+    display: flex;
+    flex-direction: column; /* Disposition verticale */
+    gap: 20px; /* Espacement plus grand entre les éléments */
+    margin-bottom: 15px;
 }
 
 .duration-filters label {
     font-weight: bold;
-    margin-right: 5px;
+    color: #b0b0b0; /* Couleur douce pour les labels */
+    font-size: 16px; /* Taille du texte du label pour plus de lisibilité */
 }
 
 #durationRange {
-    margin-top: 5px;
+    width: 100%; /* Prendre toute la largeur disponible */
+    margin-top: 7px;
+    background: transparent;
+    border: 1px solid #555555; /* Bordure sombre */
+    border-radius: 8px; /* Bordures arrondies plus marquées */
+    height: 18px; /* Hauteur augmentée pour le range */
+    appearance: none; /* Enlever l'apparence par défaut */
+    cursor: pointer;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
+/* Effet au survol du range */
+#durationRange:hover {
+    border-color: #007bff; /* Bordure bleue pour un effet cohérent avec le thème */
+}
+/* Style de la valeur du range */
 #durationRangeValueContainer {
     margin-top: 5px;
 }
 
+/* Affichage de la valeur du range */
 #durationRangeValue {
     font-weight: bold;
+    margin-left: 2px;
+    margin-bottom: 5px; /* Espacement entre le label et l'input */
+    color: #b0b0b0; /* Texte clair et doux pour les labels */
+    font-size: 18px;  /* Taille de police plus grande pour la valeur */
 }
 
-/* Contrôles de tri */
+/* Ajouter une couleur dégradée pour le range (du orange au noir) */
+#durationRange::-webkit-slider-runnable-track {
+    background: linear-gradient(to right, #ff7f50, #333333); /* Dégradé orange vers noir */
+    height: 12px; /* Hauteur du track augmentée */
+    border-radius: 8px; /* Bordures arrondies pour le track */
+}
+
+/* Style du curseur */
+#durationRange::-webkit-slider-thumb {
+    background: #007bff; /* Curseur bleu */
+    border: none;
+    height: 24px; /* Taille du curseur augmentée */
+    width: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Effet au survol du curseur */
+#durationRange::-webkit-slider-thumb:hover {
+    background: #0056b3; /* Changer la couleur du curseur au survol */
+}
+
+/* Pour Firefox */
+#durationRange::-moz-range-track {
+    background: linear-gradient(to right, #ff7f50, #333333);
+    height: 12px; /* Hauteur du track dans Firefox */
+    border-radius: 8px;
+}
+
+#durationRange::-moz-range-thumb {
+    background: #007bff;
+    border: none;
+    height: 24px; /* Taille du curseur augmentée dans Firefox */
+    width: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+#durationRange::-moz-range-thumb:hover {
+    background: #0056b3;
+}
+
+
+/* Conteneur des contrôles de tri */
 .sort-controls {
     display: flex;
-    gap: 10px;
+    gap: 20px;
     align-items: center;
+    margin-bottom: 20px; /* Ajouter de l'espace en bas */
 }
 
+/* Style du label pour le tri */
 .sort-controls label {
     font-weight: bold;
-    margin-right: 10px;
+    margin-right: 15px;
+    color: #dcdcdc; /* Texte clair pour les labels */
 }
 
-.sort-controls input[type="checkbox"] {
-    margin-right: 5px;
+/* Conteneur pour chaque groupe (checkbox + select) */
+.sort-controls > div {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* Espacement entre la checkbox et le select */
 }
 
-.sort-controls select {
-    border: 1px solid #ced4da;
+/* Style de la checkbox pour la priorité et la durée */
+#sortPriority,
+#sortDuration {
+    width: 20px;
+    height: 20px;
+    accent-color: #4e73df; /* Couleur d'accentuation bleue */
+    background-color: #222222;
+    border: 2px solid #555555;
     border-radius: 4px;
-    padding: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
 }
+
+/* Effet de survol de la checkbox */
+#sortPriority:hover,
+#sortDuration:hover {
+    background-color: #333333;
+    border-color: #4e73df;
+}
+
+/* Focus de la checkbox */
+#sortPriority:focus,
+#sortDuration:focus {
+    outline: none;
+    background-color: #333333;
+    border-color: #007bff;
+}
+
+/* Checkbox cochée */
+#sortPriority:checked,
+#sortDuration:checked {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+/* Label des checkboxes */
+#sortPriority + label,
+#sortDuration + label {
+    font-size: 16px;
+    color: #b0b0b0;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+
+
+
+/* Style du select pour l'ordre de tri */
+#sortPriorityOrder,
+#sortDurationOrder {
+    border: 1px solid #444444;
+    border-radius: 4px;
+    padding: 8px;
+    background-color: #1a1a1a;
+    color: #e0e0e0;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Effet de survol du select */
+#sortPriorityOrder:hover,
+#sortDurationOrder:hover {
+    background-color: #333333;
+    border-color: #007bff;
+}
+
+/* Effet de focus du select */
+#sortPriorityOrder:focus,
+#sortDurationOrder:focus {
+    outline: none;
+    background-color: #333333;
+    border-color: #007bff;
+}
+
+
+
 
 /* Styles pour la liste des rendez-vous */
 .rdv-list {
     list-style: none;
     padding: 0;
     margin-top: 20px;
+    height: 50vh !important; 
+    overflow-y: auto;
 }
 
 .rdv-item {
     padding: 15px;
     margin-bottom: 15px;
-    border: 1px solid #e9ecef;
+    border: 1px solid #444444;
     border-radius: 8px;
-    background-color: #ffffff;
+    background-color: #2c2c2c;
+    padding-bottom: 5px !important;
+    color: #e0e0e0;
+    opacity: 0;
+    transform: translateY(20px);
+    animation: fadeInUp 0.5s ease forwards;
 }
 
+/* Header du rendez-vous */
 .rdv-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 20px; /* Espacement généreux pour la respiration */
+    padding: 15px 30px; /* Padding généreux pour les bords */
+    background-color: #2c2c2c; /* Fond plus doux (gris foncé) */
+    border-radius: 12px; /* Bordures arrondies plus prononcées */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3); /* Ombre plus légère pour garder de la profondeur */
+    transition: all 0.3s ease; /* Transition fluide pour toute interaction */
 }
 
+
+/* Effet au survol du header */
+/*.rdv-header:hover {
+    background-color: #292929; /* Légère modification du fond au survol */
+    /*transform: translateY(-6px); /* Élévation avec ombre pour un effet "flottant" */
+/*}*/
+
+/* Nom du rendez-vous */
 .rdv-name {
-    font-weight: bold;
-    font-size: 18px;
-    color: #007bff;
+    font-weight: 600; /* Poids du texte pour le rendre plus visible */
+    font-size: 22px; /* Taille plus grande pour le rendre plus impactant */
+    color: #00BBEC; /* Couleur bleue apaisante */
+    letter-spacing: 1px; /* Espacement des lettres pour une aération optimale */
+    transition: color 0.3s ease;
 }
 
+/* Effet au survol du nom */
+.rdv-name:hover {
+    color: #a1d3d1; /* Couleur douce au survol pour un effet visuel agréable */
+}
+
+/* Priorité */
 .rdv-priority {
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    color: white;
-    font-weight: bold;
-}
-
-.priority-Haute {
-    background-color: #dc3545;
-}
-
-.priority-Moyenne {
-    background-color: #ffc107;
-}
-
-.priority-Basse {
-    background-color: #28a745;
-}
-
-/* Information du rendez-vous */
-.rdv-info {
-    color: #6c757d;
+    padding: 8px 18px; /* Padding plus large pour un look plus élégant */
+    border-radius: 25px; /* Bordures très arrondies pour un style plus moderne */
     font-size: 14px;
+    font-weight: 700; /* Texte en gras pour bien marquer la priorité */
+    text-transform: uppercase;
+    color: #fff;
+    background-color: #dc3545; /* Valeur par défaut (rouge) */
+    display: inline-block;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Transition fluide sur l'interaction */
+}
+
+/* Priorité haute */
+.priority-Haute {
+    background-color: #ff6b6b; /* Rouge pâle pour la priorité haute */
+}
+
+/* Priorité moyenne */
+.priority-Moyenne {
+    background-color: #ff6600; /* Jaune doux pour la priorité moyenne */
+}
+
+/* Priorité basse */
+.priority-Basse {
+    background-color: #28a745; /* Vert plus doux pour la priorité basse */
+    padding-left: 29px;
+    padding-right: 29px;
+}
+
+/* Effet au survol de la priorité */
+.rdv-priority:hover {
+    background-color: #ff9999; /* Changement de couleur pour un effet lumineux */
+    transform: scale(1.05); /* Légère augmentation de taille pour rendre l'élément plus dynamique */
+}
+
+/* Informations du rendez-vous */
+.rdv-info {
+    color: #c0c0c0; /* Texte clair et doux */
+    font-size: 16px; /* Taille idéale pour la lisibilité */
+    line-height: 1.6; /* Améliorer l’interlignage pour une meilleure lisibilité */
     margin: 5px 0;
+    margin-left: 10px;
 }
 
 /* Tags */
 .rdv-tags {
-    margin-top: 5px;
+    margin-top: 15px; /* Espace supplémentaire entre les tags */
 }
 
 .rdv-tags .tag {
-    background-color: #e9ecef;
-    color: #495057;
-    padding: 3px 8px;
-    border-radius: 12px;
-    font-size: 12px;
-    margin-right: 5px;
+    background-color: #444444; /* Fond sombre pour les tags */
+    color: #e0e0e0;
+    padding: 8px 16px; /* Padding généreux pour un effet de confort */
+    border-radius: 15px; /* Bordures plus arrondies pour un look doux */
+    font-size: 14px; /* Augmenter légèrement la taille pour plus de lisibilité */
+    margin-right: 12px; /* Plus d’espace entre les tags */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transition douce sur les interactions */
 }
+
+/* Effet de survol des tags */
+.rdv-tags .tag:hover {
+    background-color: #555555; /* Changement de fond pour un effet interactif */
+    transform: translateY(-3px); /* Légère élévation pour un effet interactif */
+}
+
+/* Ajout d’un effet de focus sur le header pour plus de dynamisme */
+.rdv-header:focus-within {
+    border: 2px solid #4f9eab; /* Bordure bleu clair lors du focus */
+    box-shadow: 0 0 10px rgba(79, 158, 171, 0.5); /* Ombre bleutée lors de l'interaction */
+}
+
+/* Effet subtil sur les éléments au survol */
+.rdv-name, .rdv-priority, .rdv-info {
+    transition: all 0.3s ease; /* Transition fluide pour toutes les interactions */
+}
+
 
 /* Message "Aucun résultat" */
 .no-results {
     text-align: center;
     margin-top: 20px;
     font-size: 16px;
-    color: #6c757d;
+    color: #dcdcdc;
     font-weight: bold;
 }
 
@@ -195,7 +478,6 @@ header {
     flex-direction: column;
     min-height: 100vh;
 }
-
 
 /* Animation de base pour le skeleton */
 @keyframes shimmer {
@@ -214,9 +496,9 @@ header {
 .skeleton-item {
     padding: 15px;
     margin-bottom: 15px;
-    border: 1px solid #e9ecef;
+    border: 1px solid #444444;
     border-radius: 8px;
-    background-color: #ffffff;
+    background-color: #2c2c2c;
 }
 
 /* Style de base pour tous les éléments skeleton */
@@ -225,9 +507,9 @@ header {
 .skeleton-info,
 .skeleton-tag {
     background: linear-gradient(90deg, 
-        #f0f0f0 25%, 
-        #f8f8f8 50%, 
-        #f0f0f0 75%
+        #444444 25%, 
+        #555555 50%, 
+        #444444 75%
     );
     background-size: 1000px 100%;
     animation: shimmer 2s infinite linear;
@@ -296,7 +578,6 @@ header {
     }
 }
 
-
 .error-container {
     position: fixed;
     top: 20px;
@@ -332,7 +613,7 @@ header {
     opacity: 0.8;
 }
 
-/* Animations */
+/* Animation des erreurs */
 @keyframes slideIn {
     from {
         transform: translateX(100%);
@@ -365,14 +646,13 @@ header {
     pointer-events: none;
 }
 
-
 /* Animation pour les rendez-vous */
 .rdv-item {
     padding: 15px;
     margin-bottom: 15px;
-    border: 1px solid #e9ecef;
+    border: 1px solid #444444;
     border-radius: 8px;
-    background-color: #ffffff;
+    background-color: #2c2c2c;
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 0.5s ease forwards;
@@ -404,5 +684,134 @@ header {
 
 .rdv-item:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+
+.noUi-connects{
+    .noUi-connect {
+        background: linear-gradient(to right, #007bff, #222222);
+    }
+    
+}
+.noUi-origin{
+    /* Zone cliquable */
+.noUi-touch-area {
+    cursor: pointer; /* Le curseur devient une main pour montrer que c'est cliquable */
+    transition: transform 0.2s ease, background-color 0.3s ease; /* Transition fluide pour les effets d'interaction */
+}
+
+/* Effet de survol : légers changements visuels pour indiquer l'interactivité */
+.noUi-touch-area:hover {
+    background-color: #333333; /* Changer légèrement le fond en survol pour l'interaction */
+    transform: scale(1.05); /* Légère augmentation de la taille au survol */
+}
+
+/* Effet de focus : amélioration pour l'accessibilité */
+.noUi-touch-area:focus {
+    outline: none; /* Enlever le contour par défaut */
+    box-shadow: 0 0 8px 2px rgba(0, 123, 255, 0.8); /* Ajouter une ombre bleue pour le focus */
+}
+
+/* Pour les appareils tactiles (Mobile) */
+.noUi-touch-area:active {
+    background-color: #444444; /* Fond un peu plus foncé lors de l'activation (tap) */
+    transform: scale(1); /* Normaliser la taille quand l'utilisateur appuie sur la zone */
+}
+
+}
+
+/* Styles de base pour la page */
+
+
+.snow {
+  position: absolute;
+  min-width: 10vw;
+  min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  
+  top: 0;
+  left: 0;
+  z-index: -1;  /* Neige derrière tout le reste */
+  pointer-events: none; 
+  
+}
+
+.snow .svg {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transform: scale(0.5) !important; 
+}
+
+#snow-top-layer {
+    will-change: transform;
+    transform: translateY(-768px);
+    animation: fall 45s infinite linear; /* Augmente la durée de l'animation pour ralentir la chute */
+}
+
+#snow-bottom-layer {
+    will-change: transform;
+    transform: translateY(-768px);
+    animation: fall 60s infinite linear; /* Augmente la durée pour ralentir davantage */
+}
+
+@keyframes fall {
+  
+  100% {
+    transform: translateY(0);
+  }
+  
+}
+
+
+
+/* Style de base pour l'élément de tooltip */
+#event-tooltip {
+    background-color: rgba(0, 0, 0, 0.75);    /* Fond sombre et semi-transparent */
+    color: #fff;                               /* Texte en blanc pour plus de contraste */
+    padding: 12px 20px;                        /* Espacement interne confortable */
+    border-radius: 8px;                        /* Coins arrondis pour un design plus moderne */
+    font-family: 'Arial', sans-serif;           /* Police sans-serif pour la lisibilité */
+    font-size: 14px;                           /* Taille de police ajustée pour la lisibilité */
+    max-width: 250px;                          /* Largeur maximale pour éviter qu'il ne devienne trop large */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4); /* Ombre douce pour faire ressortir le tooltip */
+    opacity: 0;                                /* Rendre initialement invisible pour la transition */
+    pointer-events: none;                      /* Empêche le tooltip d'interférer avec les interactions de la souris */
+    position: absolute;                        /* Positionnement absolu pour le tooltip */
+    z-index: 1000;                             /* Mettre le tooltip au-dessus des autres éléments */
+    transition: opacity 0.2s ease, transform 0.2s ease; /* Transition douce pour l'apparition/disparition */
+    transform: translateY(10px);               /* Déplacement initial pour un effet d'animation */
+}
+
+/* Apparition du tooltip */
+#event-tooltip.fc-tooltip-visible {
+    opacity: 1;                                /* Rendre visible */
+    transform: translateY(0);                  /* Retour au positionnement normal */
+}
+
+/* Lorsque le tooltip est au survol d'un événement */
+#event-tooltip:hover {
+    background-color: rgba(0, 123, 255, 0.8);  /* Changer la couleur de fond au survol */
+    cursor: pointer;                          /* Changer le curseur pour signifier qu'il est interactif */
+}
+
+/* Petite flèche pour indiquer l'origine de l'événement (en haut ou en bas du tooltip) */
+#event-tooltip::after {
+    content: '';                               /* Nécessaire pour générer la flèche */
+    position: absolute;
+    top: 100%;                                 /* Positionner en bas du tooltip */
+    left: 50%;
+    margin-left: -8px;                         /* Centrer la flèche */
+    border-left: 8px solid transparent;        /* Créer les bords de la flèche */
+    border-right: 8px solid transparent;
+    border-top: 8px solid rgba(0, 0, 0, 0.75); /* Flèche pointant vers le bas avec la même couleur */
+}
+
+/* Pour les tooltips affichés dans des zones différentes (modifier la flèche si nécessaire) */
+#event-tooltip-bottom::after {
+    top: -8px;                                 /* Positionner la flèche au-dessus du tooltip */
+    border-top: 8px solid transparent;         /* Inverser les bords pour une flèche pointant vers le haut */
+    border-bottom: 8px solid rgba(0, 0, 0, 0.75); /* Flèche pointant vers le haut */
 }

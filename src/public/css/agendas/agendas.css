@@ -695,8 +695,9 @@ input:focus {
     transform: scale(1.2); /* Grossit l'icône légèrement */
 }
 
-
-
-
-
-
+#inputAgendaName::placeholder {
+    color: #57595c; /* Couleur du texte indicatif */
+    font-style: italic; /* Style en italique pour distinguer le texte */
+    font-size: 14px; /* Taille adaptée */
+    opacity: 0.8; /* Légère transparence */
+}

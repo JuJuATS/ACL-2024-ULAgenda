@@ -1,32 +1,158 @@
 @import url('/css/presets/common.css');
 
-.presets-page table {
-    width: 90%;
-    margin: 20px auto;
-    border-collapse: collapse;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+body {
+    font-family: "Afacad Flux", sans-serif;
+    font-weight: 600;
+    background-image: radial-gradient(50% 176%, #253854 80%, #061922 100%);
+    /* Fond sombre */
+    color: #e0e0e0; /* Texte clair */
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 100vh;
+}
+.content {
+    padding: 30px;
+    border-radius: 12px;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    z-index: 2; /* Assure que le contenu reste au-dessus des éléments d'arrière-plan */
 }
 
-.presets-page th, .presets-page td {
-    padding: 10px;
+h1 {
+    color: #0098be;
     text-align: center;
-    border: 1px solid #ddd;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+    justify-items: center;
+    margin-bottom: 30px;
+    margin-left: 30px;
+    font-size: 2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    animation: fadeInDown 1s ease-in-out;
+}
+/* .presets-page - Ajout de la scrollbar verticale */
+.presets-page {
+    margin-top: 0; /* Retirer le margin-top négatif */
+    background: rgba(20, 30, 40, 0.9);
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+    padding: 24px;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    overflow-y: auto; /* Ajout d'une scrollbar verticale */
+    max-height: 80vh; /* Limiter la hauteur à 80% de la hauteur de la fenêtre */
+}
+
+
+/* Table - Scrolls horizontale et verticale si nécessaire */
+.presets-page table {
+    width: 100%;
+    border-spacing: 0;
+    border-collapse: collapse;
+    margin: 0;
+    background-color: #2a3b4f;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    animation: fadeInUp 1s ease-in-out;
+    max-height: 300px; /* Hauteur maximale de la table, ajustable selon vos besoins */
+    overflow-y: auto !important;
+}
+
+
+
+.presets-page td {
+    padding: 12px 20px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+    vertical-align: middle;
+    color: #e0e0e0;
 }
 
 .presets-page th {
-    background-color: #00BBEC;
-    color: white;
+    background-color: #009fc7;
+    color: #fff;
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid #007f96;
+    position: sticky;
+    top: 0;
+    z-index: 3;
 }
 
-.presets-page tr:nth-child(even) {
-    background-color: #f7f9fc;
+
+/* Lignes paires et impaires */
+tr:nth-child(even) {
+    background-color: #1f2a40;
 }
 
+tr:nth-child(odd) {
+    background-color: #1f2a40;
+}
+
+/* Hover sur les lignes */
+tr:hover {
+    background-color: #44445a;
+    transition: background-color 0.3s ease;
+}
+td[style*="background-color"] {
+    width: 50px;
+    height: 20px;
+    border-radius: 4px;
+}
 .presets-page .action-buttons {
     display: flex;
-    gap: 10px;
+    gap: 30px;
     justify-content: center;
+    align-items: center;
 }
+
+button {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 8px;
+    background-color: #00BBEC;
+    color: #fff;
+    font-size: 14px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background-color: #0099b0;
+    transform: scale(1.05);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+    background-color: #007f96;
+    transform: scale(0.95);
+}
+
+/* Bouton supprimer */
+button[type="submit"] {
+    background-color: #e74c3c;
+}
+
+button[type="submit"]:hover {
+    background-color: #c0392b;
+}
+
+button[type="submit"]:active {
+    background-color: #9b2d22;
+}
+
 
 .presets-page .action-buttons form button {
     background-color: #ec0000;
@@ -47,3 +173,52 @@
 .presets-page .priority-low {
     color: #00bbec; /* Bleu pour basse priorité */
 }
+
+.snow {
+    position: absolute;
+    min-width: 10vw;
+    min-height: 100vh;
+    height: 100%;
+    width: 100%;
+    
+    top: 0;
+    left: 0;
+    z-index: -1;  /* Neige derrière tout le reste */
+    pointer-events: none; 
+    
+  }
+  
+  .snow .svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: scale(0.5) !important; 
+  }
+  
+  #snow-top-layer {
+      will-change: transform;
+      transform: translateY(-768px);
+      animation: fall 45s infinite linear; /* Augmente la durée de l'animation pour ralentir la chute */
+  }
+  
+  #snow-bottom-layer {
+      will-change: transform;
+      transform: translateY(-768px);
+      animation: fall 60s infinite linear; /* Augmente la durée pour ralentir davantage */
+  }
+  
+  @keyframes fall {
+    
+    100% {
+      transform: translateY(0);
+    }
+    
+  }
+  
+
+  .newPrereglage{
+    margin-top: 40px !important;
+    background-color: #009fc7 !important;
+  }
+
+  

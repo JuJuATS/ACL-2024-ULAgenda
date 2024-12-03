@@ -1,70 +1,85 @@
-/* Styles épurés pour la page de modification */
+/* Styles épurés pour la page de modification avec un style sombre bleuté */
+/* Styles épurés pour la page de modification avec un style sombre et bleuté */
 body {
     font-family: Arial, sans-serif;
-    color: #333;
-    background-color: #f8f9fa;
+    color: #e0e0e0; /* Texte clair */
+    background-image: radial-gradient(50% 176%, #253854 80%, #061922 100%);
     margin: 0;
     padding: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 100vh;
+    max-height: 100vh !important;
+    overflow-y: hidden;
 }
 
 .container {
-    max-width: 500px;
-    background-color: #ffffff;
-    padding: 20px 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-width: 200px !important;
+    background-color: rgba(26, 29, 42, 0.9); /* Fond semi-transparent sombre pour contraster sans voler la vedette au gradient */
+    padding: 25px 30px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Ombre plus marquée pour un effet lumineux */
     text-align: center;
+    backdrop-filter: blur(12px); /* Flou léger pour simuler un effet de brume glacée */
+    height: 80vh;
 }
 
 h1 {
-    font-size: 24px;
-    font-weight: 500;
+    font-size: 28px;
+    font-weight: 600;
     margin-bottom: 20px;
-    color: #2c3e50;
+    color:#008cff; /* Bleu clair, presque néon, pour se détacher sur le fond sombre */
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.4); /* Ombre portée pour un meilleur contraste */
+    font-family: 'Times', cursive
 }
 
 .form-group {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     text-align: left;
 }
 
+
 label {
-    font-size: 14px;
-    color: #666;
-    margin-bottom: 5px;
+    font-size: 16px;
+    color: #00BBEC; /* Gris clair légèrement bleuté pour rester en harmonie avec le fond */
+    margin-bottom: 8px;
     display: block;
 }
 
-input[type="text"],
-input[type="date"],
-input[type="time"],
-input[type="number"],
-textarea,select {
+input,
+textarea {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
+    border: 1px solid #5a6d83; /* Bordure plus claire avec une touche de bleu-gris */
+    border-radius: 5px;
+    background-color: #1e2a36; /* Fond plus sombre dans les champs */
+    color: #e0e0e0; /* Texte clair pour les champs */
     font-size: 14px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    margin-top: 5px;
-    background-color: #f9f9f9;
+    margin-bottom: 15px;
+    outline: none;
+    transition: all 0.3s ease;
 }
 
-textarea {
-    resize: vertical;
-    min-height: 80px;
+textarea:hover{
+    border-color: #00BBEC;
 }
+input:hover{
+    border-color:#007bff;
+}
+
+#date,#heureDebut{
+    cursor: pointer;
+}
+
+
 
 input:focus,
 textarea:focus {
-    outline: none;
-    border-color: #3498db;
-    background-color: #ffffff;
+    border-color: #81c4e7; /* Bleu lumineux au focus pour rappeler le thème général */
+    box-shadow: 0 0 10px rgba(129, 196, 231, 0.6); /* Lueur bleue autour des champs en focus */
 }
+
 
 .btn-modifier {
     color: #000000;
@@ -93,7 +108,7 @@ textarea:focus {
 .recurrence-form-container {
     height: fit-content;
     padding: 20px;
-    width: 400px;
+    min-width: 1000px;
     border-radius: 10px;
     position: relative;
 }
@@ -298,6 +313,7 @@ textarea:focus {
     padding: 0 15px;
     font-size: 1.2em;
     text-align: center;
+    margin-top: -10px;
     transition: background-color 0.3s ease;
 }
 
@@ -622,3 +638,237 @@ color: #d9d9d9; /* Couleur claire pour le texte */
 body.dark-mode .clear-selection:hover {
 background-color: #444; /* Couleur au survol pour le bouton de réinitialisation */
 }
+
+
+.snow {
+    position: absolute;
+    min-width: 10vw;
+    min-height: 100vh;
+    height: 100%;
+    width: 100%;
+    
+    top: 0;
+    left: 0;
+    z-index: -1;  /* Neige derrière tout le reste */
+    pointer-events: none; 
+    
+  }
+  
+  .snow .svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: scale(0.5) !important; 
+  }
+  
+  #snow-top-layer {
+      will-change: transform;
+      transform: translateY(-768px);
+      animation: fall 45s infinite linear; /* Augmente la durée de l'animation pour ralentir la chute */
+  }
+  
+  #snow-bottom-layer {
+      will-change: transform;
+      transform: translateY(-768px);
+      animation: fall 60s infinite linear; /* Augmente la durée pour ralentir davantage */
+  }
+  
+  @keyframes fall {
+    
+    100% {
+      transform: translateY(0);
+    }
+    
+  }
+
+  #rappel {
+    background-color: rgba(20, 28, 46, 0.8); /* Fond sombre légèrement transparent */
+    color: #81c4e7; /* Bleu clair pour le texte */
+    padding: 5px;
+    border-radius: 8px;
+    width: 100%;
+    margin-top: 2px;
+    font-size: 16px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4); /* Ombre douce */
+}
+
+#rappel:hover {
+    background-color: rgba(20, 28, 46, 1); /* Fond un peu plus sombre au survol */
+    cursor: pointer;
+}
+
+#rappel a {
+    color: #4f8ef7; /* Lien bleu pour l'interaction */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#rappel a:hover {
+    color: #a0d4ff; /* Lien bleu clair au survol */
+}
+
+#priority {
+    background-color: rgba(15, 23, 41, 0.85); /* Fond sombre avec une légère transparence */
+    color: #87a8d6; /* Texte bleu clair */
+    padding: 5px;
+    border-radius: 8px;
+    width: 100%;
+    font-size: 18px;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5); /* Ombre douce et plus marquée */
+    margin-top: 2px;
+}
+
+#priority:hover {
+    background-color: rgba(15, 23, 41, 1); /* Fond un peu plus sombre au survol */
+    cursor: pointer;
+}
+
+#priority a {
+    color: #4f8ef7; /* Lien bleu pour l'interaction */
+    text-decoration: none;
+    font-weight: bold;
+}
+
+#priority a:hover {
+    color: #a0d4ff; /* Lien bleu clair au survol */
+}
+
+
+.btn-modifier {
+    background-color: #0e49a1; /* Bleu sombre, en accord avec le thème */
+    color: #e0e0e0; /* Texte clair pour un bon contraste */
+    border: none;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: 500;
+    border-radius: 8px;
+    margin-top: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre douce */
+}
+
+.btn-modifier:hover {
+    background-color:#0066d3; /* Bleu clair au survol */
+     /* Texte sombre au survol */
+    transform: translateY(-2px); /* Effet de levée */
+}
+
+.btn-modifier:active {
+    background-color: #1d3a64; /* Bleu encore plus sombre au clic */
+    transform: translateY(1px); /* Effet de pression */
+}
+
+.recurrence-form-container {
+    background-color: #1a2536; /* Fond sombre bleuté légèrement plus clair */
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Ombre subtile */
+    max-width: 600px; /* Largeur maximale */
+    margin: 20px auto; /* Centrer dans la page */
+    color: #e0e0e0; /* Texte clair */
+    text-align: center; /* Centrer le contenu */
+}
+
+.tab {
+    display: flex;
+    justify-content: space-around; /* Espacement uniforme entre les boutons */
+    background-color: #1c2a3a; /* Fond sombre bleuté */
+    border-radius: 8px; /* Bords arrondis pour un design moderne */
+    padding: 10px 0; /* Espacement interne pour les boutons */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); /* Ombre subtile */
+    margin-bottom: 20px; /* Espacement sous les onglets */
+}
+
+.tablinks {
+    background-color: #253854 !important; /* Fond sombre bleuté */
+    border: none !important; /* Pas de bordures */
+    border-radius: 6px !important; /* Bords arrondis pour un design moderne */
+    color: #e0e0e0 !important; /* Couleur du texte clair */
+    font-size: 16px !important; /* Taille de police légèrement augmentée */
+    font-weight: 500 !important; /* Texte en semi-gras */
+    padding: 10px 20px !important; /* Espacement interne pour une meilleure accessibilité */
+    cursor: pointer !important; /* Indicateur de clic */
+    transition: background-color 0.3s ease, transform 0.2s ease !important; /* Animations pour les interactions */
+}
+
+.tablinks:hover {
+    background-color: #005ccc !important; /* Fond plus clair au survol */
+    transform: scale(1.05) !important; /* Effet de zoom subtil */
+}
+
+.tablinks:active {
+    background-color: #1e3a57 !important; /* Couleur légèrement différente au clic */
+    transform: scale(1) !important; /* Rétablissement après clic */
+}
+
+.tablinks span {
+    color: #aad4f5 !important; /* Bleu clair pour le texte du span */
+    font-weight: bold !important; /* Texte en gras pour mettre en avant */
+}
+
+.common {
+    display: flex;
+    align-items: center; /* Aligne verticalement les éléments */
+    justify-content: space-between; /* Sépare les éléments */
+    gap: 15px; /* Espacement horizontal entre les enfants */
+    background-color: #1e2f47; /* Fond sombre bleuté */
+    padding: 10px 15px; /* Espacement interne */
+    border-radius: 8px; /* Coins arrondis */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Légère ombre portée */
+    margin-bottom: 20px; /* Espacement externe pour bien aérer */
+}
+
+.clear-selection {
+    background-color: #4f8ef7; /* Bleu vif pour attirer l'attention */
+    color: #ffffff; /* Texte blanc pour un bon contraste */
+    border: none; /* Supprime la bordure par défaut */
+    border-radius: 6px; /* Coins légèrement arrondis */
+    padding: 8px 16px; /* Espacement interne pour un bouton confortable */
+    font-size: 14px; /* Taille de texte lisible */
+    font-weight: bold; /* Texte en gras */
+    cursor: pointer; /* Curseur en mode clic */
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Transition fluide */
+}
+
+.clear-selection:hover {
+    background-color: #3a6fbc; /* Bleu légèrement plus sombre au survol */
+    transform: scale(1.05); /* Légère mise en relief */
+}
+
+.clear-selection:active {
+    background-color: #2d4d87; /* Encore plus sombre lors du clic */
+    transform: scale(0.95); /* Effet d'enfoncement */
+}
+
+.common label {
+    font-size: 25px !important; /* Taille lisible */
+    margin-left: 250px;
+    font-weight: bold !important; /* Texte légèrement accentué */
+    color: #00BBEC !important; /* Bleu clair qui s'intègre bien au thème */
+    margin-bottom: 8px;  /* Espacement sous le label */
+    display: inline-block; /* Garantit un comportement approprié pour le positionnement */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6) !important; /* Subtil effet de profondeur */
+    transition: color 0.3s ease !important; /* Transition fluide pour toute modification */
+}
+
+#dateUntilRecurrence {
+    padding: 8px 12px; /* Espacement interne */
+    font-size: 14px; /* Taille de texte lisible */
+    color: #d1e4f5 !important; /* Couleur de texte claire */
+    background-color: #1b2a3f; /* Fond sombre bleuté */
+    border: 1px solid #2e4a65; /* Bordure fine pour délimitation */
+    border-radius: 6px; /* Coins légèrement arrondis */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Légère ombre pour effet visuel */
+    outline: none; /* Retire l'effet par défaut lors du focus */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Animation fluide */
+    margin-top: 7px !important;
+}
+
+#dateUntilRecurrence:focus {
+    border-color: #4f8ef7; /* Bordure bleue accentuée au focus */
+    box-shadow: 0 0 6px rgba(79, 142, 247, 0.6); /* Effet lumineux autour */
+}
+

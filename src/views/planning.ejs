@@ -157,11 +157,11 @@
         <ul class="listAgenda">
           <% agendas.forEach(function(agenda) { %>
             <li>
+                <input class="checkAgenda" data-id="<%= agenda._id %>" type="checkbox" name="checkbox" style="width: 30px;">
               <div class="agendaDiv">
                 <label for="checkbox" style="font-size:1em;margin: auto 0;">
                   <%= agenda.name %>
               </label>
-              <input class="checkAgenda" data-id="<%= agenda._id %>" type="checkbox" name="checkbox" style="width: 30px;">
             </div>
                         </li>
         <% }); %>
