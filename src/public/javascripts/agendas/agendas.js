@@ -420,43 +420,49 @@ const exitExportMode = () => {
 }
 
 async function exportAgenda() {
-    const res = await fetch('agendas/api/export', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ids: exportedAgenda })
-    });
-    const data = (await res.json())
-    if (data.success) {
-        try {
-            if (window.showSaveFilePicker) {        // new browser
-                const handle = await window.showSaveFilePicker({
-                    suggestedName: `agendas${Date.now()}.json`,
-                    types: [{
-                        description: 'JSON file',
-                        accept: { 'application/json': ['.json'] }
-                    }]
-                });
+    if (exportedAgenda.length > 0) {
+        const res = await fetch('agendas/api/export', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ids: exportedAgenda })
+        });
+        const data = (await res.json())
+        if (data.success && data !== {}) {
+            try {
+                if (window.showSaveFilePicker) {        // new browser
+                    const handle = await window.showSaveFilePicker({
+                        suggestedName: `agendas${Date.now()}.json`,
+                        types: [{
+                            description: 'JSON file',
+                            accept: { 'application/json': ['.json'] }
+                        }]
+                    });
 
-                const writable = await handle.createWritable();
-                await writable.write(data.content);
-                await writable.close();
-            } else {        // older browser
-                const blob = new Blob([data.content], { type: 'application/json' });
-                const url = window.URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = `agendas${Date.now()}.json`;
-                a.click();
-                window.URL.revokeObjectURL(url);
+                    const writable = await handle.createWritable();
+                    await writable.write(data.content);
+                    await writable.close();
+                } else {        // older browser
+                    const blob = new Blob([data.content], { type: 'application/json' });
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `agendas${Date.now()}.json`;
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                }
+
+            } catch (err) {
+                console.error('Error saving file:', err);
+                afficherPopUp("Erreur lors de l'exportation des agendas.", false)
             }
-
-        } catch (err) {
-            console.error('Error saving file:', err);
+        } else {
             afficherPopUp("Erreur lors de l'exportation des agendas.", false)
         }
     } else {
-        afficherPopUp("Erreur lors de l'exportation des agendas.", false)
+        afficherPopUp("Aucun agendas n'a était sélectionné.", false)
     }
+
+
 
 }
 
