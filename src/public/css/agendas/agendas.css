@@ -12,7 +12,7 @@
     --text-light: #FFFFFF; /* Blanc pur */
     --text-dark: #111828; /* Bleu nuit foncé */
     --text-muted: rgba(255, 255, 255, 0.6); /* Blanc légèrement atténué */
-    
+
     /* Spacing */
     --spacing-xs: 8px;
     --spacing-sm: 16px;
@@ -80,7 +80,7 @@ footer {
     /* Bordure plus douce avec une couleur bleutée discrète */
     border: 3px solid  #00BBEC;
     background: linear-gradient(145deg, rgba(0, 187, 236, 0.2), rgba(30, 39, 61, 0.8));
-    
+
     /* Effet de transition fluide */
     transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
 }
@@ -88,6 +88,10 @@ footer {
 .calendar:hover {
     transform: scale(1.05); /* Zoom léger au survol */
     box-shadow: 0 8px 20px rgba(0, 137, 255, 0.7); /* Ombre bleu clair renforcée */
+}
+.calendar.hover {
+    transform: scale(1.05); /* Zoom léger au survol */
+    box-shadow: 0 8px 20px rgba(0, 220, 255, 0.7); /* Ombre bleu clair renforcée */
 }
 
 
@@ -121,7 +125,7 @@ footer {
     transform: scale(1.05); /* Légèrement plus grand au survol */
     background: linear-gradient(135deg, #1f2a40, #303f5f); /* Inverse le dégradé au survol */
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4); /* Ombre renforcée au survol */
-} 
+}
 
 
 
@@ -182,7 +186,7 @@ footer {
     overflow: hidden;
 
     /* Dégradé bleu plus lumineux et plus doux */
-    background: linear-gradient(145deg, rgba(50, 60, 85, 0.3), rgba(30, 39, 61, 0.85));*/
+    background: linear-gradient(145deg, rgba(50, 60, 85, 0.3), rgba(30, 39, 61, 0.85));
 
     /* Effet de brillance interne léger avec une couleur bleue douce */
     box-shadow: inset 0 0 15px rgba(0, 145, 255, 0.3);
@@ -202,7 +206,7 @@ footer {
 
     /* Ajout de dégradé harmonieux */
    /* background: linear-gradient(145deg, rgba(72, 176, 217, 0.5), rgba(17, 24, 40, 0.9));
-    
+
     /* Bordure et ombre */
     border: 2px solid var(--primary-color);
     border-right: 0px !important;
@@ -228,7 +232,7 @@ footer {
 .layer1-shared .title-section {
     text-align: center;
     font-size: 0px;/* Taille de texte réduite pour le titre */
-    
+
 }
 
 /* Effet au survol de layer1-shared */
@@ -260,7 +264,7 @@ footer {
 
 
 .layer2 {
-    
+
     transform: translateX(100%);
     margin-top: 2px;
     margin-left: -2px;
@@ -270,7 +274,7 @@ footer {
 .shared-calendar .layer2{
     margin-top: -195px;
     margin-left: 1px;
-    
+
 }
 
 .calendar.open .layer2 {
@@ -324,12 +328,12 @@ footer {
     margin-left: 10px;
     margin-top: 20px;
     background-color: #dc3545;
-   
+
 }
 
 #layer2-content{
     margin-top: 25px;
-    
+
 }
 
 
@@ -461,7 +465,7 @@ footer {
 .access-level-badge.admin {
     background-color: var(--dark-bg);
     color: var(--text-light);
-   
+
 }
 
 .count-badge {
@@ -486,7 +490,7 @@ footer {
     height: 100%;
     background-color: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(5px);
-    
+
 }
 
 .modal-content {
@@ -507,7 +511,7 @@ footer {
     margin-bottom: var(--spacing-md);
     font-size: 1.8rem;
     color: #FFFFFF; /* Couleur principale pour le titre */
-    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4); 
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.4);
 }
 
 .close-button {
@@ -599,7 +603,7 @@ input:focus {
 .access-level-badge {
     margin-left: -15px !important;
     margin-top:12px;
-   
+
 }
 
 .agenda-name {
@@ -610,9 +614,6 @@ input:focus {
 }
 
 .search-link {
-    position: absolute;
-    top: 10px;
-    right: 10px;
     padding: 10px 20px;
     background: linear-gradient(135deg, #445a77, #2b3d56); /* Dégradé plus subtil pour la modernité */
     color: #ffffff; /* Couleur blanche pour un contraste clair */
@@ -628,6 +629,34 @@ input:focus {
     cursor: pointer; /* Indicateur de clic */
     transition: all 0.3s ease; /* Transitions fluides pour le hover */
     z-index: 10;
+}
+
+.section-header div {
+    display: flex;
+    height:55px;
+    gap:20px;
+    justify-content: space-between;
+}
+
+.section-header div button {
+    padding: 10px 20px;
+    background: linear-gradient(135deg, #445a77, #2b3d56); /* Dégradé plus subtil pour la modernité */
+    color: #ffffff; /* Couleur blanche pour un contraste clair */
+    font-size: 0.9rem; /* Taille légèrement plus grande pour la lisibilité */
+    font-weight: 600; /* Texte plus épais pour l'importance */
+    border: 1px solid rgba(255, 255, 255, 0.3); /* Bordure légère et subtile */
+    border-radius: 6px; /* Coins légèrement arrondis pour un effet doux */
+    text-decoration: none; /* Supprime le soulignement */
+    display: flex;
+    align-items: center; /* Aligne le contenu verticalement */
+    gap: 8px; /* Espacement entre l'icône et le texte */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.1); /* Ombre externe + effet interne */
+    cursor: pointer; /* Indicateur de clic */
+    transition: all 0.3s ease; /* Transitions fluides pour le hover */
+    z-index: 10;
+}
+.export-button-stop.closed {
+    display:none !important;
 }
 
 .search-link i {
@@ -653,7 +682,13 @@ input:focus {
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1); /* Réduction de l'ombre */
 }
 
-
+.export-mode-calendar {
+    background: linear-gradient(135deg, #523fc0, #031c3e);
+    border: 4px solid #5666b2;
+}
+.export-mode-calendar #agendaName::after {
+    background-color: #7063ba !important;
+}
 .section-header {
     position: relative; /* Nécessaire pour positionner .search-link à l'intérieur */
     display: flex;

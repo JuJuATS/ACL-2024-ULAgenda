@@ -4,10 +4,11 @@ const User = require('../../database/models/user.js');
 const Agenda = require('../../database/models/agenda.js');
 const Share = require('../../database/models/share.js');
 const authMiddleware = require('../../middlewares/authMiddleware.js');
-const { 
-    checkAgendaAccess, 
-    checkAdminRights 
+const {
+    checkAgendaAccess,
+    checkAdminRights
 } = require('../../middlewares/agendaAccessMiddleware.js');
+const {fileManager} = require("../../database/models/exportManager");
 const router = express.Router();
 
 // Route pour afficher la page d'agenda
@@ -63,9 +64,9 @@ router.put('/updateAgendaTitle', authMiddleware, checkAgendaAccess, checkAdminRi
         const { agendaId, newTitle } = req.body;
 
         if (!newTitle) {
-            return res.status(400).json({ 
-                success: false, 
-                message: 'Le nouveau titre est requis' 
+            return res.status(400).json({
+                success: false,
+                message: 'Le nouveau titre est requis'
             });
         }
 
@@ -78,9 +79,9 @@ router.put('/updateAgendaTitle', authMiddleware, checkAgendaAccess, checkAdminRi
         res.json({ success: true, updatedAgenda });
     } catch (err) {
         console.error('Erreur lors de la mise à jour de l\'agenda:', err);
-        res.status(500).json({ 
-            success: false, 
-            message: 'Erreur lors de la modification' 
+        res.status(500).json({
+            success: false,
+            message: 'Erreur lors de la modification'
         });
     }
 });
@@ -89,16 +90,16 @@ router.put('/updateAgendaTitle', authMiddleware, checkAgendaAccess, checkAdminRi
 router.delete('/:id', authMiddleware, checkAgendaAccess, checkAdminRights, async (req, res) => {
     try {
         const deletedAgenda = await Agenda.findByIdAndDelete(req.params.id);
-        
+
         // Supprimer également tous les partages associés
         await Share.deleteMany({ agendaId: req.params.id });
 
         res.status(200).json({ message: "Agenda supprimé avec succès" });
     } catch (error) {
         console.error('Erreur lors de la suppression de l\'agenda:', error);
-        res.status(500).json({ 
-            message: "Erreur lors de la suppression de l'agenda", 
-            error 
+        res.status(500).json({
+            message: "Erreur lors de la suppression de l'agenda",
+            error
         });
     }
 });
@@ -109,8 +110,8 @@ router.post('/', authMiddleware, async (req, res) => {
         const { name } = req.body;
 
         if (!name) {
-            return res.status(400).json({ 
-                message: 'Le nom de l\'agenda est requis' 
+            return res.status(400).json({
+                message: 'Le nom de l\'agenda est requis'
             });
         }
 
@@ -119,9 +120,9 @@ router.post('/', authMiddleware, async (req, res) => {
 
         res.status(201).json(newAgenda);
     } catch (error) {
-        res.status(500).json({ 
-            message: "Erreur lors de la création de l'agenda", 
-            error 
+        res.status(500).json({
+            message: "Erreur lors de la création de l'agenda",
+            error
         });
     }
 });
@@ -234,7 +235,7 @@ router.post('/:id/share', authMiddleware, checkAgendaAccess, checkAdminRights, a
             }
 
             shareData.sharedWith = targetUser._id;
-            
+
             // Création et sauvegarde du partage utilisateur
             const share = new Share(shareData);
             await share.save();
@@ -386,6 +387,23 @@ router.get('/share/:token', authMiddleware, async (req, res) => {
         console.error('Erreur lors de l\'accès via le lien de partage:', error);
         req.flash('error', 'Une erreur est survenue lors de l\'accès à l\'agenda');
         res.redirect('/agendas');
+    }
+});
+
+router.post('/api/export', authMiddleware, async (req, res) => {
+    const { ids } = req.body;
+
+    const agendaData = await fileManager.exportJSON(ids, req.user.id)
+    res.json({ content: JSON.stringify(agendaData, null, 2),success: true });
+})
+
+router.post('/api/import', async (req, res) => {
+    const agendas = req.body;
+    try {
+        const importedAgenda = await fileManager.importJSON(agendas, req.user.id);
+        res.json(importedAgenda);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
     }
 });
 

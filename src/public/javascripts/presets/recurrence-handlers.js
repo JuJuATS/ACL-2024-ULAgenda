@@ -30,7 +30,7 @@ function updateRecurrenceData(type, day, isAdded) {
     if (!isAdded) {
         for (let k of Object.keys(recurrenceData)) {
             if (k !== type && recurrenceData[k].size > 0) {
-                afficherPopUp(`Récurrence ${k === 'yearly' ? "Année" : k === 'monthly' ? "Mois" : 'Semaine'} déjà défini`, false)
+                afficherPopUp(`Récurrence ${k === 'yearly' ? "à l'année" : k === 'monthly' ? "au mois" : 'à la semaine'} déjà défini`, false)
                 return 0;
             }
         }
