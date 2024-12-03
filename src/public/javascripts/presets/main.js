@@ -28,7 +28,8 @@ document.addEventListener('DOMContentLoaded', () => {
         recurrence: {
             weekly: new Set(),
             monthly: new Set(),
-            yearly: new Set()
+            yearly: new Set(),
+            endDate: ''
         }
     };
 
@@ -44,11 +45,12 @@ document.addEventListener('DOMContentLoaded', () => {
         originalValues.recurrence = {
             weekly: new Set(recurrenceData.weekDays),
             monthly: new Set(recurrenceData.monthDays),
-            yearly: new Set(recurrenceData.yearDays)
+            yearly: new Set(recurrenceData.yearDays),
+            endDate: recurrenceData.endDate ? new Date(recurrenceData.endDate).toISOString().split('T')[0] : ''
         }
     }
 
-    initializeValidation(originalValues , presetDataEl.dataset.isNew === 'true');
+    initializeValidation(originalValues, presetDataEl.dataset.isNew === 'true');
 
     updateHiddenFields();
     initializeModal();
@@ -91,6 +93,15 @@ function initializeRecurrenceInterface() {
 
     if (recurrenceData.yearDays?.length > 0) {
         updateYearlyDatesList();
+    }
+
+    // Initialisation de la date de fin de récurrence
+    const dateUntilInput = document.getElementById('dateUntilRecurrence');
+    if (recurrenceData.endDate) {
+        // Formatage de la date au format YYYY-MM-DD pour l'input date
+        const date = new Date(recurrenceData.endDate);
+        const formattedDate = date.toISOString().split('T')[0];
+        dateUntilInput.value = formattedDate;
     }
     
     updateRecurrenceSummary();

@@ -45,7 +45,8 @@ function createBackup() {
     recurrenceBackup = {
         weekly: new Set(Array.from(recurrenceData.weekly)),
         monthly: new Set(Array.from(recurrenceData.monthly)),
-        yearly: new Set(Array.from(recurrenceData.yearly))
+        yearly: new Set(Array.from(recurrenceData.yearly)),
+        dateFin: document.getElementById('dateUntilRecurrence').value
     };
 }
 
@@ -54,7 +55,8 @@ function restoreBackup() {
         recurrenceData = {
             weekly: new Set(Array.from(recurrenceBackup.weekly)),
             monthly: new Set(Array.from(recurrenceBackup.monthly)),
-            yearly: new Set(Array.from(recurrenceBackup.yearly))
+            yearly: new Set(Array.from(recurrenceBackup.yearly)),
+            dateFin: recurrenceBackup.dateFin
         };
 
         // Restaurer l'interface visuelle
@@ -77,6 +79,9 @@ function restoreBackup() {
                 if (element) element.classList.add('selected');
             });
         }
+
+        // Restaurer la date de fin de récurrence
+        document.getElementById('dateUntilRecurrence').value = recurrenceBackup.dateFin;
 
         updateYearlyDatesList();
         updateRecurrenceSummary();
