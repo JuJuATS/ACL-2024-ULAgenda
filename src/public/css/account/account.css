@@ -11,12 +11,24 @@
 
 /* Style général du corps */
 body {
+    display: flex;
+    flex-direction: column;
     background-color: #111828;
     color: #00BBEC;
-    display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
+    margin: 0; /* Supprime les marges par défaut */
+}
+
+header {
+    position: fixed; /* Fixe le header en haut */
+    top: 0; /* Aligne au bord supérieur */
+    width: 100%; /* Prend toute la largeur */
+   /* Optionnel, pour le distinguer du reste */
+    color: #00BBEC;
+    text-align: center; /* Centre le contenu du header */
+    padding: 10px 0; /* Ajoute un peu de padding */
 }
 
 .container {
@@ -427,7 +439,5 @@ input:disabled {
     top: 10% !important; /* La pop-up descend jusqu'à 10% du haut de la page */
     opacity: 1; /* Visible */
 }
-
-
 
 
