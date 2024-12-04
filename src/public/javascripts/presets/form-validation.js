@@ -26,7 +26,8 @@ function checkIfModified(submitButton) {
         recurrence: {
             weekly: new Set(JSON.parse(document.getElementById('weekDays').value || '[]')),
             monthly: new Set(JSON.parse(document.getElementById('monthDays').value || '[]')),
-            yearly: new Set(JSON.parse(document.getElementById('yearDays').value || '[]'))
+            yearly: new Set(JSON.parse(document.getElementById('yearDays').value || '[]')),
+            endDate: document.getElementById('dateUntilRecurrence').value
         }
     };
 
@@ -43,8 +44,11 @@ function checkIfModified(submitButton) {
         return !areSetsEqual(original, current);
     });
 
+    // Vérifier la date de fin de récurrence
+    const endDateModified = currentValues.recurrence.endDate !== originalValues.recurrence.endDate;
+
     // Activer le bouton si au moins un changement est détecté
-    submitButton.disabled = !basicFieldsModified && !recurrenceModified;
+    submitButton.disabled = !basicFieldsModified && !recurrenceModified && !endDateModified;
 }
 
 document.getElementById('deletePresetForm').addEventListener('submit', function(event) {
