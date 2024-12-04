@@ -89,14 +89,15 @@ document.querySelector("#btn-recurrence").addEventListener('click', function(eve
 
 })
 
-document.querySelector(".closer").addEventListener('click', function(event) {
+function closeRecPopUp() {
     document.querySelector(".wrapper").querySelectorAll("button").forEach(b => {
         b.disabled = !b.disabled;
     })
 
     document.querySelector(".wrapper-pop-up").style.display = 'none';
 
-})
+}
+document.querySelector(".closer").addEventListener('click', closeRecPopUp)
 
 function clearSelection() {
     if (currentTab) {

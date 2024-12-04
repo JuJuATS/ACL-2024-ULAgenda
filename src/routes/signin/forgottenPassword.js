@@ -19,10 +19,9 @@ const forgottenPasswordLinkMaker  = async(req,res)=>{
         if(req.isAuthenticated()){
             return;
         }
-        console.log(req.body)
 
         const { email } = req.body;
-        
+
         const emailRegex = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
         if(!email){
            res.json({text:"l'Email est requis",success:false});
@@ -51,10 +50,10 @@ const resetPassword = async(req,res)=>{
     const currentTime = Math.floor(Date.now() / 1000);
     try{
         const verifyToken = jwt.verify(token,process.env.JWT_SECRET);
-        
+
         const user = User.findById(verifyToken.id);
         if(!user){
-            
+
             res.redirect("/forgottenPassword");
         }else{
             res.render("passwordChange",{token:token});
@@ -67,18 +66,18 @@ const changePassword = async(req,res)=>{
     if(req.isAuthenticated()){
         return res.redirect("/");
     }
-    
+
     const {password,confirmPassword,token} = req.body
-    
-    
+
+
     try{
-        const verifytoken = jwt.verify(token,process.env.JWT_SECRET); 
+        const verifytoken = jwt.verify(token,process.env.JWT_SECRET);
         if(password!==confirmPassword){
-            return res.json({text:"les mot de passes doivent correspondre",success:false})       
+            return res.json({text:"les mot de passes doivent correspondre",success:false})
         }
         else{
             if(password.length<8){
-                return res.json({text:"le mot de passe doit faire plus de 8 caractères",success:false}) 
+                return res.json({text:"le mot de passe doit faire plus de 8 caractères",success:false})
             }
             const user = await User.findById(verifytoken.userId);
             if(!user){

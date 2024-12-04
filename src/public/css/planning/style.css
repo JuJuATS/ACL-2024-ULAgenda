@@ -1,55 +1,268 @@
-*{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-body{
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
+:root {
+    /* Colors */
+    --primary-color: #0096C7; /* Bleu vif légèrement plus foncé */
+    --secondary-color: #48A9C5; /* Bleu doux */
+    --dark-bg: #0D1B2A; /* Bleu nuit intense */
+    --calendar-bg: #1B263B; /* Bleu gris foncé */
+    --text-light: #E0F4F4; /* Blanc cassé avec une teinte bleutée */
+    --text-dark: #0D1B2A; /* Bleu nuit foncé */
+    --text-muted: rgba(224, 244, 244, 0.6); /* Blanc cassé légèrement atténué */
+    
+    /* Spacing */
+    --spacing-xs: 8px;
+    --spacing-sm: 16px;
+    --spacing-md: 24px;
+    --spacing-lg: 32px;
+    --spacing-xl: 48px;
 
+    /* Shadows */
+    --shadow-sm: 0 4px 8px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 6px 12px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
-.container {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    flex: 1;
+
+#event-tooltip{
+  /*display: none !important;*/
+}
+body {
+    background-color: #212a3f;
+      color: var(--text-light);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      border-radius: 10px;
+  }
+  
+  .container {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      flex: 1;
+      position: relative;
+      border-top: 5px solid transparent;
+      box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2); 
+      
+  }
+  
+  #calendar {
     position: relative;
-}
-#calendar{
-   width: 100%;
+      width: 100%;
+      padding-left: 2px;
+      /*background: linear-gradient(145deg, #1e293b, #2c3e50); /* Dégradé sombre */
+      background: linear-gradient(90deg, #1e293b, #2c3e50);
+    color: #e5e7eb; /* Texte gris clair pour une excellente lisibilité */
+   /* Espacement généreux pour un rendu soigné */
+     /* Poids intermédiaire pour un texte élégant */
+    text-align: center; /* Centrer le contenu pour une disposition équilibrée */
+    transition: transform 0.2s ease, box-shadow 0.3s ease;
 
+  }
+
+  .fc-view-harness{
+    background: linear-gradient(145deg, #1e293b, #2c3e50);
+  
+  }
+    
+    /* Effet au survol */
+    #agenda:hover {
+      background: linear-gradient(145deg, #1e293b, #111827); /* Variation plus sombre au survol */
+      border-color: #3b82f6; /* Bordure bleue vibrante pour mettre en avant l'interaction */
+      color: #cbd5e1; /* Texte légèrement plus clair pour souligner */
+      box-shadow: 0 8px 16px rgba(59, 130, 246, 0.4); /* Ombre bleue douce */
+      transform: translateY(-2px); /* Légère élévation au survol */
+  }
+  
+  /* Effet au focus */
+  #agenda:focus {
+      outline: none; /* Supprime le contour par défaut */
+      border-color: #60a5fa; /* Accentuation de la bordure bleue */
+      box-shadow: 0 0 10px rgba(96, 165, 250, 0.5); /* Lumière bleue douce */
+  }
+  
+  /* Effet lors d'une sélection active */
+  #agenda:active {
+      background: #1c2532; /* Fond plus mat pour un clic affirmé */
+      border-color: #2563eb; /* Bordure plus foncée pour renforcer l'interaction */
+      box-shadow: 0 2px 6px rgba(37, 99, 235, 0.4); /* Ombre atténuée */
+      transform: translateY(0); /* Retour à la position initiale */
+  }
+            
+  
+  
+  #calendar h2 {
+    font-size: 2em; /* Agrandit la taille du titre */
+    text-align: center; /* Centre le titre */
+    color: #99d6ff; /* Accentue la couleur */
+    text-transform: uppercase; /* Texte en majuscules */
+    letter-spacing: 3px; /* Augmente l’espacement des lettres */
 }
+#calendar .calendar-content {
+    display: flex; /* Mise en ligne des éléments */
+    flex-wrap: wrap; /* Permet un retour à la ligne sur les petits écrans */
+    gap: 25px; /* Ajoute plus d’espace entre les éléments */
+    justify-content: center; /* Centre les éléments horizontalement */
+  }
+  #calendar .calendar-content div {
+    flex: 1 1 calc(30% - 40px); /* Ajuste automatiquement la largeur des éléments */
+    min-width: 280px; /* Augmente la largeur minimale des sections */
+    max-width: 400px; /* Largeur maximale des sections */
+    background: #003a5b; /* Fond bleu foncé des sections */
+    border-radius: 15px; /* Coins arrondis pour une cohérence de style */
+    padding: 20px; /* Plus d’espace interne pour le contenu */
+    color: #dff6ff; /* Texte clair */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5); /* Ombre douce */
+    text-align: center; /* Centre le contenu */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transitions fluides */
+  }
+  
+  #calendar .calendar-content div:hover {
+    transform: scale(1.08); /* Augmente davantage au survol */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6); /* Accentue l'ombre */
+  }
+
+  #calendar .calendar-content div:first-child {
+    background: #005e9e; /* Accentuation spéciale pour le premier élément */
+    font-weight: bold; /* Texte mis en valeur */
+  }
+  
+
+
+.fc-timegrid-slot {
+  height: 90px !important; /* Ajustez la hauteur selon vos besoins */
+}
+
+/* Centrage du contenu dans chaque créneau horaire */
+.fc-timegrid-slot-lane {
+  display: flex;
+  align-items: center; /* Centrer verticalement */
+  height: 100%; /* Assure que la hauteur du contenu suit le conteneur */
+}
+
+/* Ajuste la hauteur de l'arrière-plan */
+.fc-timegrid-bg {
+  height: 100%;
+}
+
+/* Style optionnel : Ajuste la ligne de séparation des heures */
+.fc-timegrid-slot {
+  border-bottom: 1px solid #0061a8; /* Couleur et style de la ligne */
+}
+
+/* Style optionnel : Ajuste les événements pour qu'ils s'adaptent à la hauteur */
+.fc-timegrid-event {
+  height: auto; /* Permet à l'événement de prendre toute la hauteur */
+  margin-top: 5px; /* Ajoute un léger espace en haut */
+  padding: 10px; /* Ajuste l'espacement interne */
+}
+
+/* Style de base pour l'événement principal */
+.fc-event-main-frame {
+  
+    border-radius: 10px; /* Coins arrondis pour un look moderne */
+    padding: 10px; /* Espacement interne */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombre douce */
+    color: #ffffff; /* Texte blanc pour contraster avec le fond */
+    display: flex; /* Dispose les éléments horizontalement */
+    align-items: center; /* Aligne verticalement les contenus */
+    justify-content: space-between; /* Espace entre les éléments */
+    transition: transform 0.2s, background 0.3s ease; /* Effet au survol */
+  }
+  
+  /* Effet au survol */
+  .fc-event-main-frame:hover {
+    transform: scale(1.05); /* Agrandit légèrement */
+    background: linear-gradient(135deg, #005f9e, #00d4ff); /* Gradient plus lumineux */
+  }
+  
+  /* Style du texte principal de l'événement */
+  .fc-event-title {
+    font-size: 2.0em; /* Taille du texte légèrement augmentée */
+    font-weight: bold; /* Texte en gras */
+    white-space: nowrap; /* Empêche le retour à la ligne */
+    overflow: hidden; /* Cache le surplus si trop long */
+    text-overflow: ellipsis; /* Ajoute "..." si le texte dépasse */
+  }
+  
+  /* Icônes ou autres éléments supplémentaires */
+  .fc-event-main-frame .fc-event-icons {
+    margin-left: 10px; /* Espace entre le texte et les icônes */
+    font-size: 1.2em; /* Agrandit les icônes */
+    color: #a5f3fc; /* Couleur des icônes */
+  }
+  
+  /* Boutons ou interactions (si présents dans l'événement) */
+  .fc-event-main-frame button {
+    background-color: #00bbec; /* Boutons avec un fond bleu clair */
+    border: none; /* Pas de bordure */
+    color: #ffffff; /* Texte blanc */
+    padding: 5px 8px; /* Espacement interne */
+    border-radius: 5px; /* Coins arrondis */
+    cursor: pointer; /* Change le curseur au survol */
+    transition: background-color 0.2s ease; /* Animation de la couleur */
+  }
+  
+  .fc-event-main-frame button:hover {
+    background-color: #005f9e; /* Couleur plus foncée au survol */
+  }
+  
+  /* Icône de temps (heure de l'événement, si présente) */
+  .fc-event-time {
+    color: #a5f3fc; /* Couleur bleutée */
+    font-size: 2em !important; /* Taille standard */
+    font-style: italic; /* Style italique */
+    margin-right: 10px; /* Espacement à droite */
+  }
+  
+  
+  
+  .fc-button-group{
+    margin: 0 auto 0 auto !important;
+
+    padding: 5px 10px;
+    border-radius: 8px;
+    z-index: 9999;
+   
+  }
+  .fc-today-button{
+    margin-right: 20px !important;
+  }
+
+
+  
 .sideBar{
     width: 0;
     overflow-x: hidden;
     border: black 2px solid;
+    border-bottom: 2px solid #00BBEC;
     border-top: none;
     border-bottom: none;
-    background-color: #f7f9fc;
-    transition: width .7s ease-in-out;   
+    background: linear-gradient(145deg, #1e293b, #2c3e50);
+
+    transition: width 0.7s ease-in-out;
     position: relative;
-    transition: width .7s ease-in-out;
 }
 .sideBar-open{
-    width: 300px;
+    width: 280px;
 
 }
 
+
 .menu {
-    --s: 30px; /* control the size */
-    --c: black; /* the color */
+    --s: 30px; /* contrôle la taille */
+    --c: var(--primary-color); /* couleur bleutée sombre */
     height: var(--s);
     aspect-ratio: 1;
     border: none;
     padding: 0;
     display: block;
-    position:sticky;
+    position: absolute; /* Position en haut de la div */
+    /* Position par rapport au haut de la div */
+    /* Position par rapport au côté gauche de la div */
     border-inline: calc(var(--s)/2) solid #0000;
     box-sizing: content-box;
-    --_g1: linear-gradient(var(--c) 20%,#0000 0 80%,var(--c) 0)
+    --_g1: linear-gradient(var(--c) 20%, #0000 0 80%, var(--c) 0)
            no-repeat content-box border-box;
-    --_g2: radial-gradient(circle closest-side at 50% 12.5%,var(--c) 95%,#0000)
+    --_g2: radial-gradient(circle closest-side at 50% 12.5%, var(--c) 95%, #0000)
            repeat-y content-box border-box;
     background:
       var(--_g2) left  var(--_p,0px) top,
@@ -59,25 +272,27 @@ body{
     background-size:
       20% 80%,
       40% 100%;
-
     clip-path: inset(0 25%);
-    -webkit-mask: linear-gradient(90deg,#0000,#000 25% 75%,#0000);
+    -webkit-mask: linear-gradient(90deg, #0000, #000 25% 75%, #0000);
     cursor: pointer;
     transition:
       background-position .3s var(--_s,.3s),
       clip-path 0s var(--_s,.6s);
-    -webkit-appearance:none;
-    -moz-appearance:none;
-    appearance:none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
     -webkit-touch-callout: none; /* iOS Safari */
     -webkit-user-select: none; /* Safari */
      -khtml-user-select: none; /* Konqueror HTML */
        -moz-user-select: none; /* Old versions of Firefox */
         -ms-user-select: none; /* Internet Explorer/Edge */
-            user-select: none; /* Non-prefixed version, currently
-                                  supported by Chrome, Edge, Opera and Firefox */
-    margin-top: 10px;
-  }
+            user-select: none; /* Non-prefixed version, actuellement
+                                  pris en charge par Chrome, Edge, Opera et Firefox */
+    z-index: 1000; /* S'assurer que le bouton reste visible */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Ombre subtile pour un effet visuel */
+    border-radius: 50%; /* Rendre le bouton circulaire */
+}
+
 .menu:before,
 .menu:after {
   content:"";
@@ -106,48 +321,27 @@ body{
   outline: 2px solid var(--c);
   outline-offset: 5px;
 }
+
+
 .display-pop-up {
     display:block !important;
 }
 
-#popup-rdv h1 {text-align: center}
-#popup-rdv {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  width:400px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  background: white;
-  border: 2px solid black;
-  padding: 20px;
-  z-index: 999;
-  transform: translate(-50%,-50%);
-  border-radius: 20px;
-  display:none;
-}
-#popup-rdv input, select, textarea {
-    background: white;
-}
-.form-group {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-}
-#popup-rdv input, select {
-    border: 1px solid #e2e8f0;
-    border-radius: 4px;
-    cursor: pointer;
-    padding: 8px 12px 8px 12px;
-}
-#popup-rdv input:hover, select:hover {
-    background: #efefef;
-}
-#popup-rdv input:focus {
-    outline:none;
-}
-.form-group  label{
-  text-align: center;
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 .preset-container select{
   width: 100%;
 }
@@ -172,22 +366,6 @@ form {
     gap:10px;
 }
 
-.form-button {
-    background-color: #3e73ea; /* Bouton en #595959 */
-    color: white;
-    padding: 10px;
-    border: none;
-    border-radius: 15px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 50%;
-    transition: background-color 0.3s ease;
-    margin: 0 auto;
-}
-
-.form-button:hover {
-    background: #1c52d0;
-}
 
 
 .infoDate {
@@ -284,7 +462,7 @@ form {
     border:none;
     cursor:pointer;
     top:10px;
-    right:10px;
+    right:8px;
     clip-path: polygon(20% 0%, 0% 20%, 30% 50%, 0% 80%, 20% 100%, 50% 70%, 80% 100%, 100% 80%, 70% 50%, 100% 20%, 80% 0%, 50% 30%);
 }
 
@@ -378,7 +556,7 @@ form {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 12px;
+    padding: 8px 10px;
     background-color: #f1f5f9;
     border: 1px solid #e2e8f0;
     border-radius: 6px;
@@ -386,8 +564,8 @@ form {
 }
 
 .selected-color {
-    width: 16px;
-    height: 16px;
+    width: 16px !important;
+    height: 16px !important;
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.1);
 }
@@ -540,10 +718,821 @@ form {
 
 #dateSelector{
     position: absolute;
-    left: 30%;
-    margin-top: 10px;
+    left: 22%;
+    margin-top: 23px;
+    
     width: 25px;
+    background-color: #2d3b47;  /* Couleur de fond plus sombre */
+    border: 1px solid #4a5d73;  /* Bordure avec une couleur de contraste plus claire */
+    border-radius: 8px;  /* Coins arrondis pour un look moderne */
+    padding: 10px 12px;  /* Espacement intérieur pour rendre l'input plus grand */
+    color: #fff;  /* Texte blanc */
+    font-size: 1em;  /* Taille de la police */
+    font-family: inherit;  /* Hérite de la police du parent */
+    width: 250px;  /* Largeur personnalisée */
+    transition: all 0.3s ease;  /* Transition pour un effet fluide lors du focus */
+    cursor: pointer !important;
+    
+}
+
+
+#dateSelector:focus {
+    outline: none;  /* Supprime le contour par défaut */
+    border-color: #03cdff;  /* Bordure bleue lors du focus */
+    box-shadow: 0 0 8px rgba(0, 187, 236, 0.5);  /* Ombre bleue douce lors du focus */
+}
+.fc-button-group:hover{
+  outline: none;  /* Supprime le contour par défaut */
+  border-color: #00BBEC;  /* Bordure bleue lors du focus */
+  box-shadow: 0 0 8px rgba(0, 187, 236, 0.5);  /* Ombre bleue douce lors du focus */
+}
+#dateSelector::-webkit-calendar-picker-indicator {
+    background-color: #00BBEC;  /* Icône du calendrier avec couleur bleue */
+    border-radius: 50%;
+    padding: 4px;
+    cursor: pointer !important;
+}
+
+#dateSelector::-webkit-input-placeholder {
+    color: #a5a5a5;  /* Couleur du placeholder */
+    cursor:  pointer!important;
+}
+
+#dateSelector:hover {
+    border-color: #48B0D9;  /* Bordure plus claire lors du survol */
+    background-color: #3a4c5a;  /* Fond légèrement plus clair lors du survol */
 }
 .calendar{
   position: relative;
+}
+
+.agendaDiv {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
+  padding: 15px 25px;
+  background: linear-gradient(90deg, #1e293b, #243b55); /* Dégradé doux bleu sombre */
+  border: 1px solid #2c3e50; /* Bordure subtile pour mieux délimiter */
+  border-radius: 12px; /* Coins arrondis pour un look moderne */
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative; /* Relatif pour ne pas interférer avec le flux de la page */
+  z-index: 2; /* Pour des effets supplémentaires avec le survol */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Ombre subtile pour un léger relief */
+}
+
+/* Effet au survol de .agendaDiv */
+.agendaDiv:hover {
+  background: linear-gradient(90deg, #243b55, #1e2a47); /* Dégradé inversé pour dynamiser */
+  box-shadow: 0 10px 20px rgba(0, 97, 168, 0.4); /* Ombre bleue plus marquée au survol */
+}
+
+/* Style du label dans agendaDiv */
+.agendaDiv label {
+  font-size: 1.1em !important; /* Taille de texte légèrement agrandie */
+  font-weight: 600; /* Poids de la police plus marqué */
+  color: #cfd8dc; /* Gris clair bleuté pour s'accorder au fond */
+  margin: 0;
+  cursor: pointer;
+  transition: all 0.3s ease; /* Transition fluide pour les effets */
+  letter-spacing: 0.6px; /* Espacement subtil entre les lettres */
+  
+  line-height: 1.2; /* Ajuste l'espacement entre les lignes */
+  text-align: center; /* Centre le texte si souhaité */
+}
+
+/* Effet de changement de couleur et de position du texte au survol */
+.agendaDiv:hover label {
+  color: #00aacc; /* Bleu vif et lumineux au survol */
+  transform: translateX(5px); /* Mouvement subtil pour un effet de profondeur */
+}
+
+/* Style de la checkbox */
+.checkAgenda {
+  display: inline-block !important; /* Empêche l'influence des styles de texte environnants */
+  width: 28px !important; /* Taille fixe pour la largeur */
+  height: 28px !important; /* Taille fixe pour la hauteur */
+  cursor: pointer; /* Curseur pour l'interaction */
+  accent-color: #00aacc; /* Accent bleu clair */
+  border-radius: 50%; /* Forme circulaire moderne */
+  border: 2px solid #34495e; /* Bordure gris bleuté foncé */
+  background-color: #1e2a37; /* Fond sombre */
+  transition: all 0.3s ease; /* Transition fluide pour les effets */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Ombre douce sous la checkbox pour relief */
+  vertical-align: middle; /* Garde la position uniforme même avec des textes environnants */
+}
+
+
+/* Effet lorsque la checkbox est cochée */
+.checkAgenda:checked {
+  background-color: #00aacc; /* Fond bleu clair quand coché */
+  border-color: #00aacc; /* Bordure bleue claire lorsqu'elle est cochée */
+  box-shadow: 0 0 10px rgba(0, 170, 204, 0.5); /* Ombre bleue douce */
+}
+
+/* Effet au survol de la checkbox */
+.checkAgenda:hover {
+  transform: scale(1.1); /* Légère augmentation de la taille pour un effet interactif */
+  background-color: #0099bb; /* Fond bleu vif au survol */
+  border-color: #0099bb; /* Bordure bleu vif au survol */
+}
+
+/* Effet au focus de la checkbox */
+.checkAgenda:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(0, 170, 204, 0.4); /* Ombre bleue douce lors du focus */
+}
+
+/* Animation de l'agenda */
+@keyframes bounceIn {
+  0% {
+      transform: scale(0.85);
+      opacity: 0;
+  }
+  50% {
+      transform: scale(1.1);
+  }
+  100% {
+      transform: scale(1);
+      opacity: 1;
+  }
+}
+
+/* Appliquer l'animation à l'agenda */
+.agendaDiv {
+  animation: bounceIn 0.4s ease-out;
+}
+
+
+  /* Style du bouton Select All */
+  .selectAll {
+    margin-top: -10px;;
+    background: #005d75 !important; /* Identique à Select All */
+    color: #f1f1f1; /* Texte en blanc cassé */
+    
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Ombre douce */
+  }
+  
+  /* Effet au survol */
+  .selectAll:hover {
+    background: #004c61 !important; /* Bleu plus foncé au survol */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Ombre plus marquée pour un effet dynamique */
+    transform: translateY(-2px); /* Légère élévation pour l'effet interactif */
+  }
+  
+  /* Effet au clic */
+  .selectAll:active {
+    background: #003b4f !important; /* Bleu très foncé lors du clic */
+    transform: translateY(0); /* Retour à l'élévation normale après le clic */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Ombre plus douce après le clic */
+  }
+  
+
+  
+  /* Style du bouton Unselect All */
+  .unSelectAll {
+    margin-top: -10px;;
+    background: #005d75 !important; /* Identique à Select All */
+    color: #f1f1f1; /* Texte en blanc cassé */
+    
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Ombre douce */
+  }
+  
+  /* Effet au survol */
+  .unSelectAll:hover {
+    background: #004c61 !important; /* Dégradé bleu plus foncé au survol */
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Ombre plus marquée */
+    transform: translateY(-2px); /* Légère élévation au survol */
+  }
+  
+  /* Effet au clic */
+  .unSelectAll:active {
+    background: #003b4f !important; /* Fond très foncé au clic */
+    transform: translateY(0); /* Retrait de l'élévation au clic */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Ombre douce après le clic */
+  }
+  
+  .menu{
+    margin-top: 32px;
+    margin-left: -10px;
+  }
+
+  .fc-header-toolbar {
+    width: 100%;
+    margin-top: 20px; /* Augmenter l'espacement du haut */
+    margin-left: 0px;
+    display: flex;
+    justify-content: space-between; /* Espacement égal entre les éléments */
+    align-items: center; /* Centrer verticalement les éléments */
+    
+    
+}
+
+/* Style des boutons dans la toolbar */
+.fc-header-toolbar .fc-button {
+    background-color: var(--primary-color); /* Couleur d'arrière-plan pour les boutons */
+    color: white; /* Texte en blanc */
+    border: none;
+    padding: 8px 16px;
+    font-size: 1em;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+/* Effet au survol des boutons */
+.fc-header-toolbar .fc-button:hover {
+    background-color: #009ec1; /* Couleur de fond plus foncée au survol */
+    transform: scale(1.05); /* Légère augmentation de la taille au survol */
+}
+
+/* Effet au focus des boutons */
+.fc-header-toolbar .fc-button:focus {
+    outline: none;
+    box-shadow: 0 0 6px rgba(0, 187, 236, 0.5); /* Ombre bleue douce au focus */
+}
+
+/* Style du titre dans la toolbar */
+.fc-header-toolbar .fc-toolbar-title {
+    color: #ffffff; /* Texte blanc pour le titre */
+    font-size: 1.5em; /* Taille plus grande du titre */
+    font-weight: bold;
+    margin-left: 50px;
+  
+    letter-spacing: 1px; /* Espacement entre les lettres pour plus de lisibilité */
+    text-transform: uppercase; /* Majuscules pour un effet plus moderne */
+}
+
+/* Ajouter une animation au titre */
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fc-header-toolbar .fc-toolbar-title {
+    animation: fadeIn 0.3s ease-out;
+}
+
+.fc-timegrid-slot-label-frame{
+    font-size: 25px; /* Taille de police modérée */
+    font-weight: 600; /* Police semi-gras pour une meilleure lisibilité */
+    color: #00BBEC;/* Couleur de texte gris foncé pour un contraste doux */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Ombre douce et subtile */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Animation fluide */
+}
+
+.fc-col-header-cell-cushion {
+    font-size: 25px; /* Taille de police modérée */
+    font-weight: 600; /* Police semi-gras pour une meilleure lisibilité */
+    color: #00BBEC;/* Couleur de texte gris foncé pour un contraste doux */
+    text-align: center; /* Centrer le texte */
+    padding: 8px 12px; /* Marges internes équilibrées */
+
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Ombre douce et subtile */
+    transition: background-color 0.3s ease, color 0.3s ease; /* Animation fluide */
+}
+
+.fc-timegrid-slot-lane{
+    cursor: pointer;
+}
+
+.fc-toolbar-title{
+  background-color: #2d3b47; 
+  border: 1px solid #4a5d73;  /* Bordure avec une couleur de contraste plus claire */
+  border-radius: 8px;
+  color: #fff !important;  /* Texte blanc */
+  font-size: 1.2em !important;  /* Taille de la police */
+  font-family: inherit !important; 
+  padding: 10px 12px; 
+}
+
+.fc-toolbar-title:hover{
+  outline: none;  /* Supprime le contour par défaut */
+  border-color: #00BBEC;  /* Bordure bleue lors du focus */
+  box-shadow: 0 0 8px rgba(0, 187, 236, 0.5);  /* Ombre bleue douce lors du focus */
+}
+
+.listAgenda {
+  list-style: none; /* Supprime les puces classiques */
+  padding: 15px 20px; /* Ajoute de l'espace autour de la liste */
+  margin-top: -20px;
+  background: linear-gradient(145deg, #1e293b, #2c3e50);
+
+  /* Coins arrondis pour modernité */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre douce pour un effet de relief */
+  border: 1px solid #34495e; /* Bordure discrète */
+  overflow: hidden; /* Coupe tout contenu qui dépasse */
+  overflow-y: auto; /* Activer le défilement vertical si nécessaire */
+  overflow-x: auto;
+  max-height: 1247px; 
+  scrollbar-color: #34495e #1e293b; /* Couleur de la barre et du fond */
+    scrollbar-width: thin; /* Barre de défilement fine */
+}
+
+/* Style des éléments de la liste */
+.listAgenda li {
+  padding: 15px 20px; /* Espacement interne des éléments */
+  margin: 8px 0; /* Espacement entre les éléments */
+  border-radius: 8px; /* Coins légèrement arrondis */
+  color: #cfd8dc; /* Texte gris clair bleuté */
+   /* Texte plus affirmé */
+  display: flex; /* Pour aligner les éléments enfants */
+  align-items: center; /* Centrer les éléments verticalement */
+  gap: 15px; /* Espace entre les éléments enfants */
+  transition: all 0.3s ease; /* Transition pour un effet interactif fluide */
+  cursor: pointer; /* Curseur interactif */
+}
+
+
+
+/* Style pour les icônes ou éléments visuels à gauche */
+.listAgenda li .icon {
+  width: 35px; /* Taille fixe pour les icônes */
+  height: 35px;
+  background: #34495e; /* Fond gris bleuté */
+  border-radius: 50%; /* Icônes circulaires */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #cfd8dc; /* Icônes gris clair */
+  font-size: 1.2em; /* Taille des icônes */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Léger relief pour les icônes */
+  transition: background 0.3s ease, transform 0.3s ease; /* Transition fluide */
+}
+
+/* Effet au survol des icônes */
+.listAgenda li:hover .icon {
+  background: #00aacc; /* Fond bleu clair au survol */
+  color: #ffffff; /* Icônes blanches */
+  transform: scale(1.1); /* Légère augmentation de la taille */
+}
+
+/* Animation des éléments lors de leur apparition */
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+      transform: translateY(10px);
+  }
+  100% {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+.listAgenda::-webkit-scrollbar {
+  width: 2px; /* Largeur de la scrollbar */
+}
+
+.listAgenda::-webkit-scrollbar-thumb {
+  background: #34495e; /* Couleur de la barre de défilement */
+  border-radius: 4px; /* Arrondi de la barre */
+}
+
+.listAgenda::-webkit-scrollbar-thumb:hover {
+  background: #00aacc; /* Couleur de la barre au survol */
+}
+
+.listAgenda::-webkit-scrollbar-track {
+  background: #1e293b; /* Fond de la zone de défilement */
+}
+
+/* Conteneur des boutons Select/Unselect */
+#selectButtons {
+  display: flex !important;
+  gap: 10px !important; /* Espacement entre les boutons */
+  background: linear-gradient(145deg, #2c3e50, #2c3e50);
+
+  margin-top: -20px !important;
+
+}
+
+
+/* Style général de la popup */
+#popup-rdv {
+  font-family: 'Arial', sans-serif;
+  width: 420px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  padding: 30px;
+  z-index: 999;
+  background: linear-gradient(145deg, #1f2a3b, #2c3e55); /* Dégradé doux */
+  color: #f0f4f8; /* Texte clair et raffiné */
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Ombre subtile pour un effet flottant */
+  transform: translate(-50%, -50%);
+  display: none;
+  transition: all 0.4s ease;
+}
+
+/* Titre de la popup */
+#popup-rdv h1 {
+  text-align: center;
+  font-size: 24px;
+  color: #e1e8f0; /* Un ton très clair pour bien ressortir */
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+#popup-rdv input,
+#popup-rdv select,
+#popup-rdv textarea {
+  background: #34495e; /* Bleu-gris foncé */
+  color: #f0f4f8; /* Texte clair */
+  border: 2px solid transparent; /* Bordure subtile initiale */
+  border-radius: 10px;
+  padding: 12px;
+  width: 100%;
+  font-size: 16px;
+  margin-bottom: 15px;
+  transition: all 0.3s ease, border-color 0.3s ease; /* Transition sur la bordure */
+}
+
+/* Effet au survol */
+#popup-rdv input:hover,
+#popup-rdv select:hover,
+#popup-rdv textarea:hover {
+  background: #3b5266; /* Fond légèrement plus clair */
+  border-color: #5a7d99; /* Bordure colorée dynamique */
+}
+
+/* Effet au focus */
+#popup-rdv input:focus,
+#popup-rdv select:focus,
+#popup-rdv textarea:focus {
+  background: #3b5266; /* Fond changé pour l’interaction */
+  border-color: #6a8c99; /* Bordure active encore plus claire */
+  outline: none; /* Supprime les bordures natives */
+}
+
+
+/* Style des labels */
+.form-group label {
+  color: #e1e8f0; /* Couleur claire */
+  font-size: 16px;
+  margin-bottom: 8px;
+  text-align: left;
+}
+
+/* Boutons */
+.form-button {
+  background-color: #5a7d99; /* Un bleu subtil mais vibrant */
+  color: #fff;
+  padding: 14px 20px;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  margin-top: 15px;
+}
+
+/* Effet au survol du bouton */
+.form-button:hover {
+  background-color: #4a6e8f; /* Un bleu plus foncé au survol */
+  transform: scale(1.05); /* Effet de zoom doux au survol */
+}
+
+/* Icones du menu et de fermeture */
+.menu-icon,
+.close-icon {
+  color: #f0f4f8;
+  font-size: 28px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.menu-icon:hover,
+.close-icon:hover {
+  color: #5c738f; /* Légèrement plus clair au survol */
+}
+
+/* Dropdown (Menu Agendas) */
+
+#agendaDropdown {
+  background-color: #2c3e55; /* Un fond bleu-gris plus sombre pour les menus */
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Ombre douce pour les dropdowns */
+}
+
+/* Options dans les dropdowns */
+
+.agenda-option {
+  background-color: #34495e; /* Bleu sombre */
+  color: #f0f4f8;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Survol des options dans les dropdowns */
+.color-option:hover,
+.agenda-option:hover {
+  background-color: #3b5266; /* Changement au survol pour l'interactivité */
+}
+
+/* Zone de description */
+#textareaContainer.open {
+  background-color: #2c3e55; /* Fond gris-bleu pour la zone de description */
+}
+
+/* Zone de texte de description */
+textarea.description-textarea {
+  background-color: #34495e; /* Sombre mais distinct */
+  color: #f0f4f8;
+  border: 1px solid #3c4b64;
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+  font-size: 16px;
+  height: 150px;
+  resize: none;
+  margin-bottom: 15px;
+}
+
+/* Couleur sélectionnée (pour les dots) */
+.selected-color {
+  background-color: #5a7d99; /* Un bleu clair pour le carré sélectionné */
+  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  margin: 0 auto;
+}
+
+/* Style du header de la description */
+.description-header {
+  background: linear-gradient(135deg, #1f2a3b, #2c3e55); /* Dégradé doux bleu foncé */
+  color: #e1e8f0; /* Texte clair */
+  padding: 18px 25px;
+  border-radius: 12px;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: center;
+  margin-bottom: 20px;
+  position: relative; /* Pour pouvoir positionner l'icône à droite */
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Ombre subtile */
+  transition: all 0.3s ease; /* Transition fluide */
+}
+
+/* Effet au survol du header */
+.description-header:hover {
+  background: linear-gradient(135deg, #2c3e55, #1f2a3b); /* Inverse le dégradé pour un effet dynamique */
+  transform: translateY(-5px); /* Léger effet de mouvement pour interagir */
+}
+
+/* Icone de fermeture dans le header */
+.description-header .close-icon {
+  color: #e1e8f0;
+  font-size: 28px;
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+/* Effet au survol de l'icône de fermeture */
+.description-header .close-icon:hover {
+  color: #5c738f; /* Couleur plus claire au survol */
+}
+
+/* Style du bouton de sélection de couleur */
+
+
+/* Style du texte dans le bouton */
+#colorButton .button-text {
+  font-weight: 500;
+  margin-left: 5px; /* Espacement entre le texte et l'icône */
+}
+
+/* Icône de couleur à l'intérieur du bouton */
+#colorButton .color-dot {
+  width: 24px;  /* Taille ajustée pour être plus visible */
+  height: 24px;
+  border-radius: 50%;
+  background-color: #3788d8; /* Couleur par défaut */
+  border: 2px solid #e1e8f0; /* Bordure claire pour mieux ressortir */
+  transition: background-color 0.3s ease;
+}
+
+/* Effet de survol pour la couleur du point */
+#colorButton .color-dot:hover {
+  background-color: #2a3e5c; /* Couleur plus sombre au survol pour le point */
+}
+
+/* Style général du dropdown de couleurs */
+.color-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #2c3e55; /* Fond bleu-gris plus sombre pour le menu */
+  border: 1px solid #34495e; /* Bordure légèrement plus claire */
+  border-radius: 8px;
+  width: 200px;
+  padding: 10px;
+  display: none;
+  z-index: 999;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Ombre douce */
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* Style des options du dropdown */
+.color-dropdown .color-option {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+  color: #f0f4f8; /* Texte clair */
+}
+
+/* Survol des options dans le dropdown */
+.color-dropdown .color-option:hover {
+  background-color: #34495e; /* Fond sombre au survol */
+}
+
+/* Style du cercle de couleur dans chaque option */
+.color-dropdown .color-dot {
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  margin-right: 10px;
+  border: 2px solid #ecf0f1; /* Bordure claire */
+  transition: background-color 0.3s ease;
+}
+
+
+.color-dropdown .color-option input[type="color"] {
+  width: 150px !important; /* Taille par défaut augmentée */
+  height: 40px;
+  border: none; /* Supprime les bordures natives du champ */
+  border-radius: 8px; /* Coins légèrement arrondis */
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Ajout d'une transition fluide */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* Ombre subtile par défaut */
+}
+
+
+
+
+/* Coche de sélection à côté du cercle de couleur */
+.color-dropdown .color-dot .checkmark {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  font-size: 16px;
+  color: #ecf0f1;
+}
+
+
+#agendaButton {
+  background: linear-gradient(135deg, #3b5266, #2c3e55); /* Dégradé doux bleu foncé */
+  color: #e1e8f0; /* Texte clair */
+  font-size: 16px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 10px;
+  border: 2px solid transparent; /* Pas de bordure visible initialement */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Ombre subtile */
+  transition: all 0.3s ease, border-color 0.3s ease; /* Transition fluide */
+}
+
+/* Effet au survol avec bordure dynamique */
+#agendaButton:hover {
+  background: linear-gradient(135deg, #4a5d74, #3b5266); /* Variation du dégradé */
+  transform: translateY(-3px); /* Mouvement subtil vers le haut */
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4); /* Ombre plus prononcée */
+  border-color: #5a7d99; /* Bordure apparaît avec une couleur vibrante */
+}
+
+
+/* Icône à l'intérieur du bouton */
+#agendaButton .agenda-icon {
+  font-size: 20px; /* Taille de l'icône */
+  color: #e1e8f0; /* Même couleur que le texte */
+  transition: transform 0.3s ease; /* Effet sur l'icône */
+}
+
+/* Effet au survol pour l'icône */
+#agendaButton:hover .agenda-icon {
+  transform: rotate(20deg); /* Animation subtile de rotation */
+}
+
+/* Icône à l'intérieur du bouton */
+#agendaButton .agenda-name {
+  
+  color: #e1e8f0; /* Même couleur que le texte */
+  transition: transform 0.3s ease; /* Effet sur l'icône */
+}
+
+#colorButton {
+  background: #3d4a62;
+  color: #e1e8f0;
+  font-size: 16px;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 2px solid #5a9bd8; /* Bordure bleu doux */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Ombre subtile */
+  transition: all 0.3s ease, border-color 0.3s ease; /* Ajout d'une transition fluide */
+}
+
+/* Effet au survol */
+#colorButton:hover {
+  background: #4a5d74; /* Fond légèrement plus clair */
+  transform: translateY(-3px); /* Mouvement subtil vers le haut */
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3); /* Ombre plus forte */
+  border-color: #4790c7; /* Bordure dynamique au survol */
+}
+
+
+
+
+/* Style de l'input */
+.time-input {
+  width: 100%;
+  padding: 10px 12px;
+  font-size: 16px;
+  color: #2e3b4e; /* Bleu-gris foncé pour le texte */
+  background: #f4f7fb; /* Fond clair */
+  border: 2px solid #4e79a7; /* Bordure bleue élégante */
+  border-radius: 8px;
+  outline: none;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.time-input:focus {
+  border-color: #68a1d8; /* Accentuation au focus */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Ombre dynamique */
+}
+
+/* Conteneur du dropdown */
+.time-dropdown {
+  position: absolute;
+  width: 100%;
+  background: #223040; /* Bleu foncé pour le menu */
+  border: 1px solid #4e79a7; /* Bordure bleue raffinée */
+  border-radius: 8px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2); /* Ombre subtile */
+  z-index: 1000;
+  max-height: 250px; /* Limite de hauteur avec scroll */
+  overflow-y: auto; /* Scroll si trop d'options */
+}
+
+/* Options du dropdown */
+.time-option {
+  padding: 12px 16px;
+  font-size: 15px;
+  color: #dbe4eb; /* Texte gris clair */
+  background: #2e3b4e; /* Bleu-gris intermédiaire */
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  border-bottom: 1px solid #36495a; /* Ligne de séparation */
+}
+
+.time-option:last-child {
+  border-bottom: none; /* Pas de bordure pour la dernière option */
+}
+
+/* Effet au survol */
+.time-option:hover {
+  background-color: #3a4a5e; /* Couleur plus claire au survol */
+  color: #ffffff; /* Texte blanc pour contraste */
+}
+
+/* Option sélectionnée */
+.time-option.active {
+  background-color: #4e79a7; /* Bleu vif pour option active */
+  color: #ffffff; /* Texte blanc */
+  font-weight: bold;
 }
