@@ -11,7 +11,7 @@ body {
     align-items: center;
     justify-content: center;
     max-height: 100vh !important;
-    overflow-y: hidden;
+    
 }
 
 .container {
@@ -21,11 +21,10 @@ body {
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Ombre plus marquée pour un effet lumineux */
     text-align: center;
-    justify-content: center;
-    justify-items: center;
-    align-items: center;
+    
     backdrop-filter: blur(12px); /* Flou léger pour simuler un effet de brume glacée */
     height: 93vh;
+    margin-top: 0;
 }
 
 h1 {
@@ -114,7 +113,7 @@ textarea:focus {
 .recurrence-form-container {
     height: fit-content;
     padding: 20px;
-    min-width: 800px;
+    max-width: 800px;
     border-radius: 10px;
 }
 
@@ -850,7 +849,7 @@ background-color: #444; /* Couleur au survol pour le bouton de réinitialisation
 
 .common label {
     font-size: 20px !important; /* Taille lisible */
-    margin-left: 240px;
+    margin-left: 200px;
     font-weight: bold !important; /* Texte légèrement accentué */
     color: #00BBEC !important; /* Bleu clair qui s'intègre bien au thème */
     margin-bottom: 8px;  /* Espacement sous le label */
@@ -890,3 +889,176 @@ background-color: #444; /* Couleur au survol pour le bouton de réinitialisation
 }
 
 
+/* Conteneur principal */
+.l-content {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+/* Bouton général */
+button {
+    font-family: "Afacad Flux", sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    color: #e0e0e0; /* Texte clair */
+    background-color: #253854; /* Fond sombre avec teinte bleutée */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); /* Ombre douce */
+    cursor: pointer;
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Boutons spécifiques (jour de la semaine) */
+button.wday {
+    background-color: #1f2a40; /* Fond plus sombre pour les jours */
+    color: #0098be; /* Texte bleu clair */
+    border: 1px solid #0098be; /* Bordure fine pour contraste */
+}
+
+/* Bouton "Tout Sélectionner" */
+button.clear-selection {
+    background-color: #0098be;
+    color: #ffffff;
+    margin-bottom: 10px;
+    padding: 12px 24px;
+}
+
+/* Hover state */
+button:hover {
+    background-color: #0098be; /* Accentuation bleue au survol */
+    color: #ffffff; /* Texte plus clair */
+    transform: translateY(-2px); /* Léger soulèvement au survol */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6); /* Accentuation de l'ombre */
+}
+
+/* Active state */
+button:active {
+    background-color: #007f96; /* Couleur plus sombre au clic */
+    transform: translateY(2px); /* Bouton légèrement enfoncé */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5); /* Ombre réduite */
+}
+
+/* Conteneur du bouton "Tout Sélectionner" */
+.clear-selection-container {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #ffffff;
+
+}
+
+/* Ajout de transition douce pour le survol */
+button.wday:hover {
+    background-color: #253854; /* Fond sombre éclairci */
+    color: #ffffff; /* Texte blanc */
+}
+.wday{
+    color: #ffffff !important;
+    text-decoration: white !important;
+}
+
+.mday{
+    color: #ffffff !important;
+    text-decoration: white !important;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .l-content {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    button {
+        width: 100%;
+    }
+}
+
+#week{
+    background: linear-gradient(145deg, rgba(50, 60, 85, 0.3), rgba(30, 39, 61, 0.85));
+    color: #ffffff !important;
+}
+
+#month{
+    background: linear-gradient(145deg, rgba(50, 60, 85, 0.3), rgba(30, 39, 61, 0.85));
+    color: #ffffff !important;
+}
+
+#year{
+    background: linear-gradient(145deg, rgba(50, 60, 85, 0.3), rgba(30, 39, 61, 0.85));
+    color: #ffffff !important;
+}
+
+.clear-selection{
+    color: white !important;
+    text-decoration: white !important;
+
+}
+
+#dateYearRecurrence {
+    font-family: "Afacad Flux", sans-serif; /* Police élégante */
+    font-size: 16px; /* Taille de texte confortable */
+    padding: 10px 15px; /* Espacement interne */
+    border-radius: 8px; /* Coins arrondis */
+    background-color: #1f2a40; /* Fond sombre */
+    color: #e0e0e0 !important; /* Texte clair */
+    text-decoration: #e0e0e0  !important;
+    border: 1px solid #0098be; /* Bordure bleutée */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4); /* Ombre douce */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+    outline: none; /* Suppression du contour par défaut */
+    width: 100%; /* Par défaut, s'adapte au conteneur parent */
+    max-width: 400px; /* Largeur maximale raisonnable */
+    cursor: pointer;
+}
+
+/* Style au survol */
+#dateYearRecurrence:hover {
+    background-color: #253854; /* Fond légèrement éclairci */
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6); /* Accentuation de l'ombre */
+}
+
+/* Style au focus */
+#dateYearRecurrence:focus {
+    background-color: #253854; /* Fond éclairci */
+    border-color: #00BBEC; /* Bordure plus vive */
+    box-shadow: 0 0 10px #00BBEC; /* Halo lumineux */
+    transform: scale(1.02); /* Léger agrandissement */
+}
+
+/* Placeholder */
+#dateYearRecurrence::placeholder {
+    color: #8097ab; /* Couleur discrète pour le texte indicatif */
+    font-style: italic;
+}
+
+/* Style désactivé */
+#dateYearRecurrence:disabled {
+    background-color: #2a3b4f; /* Fond plus terne */
+    color: #6c7c91; /* Texte grisé */
+    border-color: #4a5a70; /* Bordure grisée */
+    box-shadow: none; /* Pas d'ombre */
+    cursor: not-allowed; /* Indique que l'élément est inactif */
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    #dateYearRecurrence {
+        font-size: 14px; /* Réduction de la taille du texte */
+        padding: 8px 12px; /* Espacement réduit */
+    }
+}
+
+
+#addButton{
+    margin-left: 150px;
+    margin-bottom: 15px;
+}
+
+.svg-icon{
+    fill : #e0e0e0 !important;
+}

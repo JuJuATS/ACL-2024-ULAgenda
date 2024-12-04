@@ -129,6 +129,7 @@ body {
 
 .fc-timegrid-slot {
   height: 90px !important; /* Ajustez la hauteur selon vos besoins */
+  max-height: 90px !important;
 }
 
 /* Centrage du contenu dans chaque créneau horaire */
@@ -151,7 +152,7 @@ body {
 /* Style optionnel : Ajuste les événements pour qu'ils s'adaptent à la hauteur */
 .fc-timegrid-event {
   height: auto; /* Permet à l'événement de prendre toute la hauteur */
-  margin-top: 5px; /* Ajoute un léger espace en haut */
+  margin-top: 0px; /* Ajoute un léger espace en haut */
   padding: 10px; /* Ajuste l'espacement interne */
 }
 
@@ -166,6 +167,7 @@ body {
     align-items: center; /* Aligne verticalement les contenus */
     justify-content: space-between; /* Espace entre les éléments */
     transition: transform 0.2s, background 0.3s ease; /* Effet au survol */
+    cursor: pointer;
   }
   
   /* Effet au survol */
@@ -176,6 +178,7 @@ body {
   
   /* Style du texte principal de l'événement */
   .fc-event-title {
+    cursor: pointer;
     font-size: 2.0em; /* Taille du texte légèrement augmentée */
     font-weight: bold; /* Texte en gras */
     white-space: nowrap; /* Empêche le retour à la ligne */
@@ -211,6 +214,7 @@ body {
     font-size: 2em !important; /* Taille standard */
     font-style: italic; /* Style italique */
     margin-right: 10px; /* Espacement à droite */
+    text-overflow: ellipsis !important;
   }
   
   
@@ -237,7 +241,6 @@ body {
     border-top: none;
     border-bottom: none;
     background: linear-gradient(145deg, #1e293b, #2c3e50);
-
     transition: width 0.7s ease-in-out;
     position: relative;
 }
@@ -471,6 +474,7 @@ form {
 
 .description-container {
     max-width: 600px;
+    cursor: pointer;
 }
 
 .description-header {
@@ -508,7 +512,7 @@ form {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #64748b;
+    color: #dadcdf;
     font-size: 1.1em;
     font-weight: 500;
 }
@@ -1516,3 +1520,7 @@ textarea.description-textarea {
   color: #ffffff; /* Texte blanc */
   font-weight: bold;
 }
+
+
+
+

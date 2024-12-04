@@ -45,13 +45,14 @@ const unSaveAgenda = (el)=>{
   }
 }
 function showTooltip(eventRect, event, size) {
+    // Créer ou récupérer le tooltip
     const tooltip = document.getElementById('event-tooltip') || document.createElement('div');
-
     tooltip.id = 'event-tooltip';
+
     tooltip.style = `
         position: absolute;
-        top: ${eventRect.top}px;
-        left: ${eventRect.left}px;
+        top: ${eventRect.top-80}px;
+        left: ${eventRect.left+250}px;
         width: ${size.width}px;
         max-width: 250px; /* Limite la taille pour éviter des textes trop longs */
         padding: 15px;
@@ -99,7 +100,7 @@ function showTooltip(eventRect, event, size) {
 
     tooltip.innerHTML = content + arrow;
 
-    // Ajout au DOM
+    // Ajout au DOM si le tooltip n'est pas déjà dans le DOM
     if (!document.getElementById('event-tooltip')) {
         document.body.appendChild(tooltip);
 
@@ -109,7 +110,23 @@ function showTooltip(eventRect, event, size) {
             tooltip.style.transform = 'scale(1) translateY(0)';
         });
     }
+
+    // Empêcher la disparition lorsque la souris est sur le tooltip
+    tooltip.addEventListener('mouseenter', () => {
+        tooltip.style.transition = 'none'; // Empêche les transitions lors du survol
+        tooltip.style.opacity = '1'; // Garde le tooltip visible
+        tooltip.style.transform = 'scale(1) translateY(0)'; // Empêche le mouvement
+    });
+
+    tooltip.addEventListener('mouseleave', () => {
+        // Lorsque la souris quitte le tooltip, réactiver la transition
+        tooltip.style.transition = ''; // Restaure les transitions après le survol
+        tooltip.style.opacity = '0'; // Masquer le tooltip après un délai
+        tooltip.style.transform = 'scale(0.9) translateY(-10px)';
+    });
 }
+
+
 
 const fetchEvent = async (el,calendar) => {
     console.log(!agendas[el.dataset.id])
@@ -259,7 +276,7 @@ document.addEventListener('DOMContentLoaded', function () {
         eventMouseEnter: (mouseInfo) => {
             let eventRect = mouseInfo.el.getBoundingClientRect();
             let size = { width: mouseInfo.el.offsetWidth, height: mouseInfo.el.offsetHeight }
-            showTooltip(eventRect, mouseInfo.event, size); 
+            showTooltip(eventRect, mouseInfo.event, size);
         },
         eventMouseLeave: (mouseLeaveInfo) => {
             const popup = document.querySelector("#event-tooltip") 

@@ -10,7 +10,7 @@ body {
     /* Fond sombre */
     color: #e0e0e0; /* Texte clair */
     overflow-x: hidden;
-    overflow-y: hidden;
+    overflow-y: auto;
     height: 100vh;
 }
 
@@ -56,7 +56,7 @@ header {
 /* Amélioration du conteneur principal */
 .search-container {
     margin: 20px auto;
-    max-width: 800px;
+    max-width: 30%;
     background: rgba(20, 30, 40, 0.9); /* Dégradé du bleu-vert au bleu nuit */
     padding: 30px;
     border-radius: 8px;

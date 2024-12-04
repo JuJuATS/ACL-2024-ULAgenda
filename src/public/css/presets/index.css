@@ -7,8 +7,8 @@ body {
     /* Fond sombre */
     color: #e0e0e0; /* Texte clair */
     overflow-x: hidden;
-    overflow-y: hidden;
     height: 100vh;
+   
 }
 .content {
     padding: 30px;
@@ -223,5 +223,77 @@ button[type="submit"]:active {
     margin-top: 40px !important;
     background-color: #009fc7 !important;
   }
+
+  .flash-message {
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 16px;
+    max-width: 500px;
+    margin: 20px auto;
+    text-align: center;
+    color: #e0e0e0; /* Texte clair */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.6); /* Ombre douce pour profondeur */
+    background-color: #253854 !important; /* Fond sombre pour être en harmonie avec l'arrière-plan */
+    border-left: 5px solid #009fc7; /* Bordure bleue, comme le reste de votre design */
+    transition: opacity 0.3s ease;
+    z-index: 10;
+    position: relative;
+    background-color: #1a2a3b; /* Légère modification de la couleur de fond au survol */
+    transition: background-color 0.3s ease;
+}
+
+.flash-message-success {
+    background-color: #253854; /* Fond sombre */
+    border-left: 5px solid #4bc373; /* Bordure verte pour succès */
+    background-color: #1a2a3b; /* Légère modification de la couleur de fond au survol */
+    transition: background-color 0.3s ease;
+}
+
+.flash-message-error {
+    background-color: #253854; /* Fond sombre */
+    border-left: 5px solid #e74c3c; /* Bordure rouge pour erreur */
+}
+
+.flash-message-warning {
+    background-color: #253854; /* Fond sombre */
+    border-left: 5px solid #f39c12; /* Bordure jaune pour avertissement */
+}
+
+.flash-message p {
+    margin: 0;
+    font-weight: 600;
+}
+
+.flash-message-success p {
+    color: #4bc373; /* Texte vert pour succès */
+}
+
+.flash-message-error p {
+    color: #e74c3c; /* Texte rouge pour erreur */
+}
+
+.flash-message-warning p {
+    color: #f39c12; /* Texte jaune pour avertissement */
+}
+
+.flash-message:hover {
+    background-color: #1a2a3b; /* Légère modification de la couleur de fond au survol */
+    transition: background-color 0.3s ease;
+}
+
+.flash-message .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.flash-message .close-btn:hover {
+    color: #ffffff;
+}
 
 
