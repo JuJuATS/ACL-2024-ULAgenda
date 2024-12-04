@@ -129,6 +129,7 @@ body {
 
 .fc-timegrid-slot {
   height: 90px !important; /* Ajustez la hauteur selon vos besoins */
+  max-height: 90px !important;
 }
 
 /* Centrage du contenu dans chaque créneau horaire */
@@ -151,7 +152,7 @@ body {
 /* Style optionnel : Ajuste les événements pour qu'ils s'adaptent à la hauteur */
 .fc-timegrid-event {
   height: auto; /* Permet à l'événement de prendre toute la hauteur */
-  margin-top: 5px; /* Ajoute un léger espace en haut */
+  margin-top: 0px; /* Ajoute un léger espace en haut */
   padding: 10px; /* Ajuste l'espacement interne */
 }
 
@@ -166,6 +167,7 @@ body {
     align-items: center; /* Aligne verticalement les contenus */
     justify-content: space-between; /* Espace entre les éléments */
     transition: transform 0.2s, background 0.3s ease; /* Effet au survol */
+    cursor: pointer;
   }
   
   /* Effet au survol */
@@ -176,6 +178,7 @@ body {
   
   /* Style du texte principal de l'événement */
   .fc-event-title {
+    cursor: pointer;
     font-size: 2.0em; /* Taille du texte légèrement augmentée */
     font-weight: bold; /* Texte en gras */
     white-space: nowrap; /* Empêche le retour à la ligne */
@@ -211,6 +214,7 @@ body {
     font-size: 2em !important; /* Taille standard */
     font-style: italic; /* Style italique */
     margin-right: 10px; /* Espacement à droite */
+    text-overflow: ellipsis !important;
   }
   
   
@@ -237,7 +241,6 @@ body {
     border-top: none;
     border-bottom: none;
     background: linear-gradient(145deg, #1e293b, #2c3e50);
-
     transition: width 0.7s ease-in-out;
     position: relative;
 }
@@ -471,6 +474,7 @@ form {
 
 .description-container {
     max-width: 600px;
+    cursor: pointer;
 }
 
 .description-header {
@@ -508,7 +512,7 @@ form {
     display: flex;
     align-items: center;
     gap: 8px;
-    color: #64748b;
+    color: #dadcdf;
     font-size: 1.1em;
     font-weight: 500;
 }
@@ -624,8 +628,6 @@ form {
     justify-content: center;
     text-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
 }
-
-
 
 
 
@@ -760,6 +762,7 @@ form {
   position: relative; /* Relatif pour ne pas interférer avec le flux de la page */
   z-index: 2; /* Pour des effets supplémentaires avec le survol */
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Ombre subtile pour un léger relief */
+  width:100%;
 }
 
 /* Effet au survol de .agendaDiv */
@@ -780,6 +783,8 @@ form {
   
   line-height: 1.2; /* Ajuste l'espacement entre les lignes */
   text-align: center; /* Centre le texte si souhaité */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Effet de changement de couleur et de position du texte au survol */
@@ -791,8 +796,8 @@ form {
 /* Style de la checkbox */
 .checkAgenda {
   display: inline-block !important; /* Empêche l'influence des styles de texte environnants */
-  width: 28px !important; /* Taille fixe pour la largeur */
-  height: 28px !important; /* Taille fixe pour la hauteur */
+  min-width: 28px !important; /* Taille fixe pour la largeur */
+  min-height: 28px !important; /* Taille fixe pour la hauteur */
   cursor: pointer; /* Curseur pour l'interaction */
   accent-color: #00aacc; /* Accent bleu clair */
   border-radius: 50%; /* Forme circulaire moderne */
@@ -1009,7 +1014,7 @@ form {
 
 .listAgenda {
   list-style: none; /* Supprime les puces classiques */
-  padding: 15px 20px; /* Ajoute de l'espace autour de la liste */
+  padding: 15px 0 15px 20px; /* Ajoute de l'espace autour de la liste */
   margin-top: -20px;
   background: linear-gradient(145deg, #1e293b, #2c3e50);
 
@@ -1036,6 +1041,7 @@ form {
   gap: 15px; /* Espace entre les éléments enfants */
   transition: all 0.3s ease; /* Transition pour un effet interactif fluide */
   cursor: pointer; /* Curseur interactif */
+  width: 100%;
 }
 
 
@@ -1167,6 +1173,7 @@ form {
   font-size: 16px;
   margin-bottom: 8px;
   text-align: left;
+ 
 }
 
 /* Boutons */
@@ -1516,3 +1523,7 @@ textarea.description-textarea {
   color: #ffffff; /* Texte blanc */
   font-weight: bold;
 }
+
+
+
+

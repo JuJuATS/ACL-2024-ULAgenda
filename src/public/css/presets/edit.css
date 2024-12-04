@@ -25,6 +25,8 @@ body {
     justify-items: center;
     align-items: center;
     align-content: center;
+    overflow-y: auto;
+    overflow-x: auto;
 }
 
 .content {

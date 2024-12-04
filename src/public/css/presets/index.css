@@ -7,8 +7,8 @@ body {
     /* Fond sombre */
     color: #e0e0e0; /* Texte clair */
     overflow-x: hidden;
-    overflow-y: hidden;
     height: 100vh;
+   
 }
 .content {
     padding: 30px;

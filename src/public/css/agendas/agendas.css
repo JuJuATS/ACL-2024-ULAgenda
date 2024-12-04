@@ -158,23 +158,32 @@ footer {
 }
 
 .layer1 .title-section {
-    display: flex;           /* Active le Flexbox */
-    align-items: flex-start !important; /* Aligne l'élément en haut (vertical) */
+    
     justify-content: center; /* Centre l'élément horizontalement */
     margin-top: -135px;
+    width: 100%;
+    position: relative;
+
+    padding-bottom: 10px; /* Espacement sous le titre */
+
+    
 }
 
 .layer1 .title-section #agendaName {
-    position: relative; /* Nécessaire pour positionner le pseudo-élément */
-    padding-bottom: 10px; /* Espacement sous le titre */
+        width: 100%;
+        text-wrap: nowrap;
+        text-overflow: ellipsis;
+        text-align: center;
+        overflow: hidden;
+        padding-left: 10px;
 }
 
-.layer1 .title-section #agendaName::after {
+.layer1 .title-section::after {
     content: ''; /* Nécessaire pour créer un élément vide */
     position: absolute;
     bottom: 0; /* Aligner la bordure en bas du texte */
-    left: -60%; /* Commencer à gauche */
-    width: 250%; /* Agrandir la bordure à 120% de la largeur du texte (vous pouvez ajuster la valeur) */
+    left: 0%; /* Commencer à gauche */
+    width: 100%; /* Agrandir la bordure à 120% de la largeur du texte (vous pouvez ajuster la valeur) */
     height: 2px; /* Épaisseur de la bordure */
     background-color: var(--primary-color); /* Couleur de la bordure */
 }
