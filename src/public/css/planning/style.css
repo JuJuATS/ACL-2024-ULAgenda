@@ -758,6 +758,7 @@ form {
   position: relative; /* Relatif pour ne pas interférer avec le flux de la page */
   z-index: 2; /* Pour des effets supplémentaires avec le survol */
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2); /* Ombre subtile pour un léger relief */
+  width:100%;
 }
 
 /* Effet au survol de .agendaDiv */
@@ -778,6 +779,8 @@ form {
   
   line-height: 1.2; /* Ajuste l'espacement entre les lignes */
   text-align: center; /* Centre le texte si souhaité */
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 /* Effet de changement de couleur et de position du texte au survol */
@@ -789,8 +792,8 @@ form {
 /* Style de la checkbox */
 .checkAgenda {
   display: inline-block !important; /* Empêche l'influence des styles de texte environnants */
-  width: 28px !important; /* Taille fixe pour la largeur */
-  height: 28px !important; /* Taille fixe pour la hauteur */
+  min-width: 28px !important; /* Taille fixe pour la largeur */
+  min-height: 28px !important; /* Taille fixe pour la hauteur */
   cursor: pointer; /* Curseur pour l'interaction */
   accent-color: #00aacc; /* Accent bleu clair */
   border-radius: 50%; /* Forme circulaire moderne */
@@ -1007,7 +1010,7 @@ form {
 
 .listAgenda {
   list-style: none; /* Supprime les puces classiques */
-  padding: 15px 20px; /* Ajoute de l'espace autour de la liste */
+  padding: 15px 0 15px 20px; /* Ajoute de l'espace autour de la liste */
   margin-top: -20px;
   background: linear-gradient(145deg, #1e293b, #2c3e50);
 
@@ -1034,6 +1037,7 @@ form {
   gap: 15px; /* Espace entre les éléments enfants */
   transition: all 0.3s ease; /* Transition pour un effet interactif fluide */
   cursor: pointer; /* Curseur interactif */
+  width: 100%;
 }
 
 
@@ -1165,6 +1169,7 @@ form {
   font-size: 16px;
   margin-bottom: 8px;
   text-align: left;
+ 
 }
 
 /* Boutons */

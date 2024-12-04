@@ -81,9 +81,12 @@ function initAgendas() {
                             <button class="add-button" style="height:75px; width:75px;">+</button>
                         </div>
                     </div>`
+                
                 addButton = document.querySelector(".add-button");
-                addButton.addEventListener("click",()=>{createModal.style.display = "block";});
-               
+                addButton.addEventListener("click",(e)=> {
+                    
+                    createModal.style.display = "block";
+                })
                 ownedAgendas.forEach(agenda => {
                     const agendaDivHTML = generateAgendaHTML(agenda);
                     const agendaDiv = generateAgendaDiv(agendaDivHTML, agenda);
