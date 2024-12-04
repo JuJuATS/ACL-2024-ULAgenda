@@ -151,9 +151,11 @@ const getAgendaEvents = async (req, res, next) => {
       }
     })
     const partages = await Share.findOne({sharedWith:req.user.id,agendaId:decodedAgenda})
+
     events = await Promise.all(events.map(async el=>{
 
     const editable = partages ? partages.permission !== "read" : true;
+
       let rappel = await Rappel.findById(el.rappel);
       let rdv = {
         id:el._id,
