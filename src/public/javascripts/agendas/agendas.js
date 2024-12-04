@@ -476,13 +476,22 @@ async function importAgenda() {
         // Read as text
         const text = await file.text();
 
-
+        try {
+            JSON.parse(text);
+        } catch (e) {
+            afficherPopUp("Mauvais format du fichier .json", false)
+            return false;
+        }
         const res = await fetch('agendas/api/import', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: text
         });
-        if ((await res.json()).success) {
+        const value = await res.json()
+        if (value.error) {
+            afficherPopUp(value.error, false)
+        }
+        else if (value.success) {
             initAgendas()
         }
 

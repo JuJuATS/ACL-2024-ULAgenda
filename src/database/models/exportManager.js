@@ -117,43 +117,48 @@ class FileManager {
     async importJSON(jsonData, userId) {
         try {
             for (let agenda of Object.values(jsonData)) {
-                const agendaObject = new Agenda({
-                    name: agenda.name,
-                    userId: userId,
-                    rdvs: []
-                });
+                try {
+                    if (agenda.name) {
+                        const agendaObject = new Agenda({
+                            name: agenda.name,
+                            userId: userId,
+                            rdvs: []
+                        });
+                        if (agenda.rdvs) {
+                            const rdvPromises = agenda.rdvs.map(async rdvData => {
+                                let recurrenceId = null;
+                                if (rdvData.recurrences) {
+                                    const recurrence = new Recurrence(rdvData.recurrences);
+                                    const savedRecurrence = await recurrence.save();
+                                    recurrenceId = savedRecurrence._id;
+                                }
 
-                const rdvPromises = agenda.rdvs.map(async rdvData => {
-                    let recurrenceId = null;
-                    if (rdvData.recurrences) {
-                        const recurrence = new Recurrence(rdvData.recurrences);
-                        const savedRecurrence = await recurrence.save();
-                        recurrenceId = savedRecurrence._id;
+                                const rdv = new Rdv({
+                                    ...rdvData,
+                                    rappel: null,
+                                    agendaId: agendaObject._id,
+                                    recurrences: recurrenceId
+                                });
+
+                                const savedRdv = await rdv.save();
+                                return savedRdv._id;
+                            });
+
+                            agendaObject.rdvs = await Promise.all(rdvPromises);
+                        }
+                        await agendaObject.save();
+
                     }
-
-                    const rdv = new Rdv({
-                        ...rdvData,
-                        rappel: null,
-                        agendaId: agendaObject._id,
-                        recurrences: recurrenceId
-                    });
-
-                    const savedRdv = await rdv.save();
-                    return savedRdv._id;
-                });
-
-                agendaObject.rdvs = await Promise.all(rdvPromises);
-
-                await agendaObject.save();
+                } catch (error) {
+                    console.log("bad agenda", agenda.name)
+                }
             }
             return {success:true}
-        } catch (error) {
+        } catch (e) {
             throw new Error(`Erreur lors de l'import du JSON: ${error.message}`);
         }
     }
 
-    importICS() {
-    }
 }
 
 const fileManager = new FileManager();
