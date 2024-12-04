@@ -12,8 +12,8 @@ const Rappel = require('../../database/models/rappel.js');
 router.get('/', authMiddleware, checkAgendaAccess, async (req, res) => {
   try {
     const presets = await Preset.find({ userId: req.user.id });
-    res.render('rendezvous', { 
-      user: req.user.id, 
+    res.render('rendezvous', {
+      user: req.user.id,
       agenda: req.agenda._id,
       presets,
       accessLevel: req.accessLevel  // Passer le niveau d'accès à la vue
@@ -33,12 +33,12 @@ router.get('/api/recurrence', authMiddleware, checkAgendaAccess, async (req, res
       const dateB = new Date(b.dateDebut);
       return dateA - dateB;
     });
-    
+
     const rdvs = await Promise.all(rdvUser.map(async (rdv) => {
       const rec = await Recurrence.findById(rdv.recurrences);
       return { "recurrence": rec, ...rdv.toObject() };
     }));
-    
+
     res.status(200).json({ rdvs: rdvs });
   } catch (error) {
     console.error("Erreur:", error);
@@ -49,11 +49,10 @@ router.get('/api/recurrence', authMiddleware, checkAgendaAccess, async (req, res
 // Route pour créer un nouveau rendez-vous
 router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
 
-  console.log(req.agenda);
 
   try {
     const { name, description, dateDebut, dateFin, recurrences, finRecurrence,backgroundColor,priorite,rappel } = req.body;
-    
+
     if (!name || !dateDebut || !dateFin) {
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
     }
@@ -64,9 +63,9 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
     if (fin <= debut) {
       return res.status(400).json({ message: "La date de fin doit être après la date de début." });
     }
-    
+
     const rappelEntity = rappel === 0 ? null : new Rappel({duree:rappel,envoye:false});
-    
+
     const recurrence = new Recurrence({
       yearDay: recurrences["year"],
       monthDay: recurrences["month"],
@@ -86,10 +85,10 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
       priority:priorite,
       color:backgroundColor
     });
-    rappelEntity !== null ? await rappelEntity.save() : null; 
+    rappelEntity !== null ? await rappelEntity.save() : null;
     await recurrence.save();
     await newRdv.save();
-    
+
     req.agenda.rdvs.push(newRdv._id);
     await req.agenda.save();
 
@@ -102,11 +101,10 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
 
 // Route pour modifier un rendez-vous
 router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
-  console.log("coucou")
   try {
     const rdvId = req.params.idf;
     const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence,backgroundColor,priorite,rappel } = req.body;
-  
+
     if (!name || !dateDebut || !dateFin) {
       return res.status(400).json({ message: "Les champs requis sont manquants." });
     }
@@ -117,7 +115,6 @@ router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async 
     if(recId){
       const rec = await Recurrence.findById(recId);
       if (!rec) {
-        console.log("coucou")
         return res.status(404).json({ message: "Récurrence non trouvée" });
       }
       // Mise à jour de la récurrence
@@ -128,20 +125,19 @@ router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async 
         weekDay: recurrences.week,
         dateFin: finRecurrence,
         dateDebut: new Date(dateDebut)
-      });  
+      });
     }
     await rec.save();
     }
-   
+
     let rappelEntity = await Rappel.findByIdAndDelete(rdv.rappel);
-    
+
     if(!rappel && rappel !==0 ){
       rappelEntity = new Rappel({duree:rappel,envoye:false});
-      rappelEntity.save(); 
+      rappelEntity.save();
       rdv.rappel = rappelEntity
     }
     // Mise à jour du rendez-vous
-    console.log(name,description,dateDebut,dateFin,priorite,backgroundColor,rappelEntity)
     Object.assign(rdv, {
       name,
       description,
@@ -151,9 +147,9 @@ router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async 
       color:backgroundColor
     });
 
-    
+
     await rdv.save();
-    
+
     res.status(200).json({ ok: true, rdv });
   } catch (error) {
     console.error("Erreur:", error);
@@ -163,11 +159,10 @@ router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async 
 
 // Route pour supprimer un rendez-vous
 router.delete('/:ids', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
-  console.log("toto")
   try {
     const rdvId = req.params.ids;
     const rdv = await Rdv.findById(rdvId);
-    
+
     if (!rdv || !rdv.agendaId.equals(req.agenda._id)) {
       return res.status(404).json({ message: "Rendez-vous non trouvé" });
     }
@@ -194,9 +189,9 @@ router.get('/edit/:id', authMiddleware, checkAgendaAccess, checkModifyRights, as
     const rappel = await Rappel.findById(rendezvous.rappel);
     const { yearDay, weekDay, monthDay, dateFin } = rec;
 
-    res.render('modifier_rendezvous', { 
-      rendezvous, 
-      rec: { yearDay, weekDay, monthDay, dateFin }, 
+    res.render('modifier_rendezvous', {
+      rendezvous,
+      rec: { yearDay, weekDay, monthDay, dateFin },
       recIdd: rec.id,
       accessLevel: req.accessLevel,
       rappel :rappel

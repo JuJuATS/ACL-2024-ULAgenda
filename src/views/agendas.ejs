@@ -3,9 +3,11 @@
 <head>
     <%- include('./partials/head', {pageName: "ULAgenda"}); %>
     <link rel="stylesheet" href="/css/agendas/agendas.css">
+    <link rel="stylesheet" href="css/partials/toaster.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+    <div class="pop-up-info"></div>
     <header>
         <%- include('./partials/header', {user: true}); %>
     </header>
@@ -29,15 +31,26 @@
                         Mes Agendas
                         <span class="count-badge personal-count">0</span>
                     </h2>
-                    <a href="/search" class="search-link">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                        Rechercher des rendez-vous
-                    </a>
+                    <div>
+                        <button class="import-button">
+                            Importer
+                        </button>
+                        <button class="export-button">
+                            Exporter
+                        </button>
+                        <button class="export-button-stop closed">
+                            Annuler
+                        </button>
+                        <a href="/search" class="search-link">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                            Rechercher des rendez-vous
+                        </a>
+                    </div>
                 </div>
 
                 <div class="calendars-grid personal">
                     <div class="calendar newAgenda">
-                        <div class="addCalendarBody"> 
+                        <div class="addCalendarBody">
                             <button class="add-button" style="height:75px; width:75px;">+</button>
                         </div>
                     </div>
@@ -46,7 +59,7 @@
                 </div>
 
             </div>
-        
+
             <!-- Section des agendas partagés -->
             <div class="agenda-section">
                 <div class="section-header">
@@ -55,7 +68,7 @@
                         Agendas Partagés
                         <span class="count-badge shared-count">0</span>
                     </h2>
-                    
+
                 </div>
                 <div class="calendars-grid shared">
                     <!-- Les agendas partagés seront injectés ici -->

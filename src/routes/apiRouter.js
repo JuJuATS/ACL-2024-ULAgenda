@@ -106,8 +106,8 @@ apiRouter.get("/getAgenda",isAuthentified,async(req,res)=>{
   let userId = req.user.id;
   const agendas = await Agenda.find({userId:userId});
   const partages = await Share.find({sharedWith:req.user.id,shareType:"user",permission:"contribute"}).populate("agendaId")
-  
-  
+
+
   partages.forEach(partage=>{
     agendas.push(partage.agendaId);
   })
@@ -118,7 +118,7 @@ apiRouter.get("/getAgenda",isAuthentified,async(req,res)=>{
 const getAgendaEvents = async (req, res, next) => {
   const { agenda } = req.query;
   if (!agenda) {
-    return res.status(400).json({ 
+    return res.status(400).json({
       error: 'Le paramètre agenda est requis',
       event: []
     });
@@ -128,26 +128,25 @@ const getAgendaEvents = async (req, res, next) => {
   if (decodedAgenda === "") {
     return res.status(200).json({ event: [] });
   }
-  
+
 
   try {
     // Vérification de l'authentification
     const userId = req.user?.id;
     if (!userId) {
-      return res.status(401).json({ 
+      return res.status(401).json({
         error: 'Utilisateur non authentifié',
         event: []
       });
     }
-   
+
 
     let events = await RDV.find({agendaId:decodedAgenda})
     const partages = await Share.findOne({sharedWith:req.user.id,agendaId:decodedAgenda})
-    
+
     events = await Promise.all(events.map(async el=>{
-      
+
     const editable = partages ? partages.permission !== "read" : true;
-    console.log(editable)
       let rappel = await Rappel.findById(el.rappel);
       let rdv = {
         id:el._id,
@@ -166,13 +165,13 @@ const getAgendaEvents = async (req, res, next) => {
         title:el.name,
         duration:el.dateFin-el.dateDebut
       }
-      
+
       if(el.recurrences){
           const recurrenceRdv = await recurrence.findById(el.recurrences);
           rdv.extendedProps = {...rdv.extendedProps,recurrences:recurrenceRdv}
          if(recurrenceRdv!=null){
           if(recurrenceRdv.yearDay.length!==0){
-            
+
             let dateDebut = new Date(recurrenceRdv.dateDebut)
             dateDebut.setDate(dateDebut.getDate() - 1)
              rdv.rrule={
@@ -181,9 +180,9 @@ const getAgendaEvents = async (req, res, next) => {
               dtstart:dateDebut,
               until:recurrenceRdv.dateFin
             }
-          } 
+          }
           if(recurrenceRdv.monthDay.length!==0){
-            
+
             let dateDebut = new Date(recurrenceRdv.dateDebut)
             dateDebut.setDate(dateDebut.getDate() - 1)
               rdv.rrule={
@@ -192,7 +191,7 @@ const getAgendaEvents = async (req, res, next) => {
                 dtstart:dateDebut,
                 until:recurrenceRdv.dateFin
               }
-            } 
+            }
           if(recurrenceRdv.weekDay.length !==0){
             let dateDebut = new Date(recurrenceRdv.dateDebut)
             dateDebut.setDate(dateDebut.getDate() - 1)
@@ -202,23 +201,23 @@ const getAgendaEvents = async (req, res, next) => {
                 dtstart:dateDebut,
                 until:recurrenceRdv.dateFin
               }
-            
+
             }
           }
         }
-        return rdv 
+        return rdv
       }
     ))
-   
+
     // Envoi de la réponse
-    res.status(200).json({ 
+    res.status(200).json({
       event: events,permission:partages ? partages.permission : "Owner"
     });
 
   } catch (error) {
     // Log de l'erreur pour monitoring
     console.error('Erreur lors de la récupération des événements:', error);
-    
+
     next(error);
   }
 };

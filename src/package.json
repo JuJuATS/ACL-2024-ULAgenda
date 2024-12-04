@@ -21,6 +21,7 @@
     "express": "^4.21.1",
     "express-session": "^1.18.1",
     "fuse.js": "^7.0.0",
+    "ics": "^3.8.1",
     "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",
     "mocha": "^10.7.3",
