@@ -6,15 +6,36 @@
 
 body {
     font-family: Arial, sans-serif;
-    background-color: #5f748a;
+    background-image: radial-gradient(50% 176%, #253854 80%, #061922 100%);
     display: flex;
     height:100vh;
     max-height: 100%;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    color: #e0f7fa;
+    overflow-y: hidden;
 }
 
+h1,h2{
+    color: #00BBEC!important;
+    text-transform: uppercase; /* Texte en majuscule pour un look plus net */
+    border-bottom: 2px solid #00BBEC; /* Ligne fine en dessous pour l'accent */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+    margin-left: 7px;
+    font-size: 1.1em;
+    color: #00BBEC !important; /* Bleu clair */
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+*.appliquerRDV{
+    margin-top: 20px;
+}
 
 .wrapper {
     display: flex;
@@ -29,37 +50,54 @@ body {
 .container {
     position:relative;
 
-    background-color: #111828;
+    background-color: rgba(20, 30, 40, 0.9);
     padding: 20px;
-    width: 400px;
+    width: 700px;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 .container  * {
     color:white;
 }
 .container input, select, textarea {
-    background: #1e273d;
+    /*border-color: #1E90FF !important;*/
+    outline: none;
 }
+
+#color{
+   border: 1px solid #5a6d83;
+   cursor: pointer;
+}
+
+textarea {
+    resize: vertical;
+}
+
+
 
 .agenda {
-    position:relative;
+    position: relative;
     overflow-x: hidden;
-    right:0;
+    right: 0;
     width: 0;
-    height:700px;
-    display:flex;
+    height: 700px;
+    display: flex;
     flex-direction: column;
     visibility: hidden;
-    gap:10px;
-    background-color: #111828;
+    gap: 10px;
+    background-color: #102a43;
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: width .7s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: width 0.7s ease-in-out;
 }
 
-.agenda * {white-space:nowrap;color: white;}
+.agenda * {
+    white-space: nowrap;
+    color: #e0f7fa;
+}
 
 .agenda-open {
     width: 400px;
@@ -82,13 +120,17 @@ form {
 
 }
 
-label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #595959;
+#btn-placer{
+    margin-top: 30px;
+    background-color: #005eec;
+    transition: all 0.3s ease; /* Transition fluide */
 }
 
+#btn-placer:hover{
+    background-color: #005eec;
+    box-shadow: #00BFFF;
+    text-decoration: underline;
+}
 input, textarea, select {
     width: 100%;
     padding: 10px;
@@ -132,8 +174,8 @@ textarea {
 }
 
 .form-button {
-    background-color: #334469; /* Bouton en #595959 */
-    color: white;
+    background-color: #256d85;
+    color: #e0f7fa;
     padding: 10px;
     border: none;
     border-radius: 5px;
@@ -144,9 +186,8 @@ textarea {
 }
 
 .form-button:hover {
-    background: #1c52d0;
+    background: #36a0d4;
 }
-
 
 
 
@@ -285,7 +326,8 @@ textarea {
     width:100%;
     height:100%;
 
-    background: rgba(128, 128, 128, 0.38);
+    background-color: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
 
     justify-content: center;
     align-items: center;
@@ -702,3 +744,338 @@ button[title]:disabled:hover::after {
     white-space: nowrap;
     z-index: 1000;
 }
+
+
+#preset-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #5a6d83; /* Bordure bleu clair */
+    border-radius: 8px; /* Bords arrondis */
+    background-color: #1E273D; /* Fond bleu foncé */
+    color: #FFFFFF; /* Texte blanc */
+    font-size: 1em;
+    transition: all 0.3s ease; /* Transition fluide */
+    cursor: pointer; /* Affiche un pointeur */
+}
+
+#preset-select:hover {
+    background-color: #334469; /* Couleur plus claire au survol */
+    border-color: #1E90FF; /* Accentuation de la bordure */
+    color: #B0E0E6; /* Texte légèrement accentué */
+}
+
+#preset-select:focus {
+    outline: none; /* Retire le contour par défaut */
+    border-color: #00BFFF; /* Bordure plus vive au focus */
+    box-shadow: 0 0 5px #00BFFF; /* Effet lumineux */
+}
+
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #5a6d83; /* Bordure initiale */
+    border-radius: 8px; /* Coins arrondis */
+    background-color: #1E273D; /* Fond bleu foncé */
+    color: #FFFFFF; /* Texte blanc */
+    font-size: 1em;
+    transition: all 0.3s ease; /* Transition fluide */
+}
+
+input::placeholder {
+    color: #A9A9A9; /* Texte gris clair pour le placeholder */
+}
+
+input:hover {
+    background-color: #334469; /* Fond légèrement plus clair */
+    border-color: #1E90FF; /* Bordure accentuée */
+}
+
+input:focus {
+    outline: none; /* Retire le contour par défaut */
+    background-color: #2C3E50; /* Fond plus clair au focus */
+    border-color: #00BFFF; /* Bordure bleue vive */
+    box-shadow: 0 0 8px #00BFFF; /* Effet lumineux */
+}
+
+#date,#duree{
+    cursor: pointer;
+}
+
+#description {
+    width: 100%; /* Occupe toute la largeur du parent */
+    padding: 12px; /* Espacement intérieur */
+    border: 1px solid #87CEEB; /* Bordure initiale */
+    border-radius: 8px; /* Coins arrondis */
+    background-color: #1E273D; /* Fond bleu foncé */
+    color: #FFFFFF; /* Texte blanc */
+    font-size: 1em; /* Taille de texte standard */
+    resize: vertical; /* Autorise la redimension verticale */
+    transition: all 0.3s ease; /* Transition fluide pour interactions */
+}
+
+#description::placeholder {
+    color: #A9A9A9; /* Placeholder en gris clair */
+}
+
+#description:hover {
+    background-color: #334469; /* Fond légèrement plus clair */
+    border-color: #1E90FF; /* Bordure accentuée au survol */
+}
+
+#description:focus {
+    outline: none; /* Supprime le contour par défaut */
+    background-color: #2C3E50; /* Fond plus clair au focus */
+    border-color: #00BFFF; /* Bordure lumineuse */
+    box-shadow: 0 0 8px #00BFFF; /* Effet lumineux au focus */
+}
+
+#rappel {
+    width: 100%; /* Prend toute la largeur disponible */
+    padding: 10px; /* Espacement interne */
+    border: 1px solid #5a6d83; /* Bordure subtile */
+    border-radius: 8px; /* Coins arrondis */
+    background-color: #1E273D; /* Fond sombre bleuté */
+    color: #FFFFFF; /* Texte blanc */
+    font-size: 1em; /* Taille de texte standard */
+    cursor: pointer; /* Curseur pointer pour signaler l'interaction */
+    transition: all 0.3s ease; /* Transition douce pour interactions */
+}
+
+#rappel:hover {
+    background-color: #334469; /* Fond plus clair au survol */
+    border-color: #1E90FF; /* Bordure accentuée */
+}
+
+#rappel:focus {
+    outline: none; /* Supprime le contour par défaut */
+    border-color: #00BFFF; /* Bordure lumineuse */
+    box-shadow: 0 0 8px #00BFFF; /* Effet lumineux */
+}
+
+#rappel option {
+    background-color: #1E273D; /* Fond sombre pour les options */
+    color: #FFFFFF; /* Texte blanc */
+}
+
+#priority {
+    width: 100%; /* Prend toute la largeur disponible */
+    padding: 10px; /* Espacement interne */
+    border: 1px solid #5a6d83; /* Bordure bleutée subtile */
+    border-radius: 8px; /* Coins arrondis */
+    background-color: #1E273D; /* Fond sombre bleuté */
+    color: #FFFFFF; /* Texte blanc */
+    font-size: 1em; /* Taille de texte standard */
+    cursor: pointer; /* Curseur pointer pour signaler l'interaction */
+    transition: all 0.3s ease; /* Transition fluide pour interactions */
+}
+
+#priority:hover {
+    background-color: #334469; /* Fond plus clair au survol */
+    border-color: #1E90FF; /* Bordure accentuée au survol */
+}
+
+#priority:focus {
+    outline: none; /* Supprime le contour par défaut */
+    border-color: #00BFFF; /* Bordure lumineuse au focus */
+    box-shadow: 0 0 8px #00BFFF; /* Effet lumineux au focus */
+}
+
+#priority option {
+    background-color: #1E273D; /* Fond sombre pour les options */
+    color: #FFFFFF; /* Texte blanc */
+}
+
+
+.snow {
+    position: absolute;
+    min-width: 10vw;
+    min-height: 100vh;
+    height: 100%;
+    width: 100%;
+    
+    top: 0;
+    left: 0;
+    z-index: -1;  /* Neige derrière tout le reste */
+    pointer-events: none; 
+    
+  }
+  
+  .snow .svg {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transform: scale(0.5) !important; 
+  }
+  
+  #snow-top-layer {
+      will-change: transform;
+      transform: translateY(-768px);
+      animation: fall 45s infinite linear; /* Augmente la durée de l'animation pour ralentir la chute */
+  }
+  
+  #snow-bottom-layer {
+      will-change: transform;
+      transform: translateY(-768px);
+      animation: fall 60s infinite linear; /* Augmente la durée pour ralentir davantage */
+  }
+  
+  @keyframes fall {
+    
+    100% {
+      transform: translateY(0);
+    }
+    
+  }
+
+  
+  /* Style pour le titre h3 */
+h3 {
+    font-family: 'Roboto', sans-serif; /* Police moderne */
+    font-size: 28px; /* Taille plus grande pour une meilleure visibilité */
+    font-weight: 700; /* Police en gras */
+    color: #2C3E50; /* Couleur gris foncé élégante */
+    text-align: center; /* Centrer le titre */
+    margin: 20px 0; /* Espacement en haut et en bas */
+    padding: 10px 0; /* Un peu de padding pour le séparer des éléments adjacents */
+    letter-spacing: 1px; /* Espacement entre les lettres pour un effet plus aéré */
+    text-transform: uppercase; /* Texte en majuscule pour un look plus net */
+    border-bottom: 2px solid #16A085; /* Ligne fine en dessous pour l'accent */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Ombre légère pour l'effet de profondeur */
+background-color: transparent !important;
+}
+
+/* Style pour le conteneur de la date (le paragraphe) */
+div p {
+    margin-top: 20px !important;
+    font-family: 'Arial', sans-serif; /* Police simple et moderne */
+    font-size: 16px; /* Taille standard de texte */
+    color: #34495E; /* Couleur gris foncé pour le texte */
+    margin: 5px 0; /* Espacement entre les paragraphes */
+}
+
+/* Style spécifique pour le span contenant la date de début */
+div p span {
+    font-family: 'Courier New', monospace; /* Police monospace pour une apparence technique */
+    font-size: 18px; /* Taille de police plus grande pour la date */
+    color: #16A085 !important; /* Couleur verte élégante pour la date */
+    font-weight: bold; /* Texte en gras pour la mettre en valeur */
+    padding: 5px; /* Un peu de padding pour donner de l'espace autour de la date */
+    border-radius: 4px; /* Coins arrondis pour un effet plus doux */
+    background-color: #16A085 !important; /* Fond léger pour mettre la date en avant */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;  /* Ombre légère pour un effet 3D subtil */
+}
+
+/* Style pour les éléments h4 */
+h4 {
+    font-family: 'Helvetica Neue', sans-serif; /* Police moderne sans empattement */
+    font-size: 20px; /* Taille de texte légèrement plus grande */
+    color: #2C3E50; /* Couleur gris foncé pour l'en-tête */
+    font-weight: bold; /* Mettre le texte en gras */
+    text-transform: uppercase; /* Convertir le texte en majuscules */
+    margin: 20px 0 10px 0; /* Espacement autour de l'en-tête (plus d'espace au-dessus) */
+    letter-spacing: 1px; /* Espacement légèrement élargi entre les lettres */
+    border-bottom: 2px solid #16A085; /* Ligne en dessous de l'en-tête pour séparer visuellement */
+    padding-bottom: 10px; /* Un peu d'espace sous l'en-tête avant la ligne */
+    background-color: transparent !important;
+    margin-bottom: 30px;
+}
+
+/* Style lorsque l'on survole l'élément h4 */
+h4:hover {
+    color: #1ABC9C; /* Couleur vert plus clair lorsque l'on survole */
+    cursor: pointer; /* Change le curseur pour indiquer que c'est interactif */
+
+}
+
+/* Style pour les éléments h5 */
+h5 {
+    font-family: 'Arial', sans-serif; /* Police sans empattement, moderne */
+    font-size: 18px; /* Taille de texte de l'en-tête */
+    color: #34495E; /* Gris bleu pour l'en-tête */
+    font-weight: bold; /* Texte en gras pour donner du poids */
+    text-transform: capitalize; /* Texte capitalisé, première lettre de chaque mot en majuscule */
+    margin-bottom: 10px; /* Espacement sous le titre */
+}
+
+
+
+/* Style global pour les boutons */
+.tablinks {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #5c6bc0; /* Couleur plus profonde */
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 50px; /* Coins arrondis */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s ease;
+    position: relative;
+    min-width: 120px;
+    text-align: center;
+}
+
+/* Espacement entre le texte et l'icône */
+.tablinks span {
+    margin-right: 12px;
+}
+
+/* Icônes SVG dans les boutons */
+.tablinks svg {
+    transition: transform 0.3s ease;
+    fill: #ffffff;
+}
+
+/* Effet de survol des boutons */
+.tablinks:hover {
+    background-color: #3f51b5; /* Couleur au survol */
+    transform: scale(1.05); /* Agrandissement léger au survol */
+}
+
+/* Déplacement fluide des icônes au survol */
+.tablinks:hover svg {
+    transform: translateX(5px); /* Déplacement léger de l'icône */
+}
+
+/* Container pour aligner les boutons */
+.tab-container {
+    display: flex;
+    gap: 20px;
+    justify-content: center; /* Centrage des éléments */
+    margin-bottom: 20px;
+}
+
+/* Position des SVG avant et après les boutons */
+.tab-container div {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.tab-container div svg {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.tab-container div svg:first-of-type {
+    left: -20px; /* Position du premier SVG */
+}
+
+.tab-container div svg:last-of-type {
+    right: -20px; /* Position du dernier SVG */
+}
+
+/* Effet de survol des SVG pour plus de fluidité */
+.tab-container div:hover svg {
+    opacity: 0.8;
+}
+
+/* Définir la forme des rects pour un look plus net */
+rect {
+    border-radius: 10px;
+}
+

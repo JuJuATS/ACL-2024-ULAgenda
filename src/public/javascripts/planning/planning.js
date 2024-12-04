@@ -45,36 +45,72 @@ const unSaveAgenda = (el)=>{
   }
 }
 function showTooltip(eventRect, event, size) {
-    const tooltip = document.getElementById('event-tooltip') ||
-        document.createElement('div');
+    const tooltip = document.getElementById('event-tooltip') || document.createElement('div');
+
     tooltip.id = 'event-tooltip';
-    tooltip.style.position = 'absolute';
     tooltip.style = `
-                  position:absolute;
-                  top:${(eventRect.top)}px;
-                  left:${eventRect.left}px;
-                  width:${size.width}px;
-                  border:2px solid black;
-                  background:#3788d8;
-                  z-index:999999;
-                  transform:translateY(-100%);
-            `
-    const startHour = (event.start.getHours() < 10 ? "0" : "") + event.start.getHours()
-    const startMinutes = (event.start.getMinutes() < 10 ? "0" : "") + event.start.getMinutes()
-    const startSecondes = (event.start.getSeconds() < 10 ? "0" : "") + event.start.getSeconds()
-    const endHour = (event.end.getHours() < 10 ? "0" : "") + event.end.getHours()
-    const endMinutes = (event.end.getMinutes() < 10 ? "0" : "") + event.end.getMinutes()
-    const endSecondes = (event.end.getSeconds() < 10 ? "0" : "") + event.end.getSeconds()
-    tooltip.innerText = `${event.title}
-              ${startHour}:${startMinutes}:${startSecondes} - ${endHour}:${endMinutes}:${endSecondes}
-              ${event.extendedProps.description}
-            `
+        position: absolute;
+        top: ${eventRect.top}px;
+        left: ${eventRect.left}px;
+        width: ${size.width}px;
+        max-width: 250px; /* Limite la taille pour éviter des textes trop longs */
+        padding: 15px;
+        background: rgba(30, 40, 50, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: #ffffff;
+        font-family: 'Arial', sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        border-radius: 10px;
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transform: scale(0.9) translateY(-10px);
+        transition: opacity 0.4s ease, transform 0.4s ease;
+        z-index: 9999;
+    `;
 
+    // Ajout d'une flèche
+    const arrow = `
+        <div style="
+            position: absolute;
+            bottom: -10px;
+            left: 20px;
+            width: 10px;
+            height: 10px;
+            background: rgba(30, 40, 50, 0.95);
+            border-left: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            transform: rotate(45deg);
+        "></div>
+    `;
 
+    // Mise en forme du contenu
+    const startTime = `${event.start.getHours().toString().padStart(2, '0')}:${event.start.getMinutes().toString().padStart(2, '0')}`;
+    const endTime = `${event.end.getHours().toString().padStart(2, '0')}:${event.end.getMinutes().toString().padStart(2, '0')}`;
+    const content = `
+        <strong style="font-size: 16px; color: #f1c40f;">${event.title}</strong>
+        <div style="margin-top: 5px;">
+            🕒 ${startTime} - ${endTime}
+        </div>
+        <p style="margin-top: 8px; font-size: 13px; color: #d1d1d1;">
+            ${event.extendedProps.description || "Aucune description"}
+        </p>
+    `;
+
+    tooltip.innerHTML = content + arrow;
+
+    // Ajout au DOM
     if (!document.getElementById('event-tooltip')) {
         document.body.appendChild(tooltip);
+
+        // Animation d'apparition
+        requestAnimationFrame(() => {
+            tooltip.style.opacity = '1';
+            tooltip.style.transform = 'scale(1) translateY(0)';
+        });
     }
 }
+
 const fetchEvent = async (el,calendar) => {
     console.log(!agendas[el.dataset.id])
     if (!agendas[el.dataset.id]) {
@@ -875,3 +911,18 @@ function updateRdvEvent(rdv) {
     
 }
 
+document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+
+    // Sélection de la barre d'outils pour ajuster son positionnement
+    const toolbar = document.querySelector('.fc-header-toolbar');
+    const menuWrapper = document.querySelector('.menu-wrapper');
+
+    if (toolbar && menuWrapper) {
+        // Ajoute un style pour ajuster la marge gauche de la barre d'outils
+        toolbar.style.marginLeft = '50px';
+    }
+});
+
+
+  

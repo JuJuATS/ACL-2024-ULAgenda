@@ -107,3 +107,4 @@ function initializeRecurrenceInterface() {
     updateRecurrenceSummary();
     updateHiddenFields();
 }
+

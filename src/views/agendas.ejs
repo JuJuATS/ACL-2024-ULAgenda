@@ -13,12 +13,12 @@
     <!-- Contenu principal -->
     <main class="main-wrapper">
 
-        <div class="agendasOptions">
+        <!--<div class="agendasOptions">
             <a href="/search" class="search-link">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 Rechercher des rendez-vous
             </a>
-        </div>
+        </div>-->
 
         <div class="agenda-sections">
             <!-- Section des agendas personnels -->
@@ -29,10 +29,13 @@
                         Mes Agendas
                         <span class="count-badge personal-count">0</span>
                     </h2>
+                    <a href="/search" class="search-link">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        Rechercher des rendez-vous
+                    </a>
                 </div>
 
                 <div class="calendars-grid personal">
-
                     <div class="calendar newAgenda">
                         <div class="addCalendarBody"> 
                             <button class="add-button" style="height:75px; width:75px;">+</button>
@@ -52,6 +55,7 @@
                         Agendas Partagés
                         <span class="count-badge shared-count">0</span>
                     </h2>
+                    
                 </div>
                 <div class="calendars-grid shared">
                     <!-- Les agendas partagés seront injectés ici -->
@@ -61,38 +65,37 @@
 
     </main>
 
-
     <div id="popup-container">
 
         <!-- Pop-up pour ajouter un nouvel agenda -->
-        <div id="createNewAgendaModal" class="modal" style="display:none;">
+        <div id="createNewAgendaModal" class="modal">
             <div class="modal-content">
                 <span class="close-button" onclick="closeModal(this.parentNode.parentNode)">&times;</span>
                 <h2>Créer un nouvel agenda</h2>
                 <input type="text" id="agendaName" placeholder="Nom de l'agenda" required>
-                <button id="addAgendaButton">Ajouter Agenda</button>
+                <button id="addAgendaButton" class="modal-action-button">Ajouter Agenda</button>
             </div>
         </div>
 
         <!-- Pop-up de confirmation de suppression -->
-        <div id="confirmDeleteModal" class="modal" style="display:none;">
+        <div id="confirmDeleteModal" class="modal">
             <div class="modal-content">
                 <span class="close-button" onclick="closeModal(this.parentNode.parentNode)">&times;</span>
                 <h2>Confirmer la suppression</h2>
                 <p>Voulez-vous vraiment supprimer cet agenda ?</p>
-                <button id="confirmDeleteButton">Supprimer</button>
-                <button id="annuler" onclick="closeModal(this.parentNode.parentNode)">Annuler</button>
+                <button id="confirmDeleteButton" class="modal-action-button">Supprimer</button>
+                <button id="annuler" class="modal-action-button" onclick="closeModal(this.parentNode.parentNode)">Annuler</button>
             </div>
         </div>
 
         <!-- Pop-up pour renommer un agenda -->
-        <div id="confirmRenameModal" class="modal" style="display:none;">
+        <div id="confirmRenameModal" class="modal">
             <div class="modal-content">
                 <span class="close-button" onclick="closeModal(this.parentNode.parentNode)">&times;</span>
                 <h2>Nouveau titre</h2>
-                <input type="text" id="inputAgendaName" name="name" required minlength="4" maxlength="16" size="10" />
-                <button id="confirmRenameButton">Renommer</button>
-                <button id="annuler" onclick="closeModal(this)">Annuler</button>
+                <input type="text" id="inputAgendaName" name="name" required minlength="4" maxlength="16" size="10" placeholder="Entrez un nouveau titre pour l'agenda" />
+                <button id="confirmRenameButton" class="modal-action-button">Renommer</button>
+                <button id="annuler" class="modal-action-button" onclick="closeModal(this)">Annuler</button>
             </div>
         </div>
 

@@ -1,26 +1,45 @@
-@import url('/css/presets/common.css');
+:root {
+    --primary-color: #4A90E2; /* Bleu lumineux pour les éléments interactifs */
+    --secondary-color: #1C6DD0; /* Bleu légèrement plus sombre pour les accents */
+    --background-gradient-start: #121C29; /* Bleu-gris foncé */
+    --background-gradient-end: #1A2C3D; /* Bleu un peu plus clair pour le dégradé */
+    --card-background: #1F2A38; /* Fond des cartes */
+    --text-color: #E1E8F0; /* Texte principal clair */
+    --border-color: #3A4A5B; /* Bordures discrètes */
+    --hover-color: #273748; /* Survol des inputs */
+    --error-color: #FF6B6B; /* Couleur d'erreur */
+    --shadow-color: rgba(0, 0, 0, 0.5); /* Ombres */
+}
 
 body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
     margin: 0;
-    background-color: #eef2f3;
+    background: linear-gradient(135deg, var(--background-gradient-start), var(--background-gradient-end));
+    color: var(--text-color);
+    font-family: "Afacad Flux", sans-serif;
+    font-weight: 600;
+    transition: background-color 0.3s, color 0.3s;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
 }
 
 .content {
     flex: 1;
-    padding-top: 70px; /* Ajustement pour compenser la hauteur du header */
-}
-
-.presets-page * {
-    font-family: "Afacad Flux", sans-serif;
-    font-weight: 600;
+    width: 100vh;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+    align-content: center;
+    padding-top: 30px; /* Ajustement pour compenser la hauteur du header */
 }
 
 .presets-page {
-    background-color: #eef2f3;
-    color: #333;
+    background-color: transparent; /* Laisse le gradient visible */
+    color: var(--text-color);
     margin: 0;
     padding: 0;
 }
@@ -32,37 +51,108 @@ body {
 }
 
 .presets-page form {
-    width: 90%;
+    width: 55%;
     margin: 20px auto;
-    background-color: #fff;
+    background-color: var(--card-background);
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px var(--shadow-color);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+}
+
+.presets-page form:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px var(--shadow-color);
 }
 
 .presets-page label {
     display: block;
-    margin-bottom: 5px;
-    color: #00BBEC;
+    margin-bottom: 8px;
+    margin-left: 5px;
+    font-size: 1.1rem; /* Augmente légèrement la taille pour plus de lisibilité */
+    color: #00BBEC; /* Couleur claire pour une bonne lisibilité sur le fond sombre */
+    font-weight: 500; /* Moins gras mais encore bien lisible */
+    text-transform: none; /* Pas de majuscules, pour un look plus élégant */
+    letter-spacing: 0.5px; /* Espacement subtil pour la lisibilité */
+    transition: color 0.3s ease-in-out;
 }
 
-.presets-page input, .presets-page select, .presets-page textarea, .presets-page button {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+/* Style au survol du label */
+.presets-page label:hover {
+    color: var(--primary-color); /* Change la couleur au survol pour l'interactivité */
+}
+
+.presets-page input,
+.presets-page select,
+.presets-page textarea,
+.presets-page button {
+    width: 98%;
+    padding: 12px 18px; /* Augmente légèrement les espacements pour une meilleure interaction */
+    margin-bottom: 16px; /* Réduit l'espace entre les éléments pour plus de cohérence */
+    border: 2px solid var(--border-color); /* Bordure discrète mais nette */
+    border-radius: 8px; /* Coins légèrement arrondis pour un design moderne */
+    background-color: #2C3E50; /* Fond sombre légèrement plus clair que le fond principal */
+    color: var(--text-color); /* Couleur du texte pour une bonne visibilité */
     font-size: 1rem;
+    font-family: "Afacad Flux", sans-serif;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
+
+
+.presets-page button, #priority,#reminder{
+    width: 100% !important;
+}
+
+.presets-page input:focus,
+.presets-page select:focus,
+.presets-page textarea:focus {
+    border-color: var(--primary-color); /* Bordure bleue lumineuse pour un effet au focus */
+    background-color: #34495E; /* Fond légèrement éclairci pour indiquer la sélection */
+    outline: none; /* Supprime le contour par défaut */
+}
+
+.presets-page input::placeholder,
+.presets-page textarea::placeholder {
+    color: #7F8C8D; /* Gris clair pour un placeholder subtil */
+    font-style: italic; /* Italique pour plus de discrétion */
+}
+
+/* Effet de survol pour les inputs, selects, textareas */
+.presets-page input:hover,
+.presets-page select:hover,
+.presets-page textarea:hover {
+    background-color: #34495E; /* Fond éclairci au survol */
+    border-color:#0088e2; /* Bordure qui change au survol pour renforcer l'interaction */
+}
+@keyframes glow {
+    0% {
+        box-shadow: 0 0 5px rgba(72, 120, 226, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 10px rgba(72, 120, 226, 0.8);
+    }
+    100% {
+        box-shadow: 0 0 5px rgba(72, 120, 226, 0.5);
+    }
+}
+
+.presets-page input:focus,
+.presets-page select:focus,
+.presets-page textarea:focus {
+    animation: glow 1.5s infinite;
+}
 .presets-page textarea {
     height: 120px;
 }
+
+
 
 .presets-page input[type="color"] {
     width: 50px;
     padding: 5px;
     height: 40px;
+    border: none;
 }
 
 .presets-page .time-input-container {
@@ -77,15 +167,26 @@ body {
 
 .presets-page .time-input-container button {
     flex: 1; /* Prendre moins de place que l'input */
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+
+.presets-page .time-input-container button:hover {
+    background-color: var(--secondary-color);
 }
 
 .presets-page .delete-button {
-    background-color: #ec0000;
+    background-color: red;
+    color: white;
     margin-top: 10px;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
 }
 
 .presets-page .delete-button:hover {
-    background-color: #ff0000;
+    background-color: red;
 }
 
 .modal-overlay {
@@ -99,16 +200,20 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 1000;
-    backdrop-filter: blur(3px);
+    backdrop-filter: blur(6px);
+    opacity: 0;
+    animation: fadeIn 0.5s forwards;
 }
 
 .modal {
-    background: white;
+    background: var(--card-background);
     border-radius: 12px;
     padding: 24px;
     width: 90%;
     max-width: 600px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 4px 20px var(--shadow-color);
+    color: var(--text-color);
+    animation: scaleUp 0.5s forwards;
 }
 
 .modal-header {
@@ -120,7 +225,7 @@ body {
 
 .modal-title {
     font-size: 1.5rem;
-    color: #00BBEC;
+    color: var(--primary-color);
     margin: 0;
 }
 
@@ -132,74 +237,30 @@ body {
 
 .recurrence-type {
     padding: 8px 16px;
-    background: #f5f5f5;
+    background: var(--hover-color);
     border: 2px solid transparent;
     border-radius: 8px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s ease;
+}
+
+.recurrence-type:hover{
+    background-color: #0088e2;
 }
 
 .recurrence-type.active {
-    background: #e6f7ff;
-    border-color: #00BBEC;
-    color: #00BBEC;
+    background: var(--primary-color);
+    border-color: var(--secondary-color);
+    color: white;
 }
 
 .recurrence-content {
     margin-bottom: 20px;
 }
 
-.pattern-selection {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
-    gap: 8px;
-    margin-top: 15px;
-}
-
-.pattern-item {
-    padding: 8px;
-    text-align: center;
-    background: #f5f5f5;
-    border: 1px solid #ddd;
-    border-radius: 6px;
+#dateUntilRecurrence{
     cursor: pointer;
-    transition: all 0.2s;
-}
-
-.pattern-item.selected {
-    background: #00BBEC;
-    color: white;
-    border-color: #00BBEC;
-}
-
-.date-selection {
-    margin-top: 15px;
-}
-
-.date-list {
-    max-height: 200px;
-    overflow-y: auto;
-    margin-bottom: 10px;
-    padding: 0;
-    list-style: none;
-}
-
-.date-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    background: #f5f5f5;
-    border-radius: 6px;
-    margin-bottom: 5px;
-}
-
-.date-item button {
-    background: none;
-    border: none;
-    color: #ff4444;
-    cursor: pointer;
-    padding: 5px;
+    width: 93%;
 }
 
 .date-input-group {
@@ -210,17 +271,24 @@ body {
 .date-input-group input {
     flex: 1;
     padding: 8px;
-    border: 1px solid #ddd;
+    border: 1px solid var(--border-color);
     border-radius: 6px;
+    background-color: var(--hover-color);
+    color: var(--text-color);
 }
 
 .date-input-group button {
     padding: 8px 16px;
-    background: #00BBEC;
+    background: var(--primary-color);
     color: white;
     border: none;
     border-radius: 6px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.date-input-group button:hover {
+    background-color: var(--secondary-color);
 }
 
 .modal-footer {
@@ -229,7 +297,7 @@ body {
     gap: 10px;
     margin-top: 20px;
     padding-top: 20px;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--border-color);
 }
 
 .modal-footer button {
@@ -240,74 +308,163 @@ body {
 }
 
 .btn-cancel {
-    background: #f5f5f5;
-    color: #666;
+    background: var(--hover-color);
+    color: var(--text-color);
+}
+
+.btn-cancel:hover {
+    background: var(--border-color);
+    background-color: red;
 }
 
 .btn-save {
-    background: #00BBEC;
+    background: var(--primary-color);
     color: white;
 }
 
-#recurrence-indicator {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 4px 8px;
-    background: #e6f7ff;
-    border-radius: 4px;
-    margin-top: 8px;
-    font-size: 0.9em;
-    color: #00BBEC;
+.btn-save:hover {
+    background: var(--secondary-color);
 }
 
 .hide {
     display: none;
 }
 
-/* Pour les boutons de suppression dans date-item */
-.date-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 12px;
-    background: #f5f5f5;
-    border-radius: 4px;
-    margin-bottom: 5px;
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
-.date-item button {
-    width: 16px;
-    height: 16px;
-    padding: 0;
-    background: none;
-    border: none;
+@keyframes scaleUp {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
+
+
+.btn-save {
+    background: var(--primary-color);
+    color: white;
+}
+
+.btn-save:hover {
+    background: var(--secondary-color);
+}
+
+#returnLink {
+    display: flex; /* Pour activer la flexbox */
+    justify-content: center; /* Centrage horizontal */
+    align-items: center; /* Centrage vertical */
+    margin: 20px auto; /* Pour centrer par rapport au conteneur parent */
+    width: fit-content; /* Ajuste la largeur au contenu */
+    padding: 10px 20px; /* Espacement interne pour un effet plus esthétique */
+    background-color: var(--primary-color); /* Fond coloré */
+    color: white; /* Texte blanc */
+    border-radius: 5px; /* Coins arrondis */
+    text-decoration: none; /* Supprime le soulignement */
+    box-shadow: 0 4px 10px var(--shadow-color); /* Ajoute une ombre */
+    transition: background-color 0.3s, transform 0.2s; /* Effets visuels */
+}
+
+#returnLink:hover {
+    background-color: var(--secondary-color); /* Change de couleur au survol */
+    transform: scale(1.05); /* Effet de zoom léger */
+    text-decoration: underline; /* Ajoute un soulignement pour indiquer un lien */
+}
+
+#recurrence-button{
     cursor: pointer;
-    position: relative;
+}
+#recurrence-button:hover{
+    border-color: #1C6DD0;
+}
+
+/* Conteneur de la sélection de jours */
+.pattern-selection {
     display: flex;
-    align-items: center;
     justify-content: center;
-    opacity: 0.6;
-    transition: opacity 0.2s;
+    align-items: center;
+    gap: 15px; /* Espacement entre les éléments */
+    margin-top: 20px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
-.date-item button::before,
-.date-item button::after {
-    content: '';
-    position: absolute;
-    width: 12px;
-    height: 2px;
-    background-color: #ff4444;
+/* Élément individuel pour chaque jour */
+.pattern-item {
+    background-color: var(--card-background); /* Fond de chaque jour, sombre et agréable */
+    color: var(--text-color); /* Texte clair pour le contraste */
+    padding: 12px 24px;
+    border-radius: 8px; /* Coins arrondis pour une touche moderne */
+    font-size: 1.1rem; /* Taille de texte légèrement plus grande pour une meilleure lisibilité */
+    font-weight: 500; /* Poids de la police pour rendre le texte plus lisible */
+    text-align: center;
+    cursor: pointer; /* Pointeur pour indiquer qu'il est cliquable */
+    transition: all 0.3s ease; /* Transition fluide pour les effets */
 }
 
-.date-item button::before {
-    transform: rotate(45deg);
+/* Effet au survol de l'élément */
+.pattern-item:hover {
+    background-color: var(--primary-color); /* Changement de couleur au survol */
+    color: white; /* Le texte devient blanc pour plus de lisibilité */
+    transform: scale(1.05); /* Effet de zoom au survol */
 }
 
-.date-item button::after {
-    transform: rotate(-45deg);
+/* État actif, quand l'utilisateur clique sur un jour */
+.pattern-item.active {
+    background-color: var(--secondary-color); /* Fond bleu légèrement plus sombre pour l'élément actif */
+    color: white; /* Texte en blanc pour l'élément sélectionné */
+    box-shadow: 0 4px 8px var(--shadow-color); /* Ombre subtile pour l'élément actif */
+    transform: scale(1.05); /* Effet de zoom même en étant actif */
 }
 
-.date-item button:hover {
-    opacity: 1;
+/* Responsive: réduire la taille et réorganiser les éléments sur les petits écrans */
+@media (max-width: 768px) {
+    .pattern-selection {
+        gap: 10px; /* Moins d'espace entre les éléments sur les petits écrans */
+    }
+    
+    .pattern-item {
+        padding: 10px 20px; /* Réduit l'espace interne pour les petits écrans */
+        font-size: 1rem; /* Taille de texte ajustée pour les petits écrans */
+    }
+}
+
+#clearStartHour{
+    cursor: pointer;
+}
+#priority{
+    cursor: pointer;
+}
+#reminder{
+    cursor: pointer;
+}
+#color{
+    cursor: pointer;
+}
+
+#name,#eventName,#description{
+    padding-right: 0px;
+}
+#duration{
+    padding-right: 5px;
+}
+.mettreaJour{
+    margin-top: 10px;
+    background-color: #259e3f !important;
+}
+.mettreaJour:hover{
+    background-color: #259e3f;
+    cursor: pointer;
 }

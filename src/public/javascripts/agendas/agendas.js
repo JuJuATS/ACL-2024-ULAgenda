@@ -74,34 +74,47 @@ function openCloseOptions(container) {
     const layer2 = container.getElementsByClassName('layer2')[0];
     let openTimeout, closeTimeout;
 
+    // Fonction pour ouvrir le container
     function openContainer() {
         clearTimeout(closeTimeout);
         openTimeout = setTimeout(() => {
-            container.classList.add('open');
-        }, 300);
+            container.classList.add('open'); // Ajoute la classe 'open' pour afficher le conteneur
+        }, 100);
     }
 
+    // Fonction pour fermer le container
     function closeContainer(event) {
         if (!container.contains(event.relatedTarget)) {
             clearTimeout(openTimeout);
             closeTimeout = setTimeout(() => {
-                container.classList.remove('open');
-            }, 300);
+                container.classList.remove('open'); // Retire la classe 'open' pour masquer le conteneur
+            }, 100);
         }
     }
 
+    // Si l'élément 'tab' existe, écoutez le clic dessus
     if (tab) {
-        tab.addEventListener('mouseenter', openContainer);
+        tab.addEventListener('click', () => {
+            if (container.classList.contains('open')) {
+                // Si le conteneur est déjà ouvert, le fermer
+                closeContainer({ relatedTarget: null });
+            } else {
+                // Sinon, ouvrir le conteneur
+                openContainer();
+            }
+        });
     } else {
         console.log("Aucun élément avec la classe 'tab' trouvé.");
     }
 
+    // Si l'élément 'layer2' existe, écoutez le mouseleave pour fermer le conteneur
     if (layer2) {
         layer2.addEventListener('mouseleave', closeContainer);
     } else {
         console.log("Aucun élément avec la classe 'layer2' trouvé.");
     }
 }
+
 
 /* ====================================================================== 
                                 MODALS
@@ -122,18 +135,25 @@ function closeModal(modal) {
 function generateAgendaHTML(agenda) {
     return `
         <div class="layer1" onclick="redirectToAgenda('${agenda._id}')">
-            <h1 id="agendaName">${agenda.name}</h1>
+             <div class="title-section">
+                <h1 id="agendaName">${agenda.name}</h1>
+            </div>
         </div>
-
+        <div class="tab">+</div>
         <div class="layer2">
-            <div class="tab">Ｏ Ｏ Ｏ</div>
+            
 
             <div id="layer2-content">
-                <a class="agenda-but share-but" href="/agendas/${agenda._id}/share"> Partager </a>
-                <button class="agenda-but rdv-but" onclick="redirectToRendezVous('${agenda._id}')">Nouveau Rendez-vous</button>
-                <button class="agenda-but modify-but" onclick="renameAgenda(this, event)">Renommer</button>
-                <button class="agenda-but delete-but" onclick="removeAgenda(this, event)">Supprimer</button>
-            </div>
+    <div class="top-row">
+        <a class="agenda-but share-but" href="/agendas/${agenda._id}/share"> Partager</a>
+        <button class="agenda-but rdv-but" onclick="redirectToRendezVous('${agenda._id}')">Rendezvous</button>
+    </div>
+    <div class="bottom-row">
+        <button class="agenda-but modify-but" onclick="renameAgenda(this, event) ">Renommer</button>
+        <button class="agenda-but delete-but" onclick="removeAgenda(this, event)">Supprimer</button>
+    </div>
+</div>
+
             
         </div>
     `;
@@ -148,14 +168,24 @@ function generateAgendaDiv(agendaHTML, agenda, isShared = false) {
     if (isShared) {
         const badge = document.createElement('span');
         badge.className = `access-level-badge ${agenda.accessLevel}`;
-        badge.textContent = agenda.accessLevel; // Ajoute le niveau d'accès pour les agendas partagés
-        agendaDiv.prepend(badge); // Place le badge en haut de l'agenda
+        badge.textContent = agenda.accessLevel;
+
+        const agendaName = document.createElement('span');
+        agendaName.className = 'agenda-name';
+        agendaName.textContent = agenda.name;
+
+        const badgeContainer = document.createElement('div');
+        badgeContainer.className = 'badge-container';
+        badgeContainer.append(badge, agendaName);
+
+        agendaDiv.prepend(badgeContainer); // Place le container en haut de l'agenda
     }
 
     openCloseOptions(agendaDiv);
 
     return agendaDiv;
 }
+
 
 function setupSharedAgenda(agendaDiv, agenda) {
     const layer1 = agendaDiv.getElementsByClassName('layer1')[0];
@@ -356,3 +386,20 @@ function redirectToRendezVous(agendaId) {
 function stopEventPropagation(event) {
     event.stopPropagation();
 }
+// Fermeture des modals
+function closeModal(modal) {
+    modal.style.display = "none";
+    //modal.querySelector(".modal-content").style.transform = "scale(0)";
+}
+
+// Affichage des modals
+function openModal(modalId) {
+    let modal = document.getElementById(modalId);
+    modal.style.display = "flex";
+    modal.querySelector(".modal-content").style.transform = "scale(1)";
+}
+
+document.querySelectorAll('.calendar').forEach(openCloseOptions);
+
+
+
