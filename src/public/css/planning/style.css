@@ -627,29 +627,7 @@ form {
 
 
 
-.agendaDiv{
-    display: flex;
-    gap: 20px;
-    width: 70%;
-    
-}
 
-.checkAgenda {
-    width: 1.3em;
-    height: 1.3em;
-    background-color: white;
-    border-radius: 30%;
-    vertical-align: middle;
-    border: 1px solid #ddd;
-    appearance: none;
-    -webkit-appearance: none;
-    outline: none;
-    cursor: pointer;
-}
-
-.checkAgenda:checked {
-    background-color: gray;
-}
 
 
 .agenda-picker-container {
