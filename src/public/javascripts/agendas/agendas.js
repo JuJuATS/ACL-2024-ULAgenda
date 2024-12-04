@@ -516,7 +516,14 @@ document.querySelector(".import-button").addEventListener("click", async (e) => 
 
 function redirectToAgenda(e, agendaId) {
     if (exportMode) {
-        exportedAgenda.push(agendaId);
+        if (exportedAgenda.includes(agendaId)) {
+            const index = exportedAgenda.indexOf(agendaId);
+            if (index > -1) {
+                exportedAgenda.splice(index, 1);
+            }
+        } else {
+            exportedAgenda.push(agendaId);
+        }
         e.parentElement.classList.toggle("hover")
     }
     else window.location.href = `/planning`
