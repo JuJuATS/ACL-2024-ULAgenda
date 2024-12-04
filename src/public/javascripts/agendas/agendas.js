@@ -56,7 +56,7 @@ function afficherPopUp(text, good) {
 
 // Éléments de la page
 const createModal = document.getElementById("createNewAgendaModal");
-const addButton = document.querySelector(".add-button");
+let addButton = document.querySelector(".add-button");
 const closeButton = document.querySelector(".close-button");
 const agendaNameInput = document.getElementById("agendaName");
 const addAgendaButton = document.getElementById("addAgendaButton");
@@ -76,7 +76,17 @@ function initAgendas() {
 
                 // Création des agendas personnels ici :
                 const personalContainer = document.querySelector('.calendars-grid.personal');
-                personalContainer.innerHTML = ''
+                personalContainer.innerHTML = `<div class="calendar newAgenda">
+                        <div class="addCalendarBody">
+                            <button class="add-button" style="height:75px; width:75px;">+</button>
+                        </div>
+                    </div>`
+                
+                addButton = document.querySelector(".add-button");
+                addButton.addEventListener("click",(e)=> {
+                    
+                    createModal.style.display = "block";
+                })
                 ownedAgendas.forEach(agenda => {
                     const agendaDivHTML = generateAgendaHTML(agenda);
                     const agendaDiv = generateAgendaDiv(agendaDivHTML, agenda);
@@ -156,9 +166,7 @@ function openCloseOptions(container) {
                                 MODALS
    ====================================================================== */
 
-addButton.onclick = function() {
-    createModal.style.display = "block";
-}
+
 
 function closeModal(modal) {
     modal.style.display = "none";

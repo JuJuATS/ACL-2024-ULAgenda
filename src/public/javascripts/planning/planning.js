@@ -20,13 +20,13 @@ let rdv = {
     priorite:"Moyenne",
   }
 const agendas = []
+let weeks;
 let popupActivated = false;
 
 const handleCheckBox = (checkBox)=>{
   const checkBoxs = JSON.stringify(localStorage.getItem("checkBox"));
   if(checkBoxs.includes(checkBox.dataset.id)){
     checkBox.checked = true;
-    fetchEvent(checkBox);
   }
 }
 const saveAgenda =(el)=>{
@@ -39,7 +39,6 @@ const unSaveAgenda = (el)=>{
   let index = checkBox.indexOf(el.dataset.id)
   
   if(index !== -1){
-    console.log(true)
     checkBox.splice(index, 1)
     localStorage.setItem("checkBox",JSON.stringify(checkBox));
   }
@@ -112,16 +111,31 @@ function showTooltip(eventRect, event, size) {
 }
 
 const fetchEvent = async (el,calendar) => {
-    console.log(!agendas[el.dataset.id])
-    if (!agendas[el.dataset.id]) {
-      const data = await fetch(`/api/getDate?agenda=${el.dataset.id}`).then(res => res.json())
-      
-      agendas[el.dataset.id] = { event: data.event, visible: true,permissions:data.permisssion }
+    console.log(weeks.start,agendas[el.dataset.id]?.weeks)
+    const start = new Date(weeks.start).getTime();
+    //je regarde si j'ai déjà récuperer les 
+    if (!agendas[el.dataset.id] || !agendas[el.dataset.id]?.weeks.includes(start)) {
+       if(!agendas[el.dataset.id]){
+        agendas[el.dataset.id] = {event:[],visible:el.checked,permissions:"",weeks:[]}
+       }
+       
+        const fetchOptions = {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+                    },
+            credentials: 'include',
+            body: JSON.stringify({weekStart:weeks.start,weekEnd:weeks.end}),
+          }
+          
+      const data = await fetch(`/api/getDate?agenda=${el.dataset.id}&weekStart=${weeks.start}&weekEnd=${weeks.end}`).then(res => res.json())
+      agendas[el.dataset.id] = { event: [...agendas[el.dataset.id].event,...data.event], visible: el.checked,permissions:data.permission,weeks:[...agendas[el.dataset.id].weeks,start] }
       
     }
     else {
       agendas[el.dataset.id].visible = true;
     }
+
     calendar.refetchEvents();
   }
 const refetch = async (el, calendar) => {
@@ -174,16 +188,11 @@ document.addEventListener('DOMContentLoaded', function () {
     //je recherche s'il existe un rendez-vous dejà enregistré dans le cache
     let index = agendas[rdv.agendaId].event.findIndex(el=>el.id===rdv.id)
     if(index!==-1){
-        
-        console.log(agendas[rdv.agendaId].event)
         agendas[rdv.agendaId].event.splice(index, 1);
-        console.log("index trouvé",index)
-        console.log("avant",agendas[rdv.agendaId].event)
     }
     rdv.realEvent
     let event = agendas[rdv.agendaId]?.event ? [...agendas[rdv.agendaId]?.event ,rdv.realEvent] : [rdv.realEvent] 
     agendas[rdv.agendaId] = { event: event, visible: true }
-    console.log("apres",agendas[rdv.agendaId])
     const fetchOptions = {
         method: 'put',
         headers: {
@@ -199,25 +208,30 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         
     })
-    console.log(rdv.realEvent)
     //rdv.realEvent.setProp("backgroundColor",rdv.backgroundColor)  
 }
     /*document.querySelector("#MICHAEL").addEventListener('click',() => {
         console.log(rdv)
     })*/
-   
+ 
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
-        
+        datesSet:function(dateInfo){
+            weeks = dateInfo;
+            const checkBoxs = document.querySelectorAll(".listAgenda input");
+            checkBoxs.forEach((el)=> fetchEvent(el,this))
+            
+        },
         eventSources: [
             async (info, success, fail) => {
-                console.log("je mets à jour")
+              
                 let events = []
                 for (agenda in agendas) {
                     if (agendas[agenda].visible) {
                         events = [...events, ...agendas[agenda].event]
                     }
                 }
+                
                 return events;
             }
         ],
@@ -267,7 +281,7 @@ document.addEventListener('DOMContentLoaded', function () {
         },
         eventClick: (info) => {
             
-            if (info.view.type === "timeGridWeek"){
+            if (info.view.type === "timeGridWeek" && agendas[info.event.extendedProps.agendaId].permission!=="read"){
            
                 drawPopUpRdv(rdv, info, false, calendar)
             }
@@ -295,7 +309,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         editable: true,  // Enable drag-and-drop
         selectable: true, // Enable selection
-        selectMirror: true, // Show drag preview
 
         // Selection settings
         unselectAuto: true,
@@ -311,16 +324,12 @@ document.addEventListener('DOMContentLoaded', function () {
             
             info.el.style.opacity = '0.5';
             if(popupActivated && info.event.id !=="null"){
-               
-                
-                
                 rdv.realEvent.remove()
                 popupActivated = false;
                 togglePopUp()
             }
         },
         eventDrop: async function(info) {
-            console.log("drop")
             info.el.style.opacity = '1';
          
             const event = info.event;
@@ -350,7 +359,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 fetchModif(rdv)
             }
         },
-        
+        select:function(info){
+            if (info.view.type === "timeGridWeek") {
+                drawPopUpRdv(rdv, info, true, calendar)
+
+            }
+        },
         /*unselect: function(info) {
             console.log("unselect")
             console.log(info)
@@ -403,7 +417,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
     });
- 
+
     initPopUpRdv(calendar,refetch,fetchModif)
     const sideBar = document.querySelector(".sideBar");
     calendar.render();
@@ -420,12 +434,14 @@ document.addEventListener('DOMContentLoaded', function () {
     checkBoxs.forEach(checkBox => {
         if(saveChecboxs.includes(checkBox.dataset.id)){
           checkBox.checked = true;
-          fetchEvent(checkBox,calendar)
+         
         }
         checkBox.addEventListener("change", (el) => {
             refetch(el.target, calendar)
         })
-    });
+    }
+    );
+    calendar.refetchEvents()
    
     selectAllButton.addEventListener("click",(e)=>{
       const checkBoxs = document.querySelectorAll(".checkAgenda");
@@ -456,9 +472,9 @@ function drawPopUpRdv(rdv2, info, click, calendar) {
         let eventStart
         let eventEnd
         if (click) { 
-            eventStart = info.date;
+            eventStart = info.date || info.start;
             eventStart.setMinutes(0, 0, 0);
-            eventEnd = new Date(eventStart.getTime() + 3600000);
+            eventEnd = info.end || new Date(eventStart.getTime() + 3600000);
            rdv = {
             name:"",
             backgroundColor:"#3788d8",
@@ -603,7 +619,7 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
         const input = picker.querySelector('.time-input');
         const dropdown = picker.querySelector('.time-dropdown');
         for (let hour = 0; hour < 24; hour++) {
-            for (let minute = 0; minute < 60; minute += 15) {
+            for (let minute = 0; minute < 60; minute += 5) {
                 const timeOption = document.createElement('div');
                 timeOption.className = 'time-option';
 
@@ -759,7 +775,6 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
 
                 agendaDropdown.classList.remove('show');
 
-                console.log('Selected agenda:', agenda);
                 rdv.agendaId = agenda._id;
             });
 
@@ -791,7 +806,6 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
 
     document.querySelector("#rappel").addEventListener('change', (e) => {
         rdv.rappel = +(e.target.value)
-        console.log(e.target.value)
         updateRdvEvent(rdv)
     })
 
@@ -800,7 +814,6 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
         updateRdvEvent(rdv)
     })
     textarea.addEventListener("input",(e)=>{
-        console.log(e.target.value)
         rdv.description = e.target.value
         
         updateRdvEvent(rdv)
@@ -844,13 +857,10 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
             
             if(rdv.id !== "null"){
                 
-               console.log("rdv de base",rdv)
                 updateRdvEvent(rdv);
-                console.log("rdv réel",rdv.realEvent)
                 updatePopUp(rdv)
                
                 fetchModif(rdv);
-                console.log(rdv)
                 calendar.refetchEvents();
             }
             else{
@@ -864,7 +874,6 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
             }
             let event = [...agendas[rdv.agendaId]?.event,rdv.realEvent]
             agendas[rdv.agendaId] = { event: event, visible: true }
-                console.log(rdv)
                 const fetchOptions = {
                     method: 'post',
                     headers: {
@@ -874,8 +883,8 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
                     body: JSON.stringify(rdv),
                 }
                 fetch(`/rendezvous`,fetchOptions).then(res=>res.json()).then(data=>{
+                    console.log("j'ai enregistré")
                     togglePopUp();
-                    console.log(data.rdv)
                     //check la checkbox associé
                     rdv.realEvent.setProp('title', data.rdv.name)
                     //rdv.realEvent.setProp('backgroundColor', data.rdv.backgroundColor)
@@ -899,7 +908,6 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
 function updateRdvEvent(rdv) {
    
     rdv.realEvent.setProp('title', rdv.name)
-    console.log(rdv.description)
     rdv.realEvent.setProp('backgroundColor', rdv.backgroundColor)
     rdv.realEvent.setStart(rdv.dateDebut)
     rdv.realEvent.setEnd(rdv.dateFin)
