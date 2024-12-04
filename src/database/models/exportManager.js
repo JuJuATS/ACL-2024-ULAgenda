@@ -150,7 +150,6 @@ class FileManager {
 
                     }
                 } catch (error) {
-                    console.log("bad agenda", agenda.name)
                 }
             }
             return {success:true}
