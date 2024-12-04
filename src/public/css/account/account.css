@@ -408,6 +408,26 @@ input:disabled {
     display: none !important;
 }
 
+.pop-up-info {
+    position: fixed;
+    margin-top: -200px!important; /* Commence au-dessus de l'écran */
+    left: 50%;
+    transform: translate(-50%, 0); /* Au départ, elle est décalée vers le haut */
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 20px;
+    border-radius: 10px;
+    display: block; /* par défaut, elle est cachée */
+    opacity: 0;
+    transition: top 0.5s ease, opacity 0.3s ease;
+    z-index: 10;
+}
+
+.pop-up-info.display-pop-up {
+    top: 10% !important; /* La pop-up descend jusqu'à 10% du haut de la page */
+    opacity: 1; /* Visible */
+}
+
 
 
 

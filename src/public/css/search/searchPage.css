@@ -52,15 +52,16 @@ header {
 }
 
 /* Amélioration du conteneur principal */
+/* Amélioration du conteneur principal */
+/* Amélioration du conteneur principal */
 .search-container {
     margin: 20px auto;
     max-width: 800px;
-    background-color: #2c2c2c; /* Fond gris foncé pour le conteneur */
-    /*background-color: #2a3b4f;*/
+    background: rgba(20, 30, 40, 0.9); /* Dégradé du bleu-vert au bleu nuit */
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    height : 87vh;
+    height: 87vh;
     z-index: 10 !important;
 }
 
@@ -68,9 +69,11 @@ header {
 .search-controls {
     margin-bottom: 20px;
     padding: 20px;
-    background: #333333; /* Fond plus sombre pour les contrôles */
+    background-color:transparent;  /* Fond gris bleuâtre pour un contraste subtil avec le conteneur */
     border-radius: 8px;
 }
+
+
 
 /* Champ de recherche */
 .search-input {
@@ -342,7 +345,7 @@ header {
     margin-bottom: 15px;
     border: 1px solid #444444;
     border-radius: 8px;
-    background-color: #2c2c2c;
+    background-color: #252830; 
     padding-bottom: 5px !important;
     color: #e0e0e0;
     opacity: 0;
@@ -423,7 +426,7 @@ header {
 
 /* Informations du rendez-vous */
 .rdv-info {
-    color: #c0c0c0; /* Texte clair et doux */
+    color: #00BBEC; /* Texte clair et doux */
     font-size: 16px; /* Taille idéale pour la lisibilité */
     line-height: 1.6; /* Améliorer l’interlignage pour une meilleure lisibilité */
     margin: 5px 0;
@@ -652,7 +655,7 @@ header {
     margin-bottom: 15px;
     border: 1px solid #444444;
     border-radius: 8px;
-    background-color: #2c2c2c;
+    background-color: #24272c;
     opacity: 0;
     transform: translateY(20px);
     animation: fadeInUp 0.5s ease forwards;

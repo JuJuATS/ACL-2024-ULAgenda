@@ -21,8 +21,11 @@ body {
     border-radius: 12px;
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4); /* Ombre plus marquée pour un effet lumineux */
     text-align: center;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
     backdrop-filter: blur(12px); /* Flou léger pour simuler un effet de brume glacée */
-    height: 80vh;
+    height: 93vh;
 }
 
 h1 {
@@ -47,6 +50,9 @@ label {
     display: block;
 }
 
+#edit-rendezvous-form{
+    height: 100vh !important;
+}
 input,
 textarea {
     width: 100%;
@@ -108,9 +114,8 @@ textarea:focus {
 .recurrence-form-container {
     height: fit-content;
     padding: 20px;
-    min-width: 1000px;
+    min-width: 800px;
     border-radius: 10px;
-    position: relative;
 }
 
 .closer {
@@ -844,8 +849,8 @@ background-color: #444; /* Couleur au survol pour le bouton de réinitialisation
 }
 
 .common label {
-    font-size: 25px !important; /* Taille lisible */
-    margin-left: 250px;
+    font-size: 20px !important; /* Taille lisible */
+    margin-left: 240px;
     font-weight: bold !important; /* Texte légèrement accentué */
     color: #00BBEC !important; /* Bleu clair qui s'intègre bien au thème */
     margin-bottom: 8px;  /* Espacement sous le label */
@@ -871,4 +876,17 @@ background-color: #444; /* Couleur au survol pour le bouton de réinitialisation
     border-color: #4f8ef7; /* Bordure bleue accentuée au focus */
     box-shadow: 0 0 6px rgba(79, 142, 247, 0.6); /* Effet lumineux autour */
 }
+
+#edit-rendezvous-form {
+    height: 10vh !important;
+    display: flex;
+    flex-direction: column;
+}
+
+.recurrence-form-container {
+    height: 18vh; /* Remplit la hauteur de son parent */
+    flex-grow: 1; /* Si le parent est en flexbox, permet de grandir pour occuper l'espace */
+    /*overflow-y: auto; /* Ajoute un défilement si le contenu dépasse */
+}
+
 

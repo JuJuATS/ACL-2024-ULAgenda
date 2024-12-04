@@ -14,6 +14,7 @@ body {
     align-items: center;
     justify-content: center;
     color: #e0f7fa;
+    overflow-y: hidden;
 }
 
 h1,h2{

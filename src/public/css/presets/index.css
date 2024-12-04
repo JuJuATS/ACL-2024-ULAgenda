@@ -37,7 +37,9 @@ h1 {
 }
 /* .presets-page - Ajout de la scrollbar verticale */
 .presets-page {
-    margin-top: 0; /* Retirer le margin-top négatif */
+    position: absolute;
+    top: 0px;
+    margin-top: 80px; /* Retirer le margin-top négatif */
     background: rgba(20, 30, 40, 0.9);
     border-radius: 12px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
@@ -45,8 +47,9 @@ h1 {
     justify-content: center;
     justify-items: center;
     align-items: center;
+    margin-left:500px;
     overflow-y: auto; /* Ajout d'une scrollbar verticale */
-    max-height: 80vh; /* Limiter la hauteur à 80% de la hauteur de la fenêtre */
+    max-height: 90vh; /* Limiter la hauteur à 80% de la hauteur de la fenêtre */
 }
 
 
@@ -221,4 +224,4 @@ button[type="submit"]:active {
     background-color: #009fc7 !important;
   }
 
-  
+

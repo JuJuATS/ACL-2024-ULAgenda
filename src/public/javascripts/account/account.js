@@ -66,59 +66,59 @@ document.addEventListener('DOMContentLoaded', () => {
     saveButton.addEventListener('click', async () => {
         const passwordValue = passwordInput.value;
         const confirmPasswordValue = confirmPasswordInput.value;
-    
+        
         // Vérification de la correspondance des mots de passe seulement si les champs sont remplis
         if (passwordValue && passwordValue !== confirmPasswordValue) {
-            afficherPopUp("Les mots de passe ne correspondent pas. Veuillez vérifier vos saisies.",false);
+            afficherPopUp("Les mots de passe ne correspondent pas. Veuillez vérifier vos saisies.", false);
             return;
         }
-    
+        
         // Vérification de la longueur du mot de passe seulement si un mot de passe est fourni
         if (passwordValue && passwordValue.length < 8) {
-            afficherPopUp("Le mot de passe doit comporter au moins 8 caractères.",false);
+            afficherPopUp("Le mot de passe doit comporter au moins 8 caractères.", false);
             return;
         }
-    
+        
         // Récupérer les valeurs des champs
         const nom = document.querySelector('input[name="lastname"]').value;
         const prenom = document.querySelector('input[name="firstname"]').value;
         const pseudo = document.querySelector('input[name="pseudo"]').value;
-    
+        
         // Si les champs mot de passe sont vides, ne pas envoyer le mot de passe au serveur
         const dataToSend = {
             nom,
             prenom,
             pseudo,
         };
-    
+        
         // Si un mot de passe est fourni, l'ajouter aux données à envoyer
         if (passwordValue) {
             dataToSend.password = passwordValue;
         }
-    
+        
         // Désactiver les champs après sauvegarde
         fields.forEach(field => {
             field.setAttribute('disabled', true);
         });
-    
+        
         // Réinitialiser l'affichage du champ email
         if (emailField) {
             emailField.setAttribute('style', 'display: block;');
         }
-    
+        
         confirmPasswordContainer.setAttribute('style', 'display: none !important;');
         passwordInput.placeholder = '*************';
-    
+        
         saveButton.style.display = 'none';
         cancelButton.style.display = 'none'; // Masquer le bouton Annuler
         editButton.style.display = 'inline-block';
         eyeIcon.style.display = 'none';
         eyeIconConfirm.style.display = 'none';
-    
+        
         logoutButton.style.display = "block";
-    
+        
         isEditing = false;
-    
+        
         // Envoyer les données au serveur
         try {
             const response = await fetch('/update-profile', {
@@ -128,25 +128,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify(dataToSend),
             });
-    
+        
             const result = await response.json();
-    
+        
             if (response.ok) {
                 if (result.passwordUpdated) {
-                    afficherPopUp("Profil ou Mot de passe mis à jour avec succès !",true);
+                    afficherPopUp("Profil ou Mot de passe mis à jour avec succès !", true);
                 } else {
-                    afficherPopUp((result.message || 'Profil mis à jour avec succès.'),true);
+                    afficherPopUp((result.message || 'Profil mis à jour avec succès.'), true);
                 }
                 // Recharger la page pour refléter les nouvelles données
-                window.location.reload();
+                //window.location.reload();
             } else {
-                afficherPopUp(result.error || 'Une erreur est survenue lors de la mise à jour.',false);
+                afficherPopUp(result.error || 'Une erreur est survenue lors de la mise à jour.', false);
             }
         } catch (error) {
             console.error('Erreur lors de la mise à jour du profil:', error);
-            afficherPopUp('Erreur de connexion au serveur.',false);
+            afficherPopUp('Erreur de connexion au serveur.', false);
         }
     });
+    
     
     // Action au clic sur "Annuler"
     cancelButton.addEventListener('click', () => {

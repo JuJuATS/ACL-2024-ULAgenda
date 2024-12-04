@@ -130,8 +130,8 @@
                                 <td colspan="2">
                                     <div class="action-buttons">
                                         <button onclick="window.location.href='/presets/<%= preset._id %>'">Modifier</button>
-                                        <form action="/presets/<%= preset._id %>?_method=DELETE" method="POST" onsubmit="return confirm('Etes-vous sûr de vouloir supprimer ce préréglage ?')">
-                                            <button type="submit">Supprimer</button>
+                                        <form action="/presets/<%= preset._id %>?_method=DELETE" method="POST" id="delete-form">
+                                            <button type="submit" id="delete-button">Supprimer</button>
                                         </form>
                                     </div>
                                 </td>
@@ -144,5 +144,15 @@
             <a href="/presets/new" class="newPrereglage">Créer un nouveau préréglage</a>
         </div>
     </div>
+    <div id="popup-confirmation" class="hidden">
+        <div class="popup-content">
+            <p>Êtes-vous sûr de vouloir supprimer ce préréglage ?</p>
+            <div class="popup-buttons">
+                <button id="popup-confirm" class="btn btn-danger">Oui</button>
+                <button id="popup-cancel" class="btn btn-secondary">Non</button>
+            </div>
+        </div>
+    </div>
 </body>
+
 </html>
