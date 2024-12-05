@@ -366,6 +366,7 @@ document.addEventListener('DOMContentLoaded', async() => {
             form.description.value = presetData.description || '';
             document.getElementById('rappel').value = presetData.reminder || '';
             form.heureDebut.value = presetData.startHour || '';
+            console.log(presetData.priority);
             form.priority.value = presetData.priority || '';
             form.color.value = presetData.color || '';
 
