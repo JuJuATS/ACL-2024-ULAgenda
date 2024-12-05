@@ -51,7 +51,7 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
 
 
   try {
-    const { name, description, dateDebut, dateFin, recurrences, finRecurrence,backgroundColor,priorite,rappel } = req.body;
+    const { name, description, dateDebut, dateFin, recurrences, finRecurrence,backgroundColor,priority,rappel } = req.body;
 
     if (!name || !dateDebut || !dateFin) {
       return res.status(400).json({ message: "Les champs 'name', 'dateDebut', 'dateFin' sont obligatoires." });
@@ -82,7 +82,7 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
       agendaId:req.agenda,
       recurrences: recurrence,
       rappel:rappelEntity,
-      priority:priorite,
+      priority:priority,
       color:backgroundColor
     });
     rappelEntity !== null ? await rappelEntity.save() : null;
@@ -103,7 +103,7 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
 router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
   try {
     const rdvId = req.params.idf;
-    const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence,backgroundColor,priorite,rappel } = req.body;
+    const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence,backgroundColor,priority,rappel } = req.body;
 
     if (!name || !dateDebut || !dateFin) {
       return res.status(400).json({ message: "Les champs requis sont manquants." });
@@ -143,7 +143,7 @@ router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async 
       description,
       dateDebut: new Date(dateDebut),
       dateFin: new Date(dateFin),
-      priority:priorite,
+      priority:priority,
       color:backgroundColor
     });
 
