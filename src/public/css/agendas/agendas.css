@@ -98,7 +98,9 @@ footer {
 
 .tab {
     position: absolute;
-    left: 235px;
+    left:-webkit-calc(100% - 50px);
+    left:-moz-calc(100% - 50px);
+    left:calc(100% - 50px);
     top: 2%;
     width: 22px;
     height: 15%;
@@ -744,4 +746,10 @@ input:focus {
     font-style: italic; /* Style en italique pour distinguer le texte */
     font-size: 14px; /* Taille adaptée */
     opacity: 0.8; /* Légère transparence */
+}
+
+@media only screen and (max-width: 768px) {
+    .section-header{
+        flex-direction: column;
+    }
 }
