@@ -236,7 +236,12 @@ document.addEventListener('DOMContentLoaded', function () {
         datesSet:function(dateInfo){
             weeks = dateInfo;
             const checkBoxs = document.querySelectorAll(".listAgenda input");
-            checkBoxs.forEach((el)=> fetchEvent(el,this))
+            checkBoxs.forEach((el)=> {
+                if(el.checked){
+                    fetchEvent(el,this)
+                }})
+            
+            
             
         },
         eventSources: [
@@ -593,7 +598,7 @@ function afficherPopUp(text, good) {
 }
 
 
-const toggleBtn = document.getElementById('toggleBtn');
+const toggleBtn = document.querySelector(".description-header");
 const menuIcon = document.querySelector('.menu-icon');
 const closeIcon = document.querySelector('.close-icon');
 const textareaContainer = document.getElementById('textareaContainer');

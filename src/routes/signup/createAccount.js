@@ -2,13 +2,15 @@ const User = require('../../database/models/user');
 const argon2 = require('argon2');
 const createVerificationToken = require('../../utils/createVerificationToken');
 const { sendVerificationEmail } = require('../../utils/mailer');
-
+const Agenda = require('../../database/models/agenda.js');
 
 const createAccount = async (req, res) => {
     const { nom, prenom, email, pseudo, password } = req.body;
+
     if (!nom || !prenom || !email || !pseudo || !password) {
         return res.status(400).json({good: false,message:['Tous les champs sont obligatoires']});
     }
+
     try {
         // Vérification si l'email ou le pseudo existent déjà
         const existingUser = await User.findOne({ $or: [{ email: email }, { pseudo: pseudo }] });
@@ -35,6 +37,11 @@ const createAccount = async (req, res) => {
             password: hashedPassword,
             isVerified: false,
         });
+        
+        const firstAgenda = "Premier_Agenda";
+
+        const newAgenda = new Agenda({ name: firstAgenda , userId: newUser._id });
+        await newAgenda.save();
 
         // Génération du token de vérification
         const verificationToken = createVerificationToken(newUser);
