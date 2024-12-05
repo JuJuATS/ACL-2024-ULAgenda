@@ -6,6 +6,9 @@ const User = require('../database/models/user');
 const argon2 = require('argon2');
 require('dotenv').config();
 
+// Modules locaux
+const Agenda = require('../database/models/agenda');
+
 let mongoServer;
 describe('Tests de la fonction de login', () => {
   beforeAll(async () => {
@@ -50,6 +53,29 @@ describe('Tests de la fonction de login', () => {
     expect(response.headers.location).toBe('/'); // Vérifier la redirection vers "/"
   });
 
+  it('Un premier agenda est inséré dans le nouvel utilisateur', async () => {
+    // Créer un utilisateur avec un mot de passe hashé
+    const passwordHash = await argon2.hash('password123');
+    const user = new User({
+      firstname: 'John',
+      lastname: 'Doe',
+      pseudo: 'JohnDoe',
+      email: 'johndoe@example.com',
+      isVerified:true,
+      password: passwordHash,
+    });
+    await user.save();
+
+    // Effectuer une requête POST pour simuler le login
+    const response = await request(app)
+      .post('/signin')
+      .send({ email: 'johndoe@example.com', password: 'password123' });
+
+    const agendaAdded = await Agenda.findOne(1);
+
+    console.log("Agenda_name : ", agendaAdded.name);
+    expect(agendaAdded).not.toBeNull();
+  });
 
   it('devrait retourner 400 si l\'email n\'existe pas', async () => {
     const response = await request(app)
@@ -105,6 +131,7 @@ describe('Tests de la fonction de login', () => {
     expect(responseBothMissing.statusCode).toBe(400);
     
   });
+
   it("devrait retourner 400 avec le message 'compte non verifié si le compte n'est pas valide",async()=>{
         // Créer un utilisateur
         const passwordHash = await argon2.hash('password123');
