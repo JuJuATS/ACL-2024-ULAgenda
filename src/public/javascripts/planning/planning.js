@@ -254,8 +254,10 @@ document.addEventListener('DOMContentLoaded', function () {
         ],
 
         allDaySlot: false,
+        height:"100%",
+        aspectRatio:3.0,
         nowIndicator: true,
-        height: "100%",
+        
         initialView: 'timeGridWeek',
         views: {
             dayGridMonth: {
