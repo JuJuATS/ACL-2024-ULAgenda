@@ -180,7 +180,7 @@ function generateAgendaHTML(agenda) {
     return `
         <div class="layer1" onclick="redirectToAgenda(this, '${agenda._id}')">
              <div class="title-section">
-                <h1 id="agendaName">${agenda.name}</h1>
+                <h3 id="agendaName">${agenda.name}</h1>
             </div>
         </div>
         <div class="tab">+</div>
