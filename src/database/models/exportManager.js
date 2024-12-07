@@ -1,4 +1,3 @@
-const { createEvents } = require('ics');
 const Agenda = require('./agenda.js');
 const Recurrence = require("./recurrence");
 const Rdv = require("./rdv");
@@ -6,29 +5,6 @@ const Share = require("./share");
 class FileManager {
     constructor() {
     }
-
-    /*async exportJSON(agendaIds) {
-        try {
-            const exportData = {}
-            for (let id of agendaIds) {
-                const populatedAgenda = await Agenda.findById(id).populate({
-                    path: 'rdvs',
-                    populate: { path: 'recurrences' }
-                });
-                exportData[`${id.slice(6)}${Date.now().toString(16)}`] = {
-                    name: populatedAgenda.name,
-                    rdvs: populatedAgenda.rdvs.map(rdv => {
-                        const { agendaId, rappel, id, _id, __v, recurrences: rec, ...sanitizedRdv } = rdv.toObject();
-                        const { id:id1, _id:id2, __v:v1, ...recurrences } = rec
-                        return {...sanitizedRdv, recurrences};
-                    })
-                }
-            }
-            return exportData;
-        } catch (error) {
-            throw new Error(`Erreur lors de l'export du JSON: ${error.message}`);
-        }
-    }*/
 
     async exportJSON(agendaIds, userId) {
         try {
@@ -71,48 +47,6 @@ class FileManager {
         }
     }
 
-    async exportICS(agenda) {
-        try {
-            const populatedAgenda = await agenda.populate('rdvs');
-
-            const events = populatedAgenda.rdvs.map(rdv => {
-                const startDate = new Date(rdv.dateDebut);
-                const endDate = new Date(rdv.dateFin);
-
-                return {
-                    title: rdv.name,
-                    description: rdv.description || '',
-                    start: [
-                        startDate.getFullYear(),
-                        startDate.getMonth() + 1,
-                        startDate.getDate(),
-                        startDate.getHours(),
-                        startDate.getMinutes()
-                    ],
-                    end: [
-                        endDate.getFullYear(),
-                        endDate.getMonth() + 1,
-                        endDate.getDate(),
-                        endDate.getHours(),
-                        endDate.getMinutes()
-                    ],
-                    categories: rdv.tags,
-                    priority: rdv.priority === 'Haute' ? 1 : (rdv.priority === 'Moyenne' ? 2 : 3)
-                };
-            });
-
-            return new Promise((resolve, reject) => {
-                createEvents(events, (error, value) => {
-                    if (error) {
-                        reject(error);
-                    }
-                    resolve(value);
-                });
-            });
-        } catch (error) {
-            throw new Error(`Error exporting ICS: ${error.message}`);
-        }
-    }
 
     async importJSON(jsonData, userId) {
         try {
