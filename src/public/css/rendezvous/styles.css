@@ -1,6 +1,7 @@
 * {
     margin: 0;
     padding: 0;
+    
     box-sizing: border-box;
 }
 
@@ -8,12 +9,14 @@ body {
     font-family: Arial, sans-serif;
     background-image: radial-gradient(50% 176%, #253854 80%, #061922 100%);
     display: flex;
-    height:100vh;
+    height: 100vh;
     max-height: 100%;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     color: #e0f7fa;
+    overflow-y: auto;
+
 }
 
 h1,h2{
@@ -33,9 +36,7 @@ label {
     color: #00BBEC !important; /* Bleu clair */
     transition: color 0.3s ease, transform 0.3s ease;
 }
-*.appliquerRDV{
-    margin-top: 20px;
-}
+
 
 .wrapper {
     display: flex;
@@ -48,24 +49,27 @@ label {
 }
 
 .container {
-    position:relative;
+    position: relative;
     background-color: rgba(20, 30, 40, 0.9);
-    padding: 20px;
+   
+    max-height: 950px;
     width: 500px;
     border-radius: 10px;
+    display: flex;
+    flex-direction: column;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
-#rendezvous-form{
-    display: flex;
-   
-   
-}
-
 .container  * {
     color:white;
+}
+#rendezvous-form {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    padding: 20px;
 }
 .container input, select, textarea {
     /*border-color: #1E90FF !important;*/
@@ -124,11 +128,19 @@ form {
 }
 
 .form-group {
-
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
 }
-
+.color{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 10px;
+}
 #btn-placer{
-    margin-top: 30px;
+    
     background-color: #005eec;
     transition: all 0.3s ease; /* Transition fluide */
 }
@@ -203,12 +215,12 @@ textarea {
     list-style-type: none;
     display:flex;
     flex-direction: column;
-    justify-content: space-around;
+    justify-content: flex-start;
     gap:10px;
     width:90%;
     height:90%;
     overflow-y:scroll;
-    position:absolute;
+    position: absolute;
 }
 
 #agenda-list::-webkit-scrollbar {
@@ -689,7 +701,8 @@ form {
 }
 
 .preset-group {
-    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .preset-container {
@@ -818,6 +831,7 @@ input:focus {
     font-size: 1em; /* Taille de texte standard */
     resize: vertical; /* Autorise la redimension verticale */
     transition: all 0.3s ease; /* Transition fluide pour interactions */
+    max-height: 50px;
 }
 
 #description::placeholder {
@@ -892,19 +906,17 @@ input:focus {
     color: #FFFFFF; /* Texte blanc */
 }
 
-
 .snow {
     position: absolute;
     min-width: 10vw;
-    min-height: 100vh;
-    height: 100%;
+    height: 105%;
     width: 100%;
     
     top: 0;
     left: 0;
     z-index: -1;  /* Neige derrière tout le reste */
     pointer-events: none; 
-    
+    overflow: hidden;
   }
   
   .snow .svg {
@@ -1084,4 +1096,113 @@ h5 {
 /* Définir la forme des rects pour un look plus net */
 rect {
     border-radius: 10px;
+}
+
+@media (max-width: 1800px) {
+
+    .container{
+        margin-top: 10%;
+    }
+
+    .agenda-open{
+        margin-top: 10%;
+    }
+   
+    #rendezvous-form {
+        max-height: 50%; /* Ajustement de hauteur pour les petits écrans */
+    }
+    .form-group label{
+        font-size: 80%;
+    }
+    input {
+        height: 50px;
+        padding: 2px; /* Contrôle l'espace intérieur */
+        font-size: 0.8rem; /* Ajuste la taille du texte */
+    }
+    #preset-select{
+        height: 30px;
+        padding: 1px; /* Contrôle l'espace intérieur */
+        font-size: 0.8rem; /* Ajuste la taille du texte */
+    }
+    .new-preset-link{
+        height: 30px;
+    }
+    #color{
+        height: 20px;
+    }
+    #colorBackground{
+        height: 10px;
+    }
+    #rappel{
+        padding: 1%;
+        height: 30%;
+        font-size: 80%;
+    }
+    #priority{
+        padding: 1%;
+        height: 30px;
+        font-size: 80%;
+    }
+    #description{
+        font-size: 70%;
+    }
+    #btn-view-rdv{
+        font-size: 100%;
+        writing-mode: vertical-rl; /* Texte écrit de haut en bas, de droite à gauche */
+        text-orientation: upright; /* Garde les lettres droites */
+        display: flex; /* Utilise flexbox pour centrer */
+    justify-content: center; /* Centre horizontalement avec flexbox */
+    align-items: center; /* Centre verticalement avec flexbox */
+    }
+    #btn-recurrence{
+        font-size: 90%;
+        writing-mode: vertical-rl; /* Texte écrit de haut en bas, de droite à gauche */
+        text-orientation: upright; /* Garde les lettres droites */
+        text-align: center;
+        display: flex; /* Utilise flexbox pour centrer */
+    justify-content: center; /* Centre horizontalement avec flexbox */
+    align-items: center; /* Centre verticalement avec flexbox */
+        
+    }
+    .rdv-open div > p:first-child span{
+        font-size: 0.8em;
+    }
+    .rdv-open div > p:last-child span{
+        font-size: 0.8em;
+    }
+    .recurrence-list-rdv h4{
+        font-size: 1.0em;
+    }
+    .rdv-open > h3{
+        font-size: 1.2em;
+    }
+    .modif-container svg{
+        height: 20px;
+    }
+
+
+    
+}
+
+@media (max-width: 1024px) {
+    .modif-container {
+        flex-direction: column; /* Empile les éléments pour écrans plus petits */
+    }
+}
+
+@media (max-width: 768px) {
+    .tab-container {
+        flex-direction: column; /* Les boutons passent en colonne */
+        gap: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .clear-selection {
+        font-size: 1em; /* Texte plus petit */
+        padding: 5px 10px;
+    }
+    h3 {
+        font-size: 20px; /* Titre plus petit */
+    }
 }

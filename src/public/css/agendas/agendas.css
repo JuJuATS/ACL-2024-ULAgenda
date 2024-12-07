@@ -98,10 +98,11 @@ footer {
 
 .tab {
     position: absolute;
-    left: 235px;
-    top: 2%;
-    width: 22px;
+    right: 0.5%;
+    top: 2.3%;
     height: 15%;
+    width: 22px;
+   
     font-size: medium;
     padding: 10px 15px; /* Espacement interne pour un rendu propre */
     background: linear-gradient(135deg, #303f5f, #1f2a40); /* Dégradé subtil */
