@@ -123,7 +123,7 @@ footer {
 
 
 .tab:hover {
-    transform: scale(1.05); /* Légèrement plus grand au survol */
+    /*transform: scale(1.05); /* Légèrement plus grand au survol */
     background: linear-gradient(135deg, #1f2a40, #303f5f); /* Inverse le dégradé au survol */
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4); /* Ombre renforcée au survol */
 }
@@ -463,8 +463,8 @@ footer {
 }
 
 .access-level-badge.read {
-    background-color: rgba(255, 255, 255, 0.15);
-    color: var(--text-muted);
+    background-color: var(--dark-bg);
+    color: var(--text-light);
 }
 
 .access-level-badge.contribute {
@@ -611,7 +611,7 @@ input:focus {
 
 
 .access-level-badge {
-    margin-left: -15px !important;
+    margin-left: -18px !important;
     margin-top:12px;
 
 }
@@ -749,7 +749,7 @@ input:focus {
 
 @media (max-width: 2000px) { 
     .calendar .tab{
-        margin-top: 13.5%;
+        margin-top: 14%;
     }
     .newAgenda{
         width: 100%;
@@ -766,7 +766,7 @@ input:focus {
         font-size: 20px;
     }
     .layer2{
-        margin-left: 5%;
+        margin-left: 1%;
     }
     .top-row, .bottom-row{
         gap: 5px;
@@ -782,5 +782,8 @@ input:focus {
     }
     .agenda-but.delete-but{
         font-size: 12px;
+    }
+    .shared-calendar .tab{
+        margin-top: 23px;
     }
 }

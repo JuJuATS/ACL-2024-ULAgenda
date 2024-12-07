@@ -947,7 +947,7 @@ body {
     .snow {
         position: absolute;
         min-width: 10vw;
-        height: 120%;
+        height: 100%;
         width: 100%;
         
         top: 0;

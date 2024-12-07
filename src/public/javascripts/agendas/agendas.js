@@ -404,10 +404,11 @@ confirmRenameButton.onclick = async function() {
                 inputAgendaName.value = "";
                 closeModal(confirmRenameModal);
             } else {
+
                 alert('Erreur lors de la sauvegarde. Veuillez réessayer.');
             }
 
-        } catch (error) {
+        } catch (error) {  
             console.error('Error:', error);
             alert('Erreur lors de la sauvegarde. Veuillez réessayer.');
         }

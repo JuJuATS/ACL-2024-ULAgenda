@@ -422,7 +422,7 @@ input:disabled {
 
 .pop-up-info {
     position: fixed;
-    margin-top: -200px!important; /* Commence au-dessus de l'écran */
+    /*margin-top: -200px!important; /* Commence au-dessus de l'écran */
     left: 50%;
     transform: translate(-50%, 0); /* Au départ, elle est décalée vers le haut */
     background-color: rgba(0, 0, 0, 0.7);

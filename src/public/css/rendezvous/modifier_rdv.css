@@ -1093,7 +1093,7 @@ button.wday:hover {
     }
     .container{
         height: auto;
-        margin-top: 100%;
+        margin-top: 80%;
     }
     input{
         height: 30%;
@@ -1138,7 +1138,7 @@ button.wday:hover {
     .snow {
         position: absolute;
         min-width: 10vw;
-        height: 200%;
+        height: 160%;
         width: 100%;
         
         top: 0;
