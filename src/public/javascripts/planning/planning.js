@@ -131,10 +131,11 @@ const fetchEvent = async (el,calendar) => {
     console.log(weeks.start,agendas[el.dataset.id]?.weeks)
     const start = new Date(weeks.start).getTime();
     //je regarde si j'ai déjà récuperer les 
-    if (!agendas[el.dataset.id] || !agendas[el.dataset.id]?.weeks.includes(start)) {
-       if(!agendas[el.dataset.id]){
+    if(!agendas[el.dataset.id]){
         agendas[el.dataset.id] = {event:[],visible:el.checked,permissions:"",weeks:[]}
-       }
+    }
+    if (!agendas[el.dataset.id] || !agendas[el.dataset.id]?.weeks.includes(start)) {
+      
        
         const fetchOptions = {
             method: 'GET',
@@ -207,7 +208,6 @@ document.addEventListener('DOMContentLoaded', function () {
     if(index!==-1){
         agendas[rdv.agendaId].event.splice(index, 1);
     }
-    rdv.realEvent
     let event = agendas[rdv.agendaId]?.event ? [...agendas[rdv.agendaId]?.event ,rdv.realEvent] : [rdv.realEvent] 
     agendas[rdv.agendaId] = { event: event, visible: true }
     const fetchOptions = {
@@ -223,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function () {
             popupActivated = false;
             togglePopUp()
         }
-        
+        console.log("c'est modif")
     })
     //rdv.realEvent.setProp("backgroundColor",rdv.backgroundColor)  
 }
@@ -236,7 +236,12 @@ document.addEventListener('DOMContentLoaded', function () {
         datesSet:function(dateInfo){
             weeks = dateInfo;
             const checkBoxs = document.querySelectorAll(".listAgenda input");
-            checkBoxs.forEach((el)=> fetchEvent(el,this))
+            checkBoxs.forEach((el)=> {
+                if(el.checked){
+                    fetchEvent(el,this)
+                }})
+            
+            
             
         },
         eventSources: [
@@ -299,8 +304,8 @@ document.addEventListener('DOMContentLoaded', function () {
             popup.remove()
         },
         eventClick: (info) => {
-            
-            if (info.view.type === "timeGridWeek" && agendas[info.event.extendedProps.agendaId].permission!=="read"){
+            console.log(info)
+            if (info.view.type === "timeGridWeek" && agendas[info.event._def.extendedProps.agendaId].permission!=="read"){
            
                 drawPopUpRdv(rdv, info, false, calendar)
             }
@@ -343,6 +348,7 @@ document.addEventListener('DOMContentLoaded', function () {
             
             info.el.style.opacity = '0.5';
             if(popupActivated && info.event.id !=="null"){
+                console.log("ca supprime")
                 rdv.realEvent.remove()
                 popupActivated = false;
                 togglePopUp()
@@ -552,6 +558,7 @@ function drawPopUpRdv(rdv2, info, click, calendar) {
         togglePopUp(info.jsEvent.clientX, info.jsEvent.clientY)
     } else {
         if(rdv.realEvent.id === "null"){
+            console.log("ca supprime")
             rdv.realEvent.remove()
         }
         popupActivated = false;
@@ -591,7 +598,7 @@ function afficherPopUp(text, good) {
 }
 
 
-const toggleBtn = document.getElementById('toggleBtn');
+const toggleBtn = document.querySelector(".description-header");
 const menuIcon = document.querySelector('.menu-icon');
 const closeIcon = document.querySelector('.close-icon');
 const textareaContainer = document.getElementById('textareaContainer');
@@ -868,7 +875,7 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
             document.querySelector("#rendezvous-form").classList.toggle('hide');
             const checkBoxs = Array.from(document.querySelectorAll(".checkAgenda"))
                     checkBoxs.forEach(e=>{
-                        if(e.dataset.id === rdv.agendaId){
+                        if(e.dataset.id === rdv.agendaId && !e.checked){
                             e.checked = true;
                             refetch(e,calendar)
                     }})   
@@ -909,12 +916,10 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
                     //rdv.realEvent.setProp('backgroundColor', data.rdv.backgroundColor)
                     rdv.realEvent.setStart(data.rdv.dateDebut)
                     rdv.realEvent.setEnd(data.rdv.dateFin)
-                    rdv.realEvent.setExtendedProp('extendedProps',{
-                        ...rdv.realEvent.extendedProps,
-                        id:data.rdv.id,                                             
-                        agendaId:data.rdv.agendaId,
-                        recId:data.rdv.recurrences._id
-                    })
+                    rdv.realEvent.setProp('id',data.rdv.id)
+                    rdv.realEvent.setExtendedProp("agendaId",data.rdv.agendaId._id)
+                    rdv.realEvent.setExtendedProp("recId",data.rdv.recurrences._id)
+                    console.log(rdv.realEvent)
                 })
             }
         }
