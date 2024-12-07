@@ -34,6 +34,7 @@ h1,h2{
 .containerH label {
     text-align: center;
     margin:0;
+    font-size: 0.95em;
 }
 .containerH .form-group {
     flex: 1;
@@ -935,7 +936,7 @@ input:focus {
 .snow {
     position: absolute;
     min-width: 10vw;
-    height: 105%;
+    height: 100%;
     width: 100%;
 
     top: 0;
@@ -1122,7 +1123,7 @@ rect {
     border-radius: 10px;
 }
 
-@media (max-width: 1800px) {
+@media (max-width: 1500px) {
 
     .container{
         margin-top: 10%;
