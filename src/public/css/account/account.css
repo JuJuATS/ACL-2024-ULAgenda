@@ -422,7 +422,7 @@ input:disabled {
 
 .pop-up-info {
     position: fixed;
-    margin-top: -200px!important; /* Commence au-dessus de l'écran */
+    /*margin-top: -200px!important; /* Commence au-dessus de l'écran */
     left: 50%;
     transform: translate(-50%, 0); /* Au départ, elle est décalée vers le haut */
     background-color: rgba(0, 0, 0, 0.7);
@@ -441,3 +441,18 @@ input:disabled {
 }
 
 
+@media(max-width: 2000px){
+    .profile-container{
+        margin-top: 15%;
+    }
+    .profile-image{
+        width: 100px;
+        height: 100px;
+    }
+    .profile-container .info{
+        height: 4em;
+    }
+    .info input{
+        height: 2.5em;
+    }
+}
