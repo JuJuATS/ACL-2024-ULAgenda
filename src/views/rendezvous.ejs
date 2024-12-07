@@ -86,7 +86,7 @@
                     </g>
                 </g>
             </svg>
-            
+
         </div>
         <div class="container">
             <h1 style="font-size: 1.2em;">Planifier un rendez-vous</h1>
@@ -116,20 +116,23 @@
                     <input type="text" id="nom" nme="nom" required>
                 </div>
 
-                <div class="form-group">
-                    <label for="date">Date du rendez-vous:</label>
-                    <input type="date" id="date" name="date" required>
+                <div class="containerH">
+                    <div class="form-group">
+                        <label for="date">Date du rendez-vous:</label>
+                        <input type="date" id="date" name="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="heureDebut">Heure de début:</label>
+                        <input type="time" id="heureDebut" name="heureDebut" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="duree">Durée (en minutes):</label>
+                        <input type="number" id="duree" name="duree" min="0" step="1" required>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="heureDebut">Heure de début:</label>
-                    <input type="time" id="heureDebut" name="heureDebut" required>
-                </div>
-
-                <div class="form-group">
-                    <label for="duree">Durée (en minutes):</label>
-                    <input type="number" id="duree" name="duree" min="0" step="1" required>
-                </div>
 
                 <div class="form-group">
                     <label for="description">Description:</label>
@@ -163,7 +166,7 @@
                     </select>
                 </div>
 
-                <button type="submit" class="form-button" id="btn-placer" 
+                <button type="submit" class="form-button" id="btn-placer"
                     <%= accessLevel === 'read' ? 'disabled' : '' %>
                     title="<%= accessLevel === 'read' ? 'Vous n\'avez pas les droits pour créer un rendez-vous' : '' %>">
                     Placer le rendez-vous

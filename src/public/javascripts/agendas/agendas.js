@@ -81,10 +81,10 @@ function initAgendas() {
                             <button class="add-button" style="height:75px; width:75px;">+</button>
                         </div>
                     </div>`
-                
+
                 addButton = document.querySelector(".add-button");
                 addButton.addEventListener("click",(e)=> {
-                    
+
                     createModal.style.display = "block";
                 })
                 ownedAgendas.forEach(agenda => {
@@ -499,10 +499,12 @@ async function importAgenda() {
         if (value.error) {
             afficherPopUp(value.error, false)
         }
-        else if (value.success) {
+        if (value.success) {
+            initAgendas()
+        } else {
+            afficherPopUp("Agendas importés à l'exception de :\n" + Object.entries(value.errorsAgenda).map(a => `${a[0]} - ${a[1]} non définie`).join('\n'), true)
             initAgendas()
         }
-
     };
     input.click();
 }
