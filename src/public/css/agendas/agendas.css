@@ -746,3 +746,41 @@ input:focus {
     font-size: 14px; /* Taille adaptée */
     opacity: 0.8; /* Légère transparence */
 }
+
+@media (max-width: 2000px) { 
+    .calendar .tab{
+        margin-top: 13.5%;
+    }
+    .newAgenda{
+        width: 100%;
+    }
+    .calendar{
+        width: 90%;
+    }
+    .layer1 .title-section {
+        justify-content: center;
+        margin-top: -155px;
+        padding-bottom: 1px;
+    }
+    #agendaName{
+        font-size: 20px;
+    }
+    .layer2{
+        margin-left: 5%;
+    }
+    .top-row, .bottom-row{
+        gap: 5px;
+    }
+    .agenda-but.share-but{
+        font-size: 12px;
+    }
+    .agenda-but.rdv-but{
+        font-size: 12px;
+    }
+    .agenda-but.modify-but{
+        font-size: 12px;
+    }
+    .agenda-but.delete-but{
+        font-size: 12px;
+    }
+}

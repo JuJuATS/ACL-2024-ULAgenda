@@ -17,7 +17,7 @@ body {
     justify-items: center;
     align-items: center;
     align-content: center;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    /*box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);*/
     z-index: 2; /* Assure que le contenu reste au-dessus des éléments d'arrière-plan */
 }
 
@@ -297,3 +297,50 @@ button[type="submit"]:active {
 }
 
 
+@media (max-width: 2000px){
+    .presets-page{
+        left : 50%;
+        transform: translate(-50%);
+        margin-left: 0px;
+    }
+
+    .snow {
+        position: absolute;
+        min-width: 10vw;
+        height: 100%;
+        width: 100%;
+        
+        top: 0;
+        left: 0;
+        z-index: -1;  /* Neige derrière tout le reste */
+        pointer-events: none; 
+        overflow: hidden;
+      }
+      
+      .snow .svg {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        transform: scale(0.5) !important; 
+      }
+      
+      #snow-top-layer {
+          will-change: transform;
+          transform: translateY(-768px);
+          animation: fall 45s infinite linear; /* Augmente la durée de l'animation pour ralentir la chute */
+      }
+      
+      #snow-bottom-layer {
+          will-change: transform;
+          transform: translateY(-768px);
+          animation: fall 60s infinite linear; /* Augmente la durée pour ralentir davantage */
+      }
+      
+      @keyframes fall {
+        
+        100% {
+          transform: translateY(0);
+        }
+        
+      }
+}
