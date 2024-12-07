@@ -81,10 +81,10 @@ function initAgendas() {
                             <button class="add-button" style="height:75px; width:75px;">+</button>
                         </div>
                     </div>`
-                
+
                 addButton = document.querySelector(".add-button");
                 addButton.addEventListener("click",(e)=> {
-                    
+
                     createModal.style.display = "block";
                 })
                 ownedAgendas.forEach(agenda => {
@@ -484,16 +484,27 @@ async function importAgenda() {
         // Read as text
         const text = await file.text();
 
-
+        try {
+            JSON.parse(text);
+        } catch (e) {
+            afficherPopUp("Mauvais format du fichier .json", false)
+            return false;
+        }
         const res = await fetch('agendas/api/import', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: text
         });
-        if ((await res.json()).success) {
+        const value = await res.json()
+        if (value.error) {
+            afficherPopUp(value.error, false)
+        }
+        if (value.success) {
+            initAgendas()
+        } else {
+            afficherPopUp("Agendas importés à l'exception de :\n" + Object.entries(value.errorsAgenda).map(a => `${a[0]} - ${a[1]} non définie`).join('\n'), true)
             initAgendas()
         }
-
     };
     input.click();
 }
@@ -524,7 +535,14 @@ document.querySelector(".import-button").addEventListener("click", async (e) => 
 
 function redirectToAgenda(e, agendaId) {
     if (exportMode) {
-        exportedAgenda.push(agendaId);
+        if (exportedAgenda.includes(agendaId)) {
+            const index = exportedAgenda.indexOf(agendaId);
+            if (index > -1) {
+                exportedAgenda.splice(index, 1);
+            }
+        } else {
+            exportedAgenda.push(agendaId);
+        }
         e.parentElement.classList.toggle("hover")
     }
     else window.location.href = `/planning`

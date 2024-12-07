@@ -15,7 +15,6 @@ const forgottenPassword = async (req,res)=>{
 }
 
 const forgottenPasswordLinkMaker  = async(req,res)=>{
-        console.log("on m'interroge")
         if(req.isAuthenticated()){
             return;
         }

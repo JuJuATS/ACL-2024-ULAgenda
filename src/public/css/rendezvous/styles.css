@@ -1,7 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-    
+
     box-sizing: border-box;
 }
 
@@ -26,11 +26,32 @@ h1,h2{
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.containerH {
+    display:flex;
+    justify-content: center;
+    gap:10px;
+}
+.containerH label {
+    text-align: center;
+    margin:0;
+}
+.containerH .form-group {
+    flex: 1;
+    align-items: center;
+}
+
+.containerH input {
+    display:flex;
+    height: 48px !important;
+}
+.containerH:nth-child(3) input {
+
+}
 
 label {
     display: block;
     font-weight: bold;
-    margin-bottom: 8px;
+    margin-bottom: 4px;
     margin-left: 7px;
     font-size: 1.1em;
     color: #00BBEC !important; /* Bleu clair */
@@ -51,7 +72,7 @@ label {
 .container {
     position: relative;
     background-color: rgba(20, 30, 40, 0.9);
-   
+
     max-height: 950px;
     width: 500px;
     border-radius: 10px;
@@ -69,7 +90,9 @@ label {
     display: flex;
     flex: 1;
     overflow: hidden;
+    max-height: 70%;
     padding: 20px;
+    row-gap:20px;
 }
 .container input, select, textarea {
     /*border-color: #1E90FF !important;*/
@@ -140,7 +163,7 @@ form {
     gap: 10px;
 }
 #btn-placer{
-    
+
     background-color: #005eec;
     transition: all 0.3s ease; /* Transition fluide */
 }
@@ -360,6 +383,9 @@ textarea {
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     position:relative;
+}
+.recurrence-form-container > h1 {
+    border:none !important;
 }
 
 .closer {
@@ -911,42 +937,42 @@ input:focus {
     min-width: 10vw;
     height: 105%;
     width: 100%;
-    
+
     top: 0;
     left: 0;
     z-index: -1;  /* Neige derrière tout le reste */
-    pointer-events: none; 
+    pointer-events: none;
     overflow: hidden;
   }
-  
+
   .snow .svg {
     position: absolute;
     width: 100%;
     height: 100%;
-    transform: scale(0.5) !important; 
+    transform: scale(0.5) !important;
   }
-  
+
   #snow-top-layer {
       will-change: transform;
       transform: translateY(-768px);
       animation: fall 45s infinite linear; /* Augmente la durée de l'animation pour ralentir la chute */
   }
-  
+
   #snow-bottom-layer {
       will-change: transform;
       transform: translateY(-768px);
       animation: fall 60s infinite linear; /* Augmente la durée pour ralentir davantage */
   }
-  
+
   @keyframes fall {
-    
+
     100% {
       transform: translateY(0);
     }
-    
+
   }
 
-  
+
   /* Style pour le titre h3 */
 h3 {
     font-family: 'Roboto', sans-serif; /* Police moderne */
@@ -1031,7 +1057,6 @@ h5 {
     border-radius: 50px; /* Coins arrondis */
     border: none;
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s ease;
     position: relative;
     min-width: 120px;
     text-align: center;
@@ -1050,8 +1075,7 @@ h5 {
 
 /* Effet de survol des boutons */
 .tablinks:hover {
-    background-color: #3f51b5; /* Couleur au survol */
-    transform: scale(1.05); /* Agrandissement léger au survol */
+    color: #cfbff7;
 }
 
 /* Déplacement fluide des icônes au survol */
@@ -1107,7 +1131,7 @@ rect {
     .agenda-open{
         margin-top: 10%;
     }
-   
+
     #rendezvous-form {
         max-height: 50%; /* Ajustement de hauteur pour les petits écrans */
     }
@@ -1162,7 +1186,7 @@ rect {
         display: flex; /* Utilise flexbox pour centrer */
     justify-content: center; /* Centre horizontalement avec flexbox */
     align-items: center; /* Centre verticalement avec flexbox */
-        
+
     }
     .rdv-open div > p:first-child span{
         font-size: 0.8em;
@@ -1181,7 +1205,7 @@ rect {
     }
 
 
-    
+
 }
 
 @media (max-width: 1024px) {
