@@ -104,11 +104,11 @@ apiRouter.get('/search', isAuthentified, async (req, res) => {
 
 apiRouter.get("/getAgenda",isAuthentified,async(req,res)=>{
   let userId = req.user.id;
-  
+
   const agendas = await Agenda.find({userId:userId});
   const partages = await Share.find({sharedWith:req.user.id,shareType:"user",$or: [{permission:"contribute" }, { permission: "admin" }]}).populate("agendaId")
-  
-  
+
+
   partages.forEach(partage=>{
     agendas.push(partage.agendaId);
   })
@@ -117,9 +117,8 @@ apiRouter.get("/getAgenda",isAuthentified,async(req,res)=>{
 
 
 const getAgendaEvents = async (req, res, next) => {
- 
+
   const { agenda,weekStart,weekEnd } = req.query;
-  console.log("date",decodeURIComponent(weekStart),decodeURIComponent(weekEnd));
   if (!agenda) {
     return res.status(400).json({
       error: 'Le paramètre agenda est requis',
@@ -145,7 +144,7 @@ const getAgendaEvents = async (req, res, next) => {
 
 
     let events = await RDV.find({
-      agendaId:decodedAgenda,dateDebut:{ 
+      agendaId:decodedAgenda,dateDebut:{
         $gte: new Date(decodeURIComponent(weekStart)),
         $lte: new Date(decodeURIComponent(weekEnd))
       }

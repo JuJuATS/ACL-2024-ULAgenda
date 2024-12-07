@@ -71,14 +71,14 @@ footer {
     width: 100%;
     max-width: 320px;
     height: 200px;
-    border-radius: 20px; /* Bordure plus arrondie */
+    border-radius: 20px; 
     overflow: hidden;
 
     /* Dégradé bleu sombre pour le fond */
    /* background: linear-gradient(145deg, rgba(50, 60, 85, 0.3), rgba(30, 39, 61, 0.85));
 
     /* Bordure plus douce avec une couleur bleutée discrète */
-    border: 3px solid  #00BBEC;
+    border: 2px solid  #00BBEC;
     background: linear-gradient(145deg, rgba(0, 187, 236, 0.2), rgba(30, 39, 61, 0.8));
 
     /* Effet de transition fluide */

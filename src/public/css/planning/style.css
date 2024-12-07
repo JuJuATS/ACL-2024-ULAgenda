@@ -31,6 +31,7 @@ body {
       display: flex;
       flex-direction: column;
       border-radius: 10px;
+      overflow-x: hidden;
   }
   
   .container {
@@ -128,8 +129,7 @@ body {
 
 
 .fc-timegrid-slot {
-  height: 90px !important; /* Ajustez la hauteur selon vos besoins */
-  max-height: 90px !important;
+  height: 50px !important; /* Ajustez la hauteur selon vos besoins */
 }
 
 /* Centrage du contenu dans chaque créneau horaire */
@@ -974,7 +974,7 @@ form {
 }
 
 .fc-timegrid-slot-label-frame{
-    font-size: 25px; /* Taille de police modérée */
+    /*font-size: 10px; /* Taille de police modérée */
     font-weight: 600; /* Police semi-gras pour une meilleure lisibilité */
     color: #00BBEC;/* Couleur de texte gris foncé pour un contraste doux */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Ombre douce et subtile */

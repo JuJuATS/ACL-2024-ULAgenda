@@ -484,13 +484,22 @@ async function importAgenda() {
         // Read as text
         const text = await file.text();
 
-
+        try {
+            JSON.parse(text);
+        } catch (e) {
+            afficherPopUp("Mauvais format du fichier .json", false)
+            return false;
+        }
         const res = await fetch('agendas/api/import', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: text
         });
-        if ((await res.json()).success) {
+        const value = await res.json()
+        if (value.error) {
+            afficherPopUp(value.error, false)
+        }
+        else if (value.success) {
             initAgendas()
         }
 
@@ -524,7 +533,14 @@ document.querySelector(".import-button").addEventListener("click", async (e) => 
 
 function redirectToAgenda(e, agendaId) {
     if (exportMode) {
-        exportedAgenda.push(agendaId);
+        if (exportedAgenda.includes(agendaId)) {
+            const index = exportedAgenda.indexOf(agendaId);
+            if (index > -1) {
+                exportedAgenda.splice(index, 1);
+            }
+        } else {
+            exportedAgenda.push(agendaId);
+        }
         e.parentElement.classList.toggle("hover")
     }
     else window.location.href = `/planning`
