@@ -19,6 +19,8 @@ let rdv = {
     recurrences:{},
     priorite:"Moyenne",
   }
+let agendaObject
+fetch("/api/getAgenda").then(res=>res.json()).then(data => agendaObject = data)
 const agendas = []
 const agendasMonth = [];
 let view;
@@ -53,9 +55,9 @@ function showTooltip(eventRect, event, size) {
 
     tooltip.style = `
         position: absolute;
-        top: ${eventRect.top-80}px;
-        left: ${eventRect.left+250}px;
-        width: ${size.width}px;
+        top: ${eventRect.top-120}px;
+        left: ${eventRect.left}px;
+       
         max-width: 250px; /* Limite la taille pour éviter des textes trop longs */
         padding: 15px;
         background: rgba(30, 40, 50, 0.95);
@@ -91,7 +93,7 @@ function showTooltip(eventRect, event, size) {
     const startTime = `${event.start.getHours().toString().padStart(2, '0')}:${event.start.getMinutes().toString().padStart(2, '0')}`;
     const endTime = `${event.end.getHours().toString().padStart(2, '0')}:${event.end.getMinutes().toString().padStart(2, '0')}`;
     const content = `
-        <strong style="font-size: 16px; color: #f1c40f;">${event.title}</strong>
+        <strong style="font-size: 16px; color: #f1c40f; width: 100%; overflow-x: hidden; display: block; text-overflow: ellipsis;">${agendaObject.find(el=>event.extendedProps.agendaId == el._id).name} | ${event.title}</strong>
         <div style="margin-top: 5px;">
             🕒 ${startTime} - ${endTime}
         </div>
@@ -99,7 +101,6 @@ function showTooltip(eventRect, event, size) {
             ${event.extendedProps.description || "Aucune description"}
         </p>
     `;
-
     tooltip.innerHTML = content + arrow;
 
     // Ajout au DOM si le tooltip n'est pas déjà dans le DOM
@@ -158,6 +159,7 @@ const fetchEvent = async (el,calendar) => {
         else {
           agendas[el.dataset.id].visible = true;
         }
+        calendar.refetchEvents()
     }else{
         const start = new Date(month.start).getTime();
         if(!agendasMonth[el.dataset.id]){
@@ -174,10 +176,11 @@ const fetchEvent = async (el,calendar) => {
                 credentials: 'include',
                 body: JSON.stringify({weekStart:month.start,weekEnd:month.end}),
               }
-              
+            console.log("je fetch")  
           const data = await fetch(`/api/getDate?agenda=${el.dataset.id}&weekStart=${month.start}&weekEnd=${month.end}`).then(res => res.json())
-          agendasMonth[el.dataset.id] = { event: [...agendasMonth[el.dataset.id].event,...data.event], visible: el.checked,permissions:data.permission,month:[...agendasMonth[el.dataset.id].month,start] }
-          
+          agendasMonth[el.dataset.id] = { event: [...agendasMonth[el.dataset.id].event,...data.event], visible: el.checked,permissions:data.permission,month:[...agendasMonth[el.dataset.id].month,start]}
+          console.log(agendasMonth)
+          calendar.refetchEvents();
         }
         else {
           agendasMonth[el.dataset.id].visible = true;
@@ -185,7 +188,6 @@ const fetchEvent = async (el,calendar) => {
     }
     
 
-    calendar.refetchEvents();
   }
 const refetch = async (el, calendar) => {
     if (el.checked) {
@@ -193,7 +195,12 @@ const refetch = async (el, calendar) => {
       fetchEvent(el,calendar)
     }
     else {
-      agendas[el.dataset.id].visible = false;
+       if(view == "timeGridWeek"){
+           agendas[el.dataset.id].visible = false;
+       }else{
+        agendasMonth[el.dataset.id].visible = false;
+       }
+      
       unSaveAgenda(el)
       }
       calendar.refetchEvents()
@@ -279,15 +286,16 @@ document.addEventListener('DOMContentLoaded', function () {
             view = dateInfo.view.type;
             if(dateInfo.view.type == "timeGridWeek"){
                 weeks = dateInfo;
-                const checkBoxs = document.querySelectorAll(".checkAgenda");
+            }
+            else{
+                month = dateInfo;
+            }
+            const checkBoxs = document.querySelectorAll(".checkAgenda");
                 checkBoxs.forEach((el)=> {
                     console.log(el.checked)
                     if(el.checked){
-                        console.log("je suis lancé")
                         fetchEvent(el,this)
                     }})
-            }
-            
         },
         eventSources: function(calendar){
             return [
@@ -300,7 +308,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             }
                         }
                     }else{
-                        for (agenda in agendas) {
+                        for (agenda in agendasMonth) {
                             if (agendasMonth[agenda].visible) {
                                 events = [...events, ...agendasMonth[agenda].event]
                             }
@@ -349,6 +357,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         eventMouseEnter: (mouseInfo) => {
             let eventRect = mouseInfo.el.getBoundingClientRect();
+            
             let size = { width: mouseInfo.el.offsetWidth, height: mouseInfo.el.offsetHeight }
             showTooltip(eventRect, mouseInfo.event, size);
         },
