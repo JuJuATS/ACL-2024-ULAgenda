@@ -17,11 +17,11 @@
 
     <div class="content">
         <div class="presets-page">
-            <h1>Modifier le préréglage</h1>
 
             <%- include('../partials/flashMessages') %>
 
             <form id="presetForm" action="/presets/<%= id %>?_method=PUT" method="POST">
+                <h1>Modifier le préréglage</h1>
                 <label for="name">Nom du préréglage *:</label>
                 <input type="text" id="name" name="name" value="<%= name %>" required>
 

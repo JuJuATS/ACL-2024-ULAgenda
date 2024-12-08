@@ -26,7 +26,7 @@ body {
     align-items: center;
     align-content: center;
     overflow-y: auto;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 .content {
@@ -469,4 +469,17 @@ body {
 .mettreaJour:hover{
     background-color: #259e3f;
     cursor: pointer;
+}
+
+@media(max-width: 2000px){
+    .presets-page input{
+        width: 95%;
+    }
+    .presets-page button{
+        width: 99.9% !important;
+    }
+    #description{
+        width: 95.5%;
+    }
+    
 }
