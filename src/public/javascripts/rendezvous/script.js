@@ -19,7 +19,7 @@ form.addEventListener('submit', async function(event) {
     const description = document.getElementById('description').value || "";
     const rappel = document.getElementById('rappel').value;
     const finRecurrence = document.getElementById('dateUntilRecurrence').value;
-    if (nom && date && heureDebut && duree && description){
+    if (nom && date && heureDebut && duree){
         const dateString = `${date}T${heureDebut}:00`; // ajoute les secondes, format ISO 8601
         const dateDebut = new Date(dateString);
         // Calculer l'heure de fin à partir de l'heure de début et de la durée en heures

@@ -20,6 +20,9 @@ let rdv = {
     priorite:"Moyenne",
   }
 const agendas = []
+const agendasMonth = [];
+let view;
+let month;
 let weeks;
 let popupActivated = false;
 
@@ -128,31 +131,59 @@ function showTooltip(eventRect, event, size) {
 
 
 const fetchEvent = async (el,calendar) => {
-    console.log(weeks.start,agendas[el.dataset.id]?.weeks)
-    const start = new Date(weeks.start).getTime();
+    
+    
     //je regarde si j'ai déjà récuperer les 
-    if(!agendas[el.dataset.id]){
-        agendas[el.dataset.id] = {event:[],visible:el.checked,permissions:"",weeks:[]}
-    }
-    if (!agendas[el.dataset.id] || !agendas[el.dataset.id]?.weeks.includes(start)) {
-      
-       
-        const fetchOptions = {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-                    },
-            credentials: 'include',
-            body: JSON.stringify({weekStart:weeks.start,weekEnd:weeks.end}),
-          }
+    if(calendar.view.type == "timeGridWeek"){
+        const start = new Date(weeks.start).getTime();
+        if(!agendas[el.dataset.id]){
+            agendas[el.dataset.id] = {event:[],visible:el.checked,permissions:"",weeks:[]}
+        }
+        if (!agendas[el.dataset.id] || !agendas[el.dataset.id]?.weeks.includes(start)) {
           
-      const data = await fetch(`/api/getDate?agenda=${el.dataset.id}&weekStart=${weeks.start}&weekEnd=${weeks.end}`).then(res => res.json())
-      agendas[el.dataset.id] = { event: [...agendas[el.dataset.id].event,...data.event], visible: el.checked,permissions:data.permission,weeks:[...agendas[el.dataset.id].weeks,start] }
-      
+           console.log("je fetch")
+            const fetchOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                        },
+                credentials: 'include',
+                body: JSON.stringify({weekStart:weeks.start,weekEnd:weeks.end}),
+              }
+              
+          const data = await fetch(`/api/getDate?agenda=${el.dataset.id}&weekStart=${weeks.start}&weekEnd=${weeks.end}`).then(res => res.json())
+          agendas[el.dataset.id] = { event: [...agendas[el.dataset.id].event,...data.event], visible: el.checked,permissions:data.permission,weeks:[...agendas[el.dataset.id].weeks,start] }
+          
+        }
+        else {
+          agendas[el.dataset.id].visible = true;
+        }
+    }else{
+        const start = new Date(month.start).getTime();
+        if(!agendasMonth[el.dataset.id]){
+            agendasMonth[el.dataset.id] = {event:[],visible:el.checked,permissions:"",month:[]}
+        }
+        if (!agendasMonth[el.dataset.id] || !agendasMonth[el.dataset.id]?.month.includes(start)) {
+          
+         
+            const fetchOptions = {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                        },
+                credentials: 'include',
+                body: JSON.stringify({weekStart:month.start,weekEnd:month.end}),
+              }
+              
+          const data = await fetch(`/api/getDate?agenda=${el.dataset.id}&weekStart=${month.start}&weekEnd=${month.end}`).then(res => res.json())
+          agendasMonth[el.dataset.id] = { event: [...agendasMonth[el.dataset.id].event,...data.event], visible: el.checked,permissions:data.permission,month:[...agendasMonth[el.dataset.id].month,start] }
+          
+        }
+        else {
+          agendasMonth[el.dataset.id].visible = true;
+        }
     }
-    else {
-      agendas[el.dataset.id].visible = true;
-    }
+    
 
     calendar.refetchEvents();
   }
@@ -230,33 +261,55 @@ document.addEventListener('DOMContentLoaded', function () {
     /*document.querySelector("#MICHAEL").addEventListener('click',() => {
         console.log(rdv)
     })*/
- 
+        const checkBoxs = document.querySelectorAll(".listAgenda input");
+    const saveChecboxs = JSON.stringify(localStorage.getItem("checkBox"))
+    checkBoxs.forEach(checkBox => {
+        if(saveChecboxs.includes(checkBox.dataset.id)){
+          checkBox.checked = true;
+         
+        }
+        checkBox.addEventListener("change", (el) => {
+            refetch(el.target, calendar)
+        })
+    }
+    );
     const calendarEl = document.getElementById('calendar');
     const calendar = new FullCalendar.Calendar(calendarEl, {
         datesSet:function(dateInfo){
-            weeks = dateInfo;
-            const checkBoxs = document.querySelectorAll(".listAgenda input");
-            checkBoxs.forEach((el)=> {
-                if(el.checked){
-                    fetchEvent(el,this)
-                }})
-            
-            
+            view = dateInfo.view.type;
+            if(dateInfo.view.type == "timeGridWeek"){
+                weeks = dateInfo;
+                const checkBoxs = document.querySelectorAll(".checkAgenda");
+                checkBoxs.forEach((el)=> {
+                    console.log(el.checked)
+                    if(el.checked){
+                        console.log("je suis lancé")
+                        fetchEvent(el,this)
+                    }})
+            }
             
         },
-        eventSources: [
-            async (info, success, fail) => {
-              
-                let events = []
-                for (agenda in agendas) {
-                    if (agendas[agenda].visible) {
-                        events = [...events, ...agendas[agenda].event]
+        eventSources: function(calendar){
+            return [
+                async (info, success, fail) => {
+                    let events = []
+                    if(view == "timeGridWeek"){
+                        for (agenda in agendas) {
+                            if (agendas[agenda].visible) {
+                                events = [...events, ...agendas[agenda].event]
+                            }
+                        }
+                    }else{
+                        for (agenda in agendas) {
+                            if (agendasMonth[agenda].visible) {
+                                events = [...events, ...agendasMonth[agenda].event]
+                            }
+                        }
                     }
+                    return events;
                 }
-                
-                return events;
-            }
-        ],
+            ]
+        }(this) ,
 
         allDaySlot: false,
         height:"100%",
@@ -454,19 +507,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 500)
     })
     
-    const checkBoxs = document.querySelectorAll(".listAgenda input");
-    const saveChecboxs = JSON.stringify(localStorage.getItem("checkBox"))
-    checkBoxs.forEach(checkBox => {
-        if(saveChecboxs.includes(checkBox.dataset.id)){
-          checkBox.checked = true;
-         
-        }
-        checkBox.addEventListener("change", (el) => {
-            refetch(el.target, calendar)
-        })
-    }
-    );
-    calendar.refetchEvents()
+
+    
    
     selectAllButton.addEventListener("click",(e)=>{
       const checkBoxs = document.querySelectorAll(".checkAgenda");

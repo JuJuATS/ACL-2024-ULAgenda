@@ -204,6 +204,7 @@ function appendRdvs(rdvs) {
             </div>
             <div class="rdv-info">
                 Agenda: ${rdv.agendaName} |
+                Date : ${new Date(rdv.dateDebut).toLocaleDateString()} |
                 Durée: ${rdv.duration} minutes
             </div>
             <div class="rdv-tags">

@@ -154,7 +154,7 @@ app
   .get("/signin",routes.signin.signin)
   .post('/signin', (req, res, next) => {
   passport.authenticate('local',{
-    successRedirect: '/',
+    successRedirect: '/planning',
     failureRedirect: '/signin',
     failureFlash: true,
     
