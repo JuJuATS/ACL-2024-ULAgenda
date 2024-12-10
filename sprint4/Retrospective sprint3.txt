@@ -1,0 +1,26 @@
+===============================================================================================================================
+					                                RETROSPECTIVE SPRINT 3
+===============================================================================================================================
+
+Objectif du Sprint :
+--------------------
+Terminer le site.
+
+Tableau des fonctionnalités du sprint :
+---------------------------------------
+┌───────────────────────────────────────────────────────┬───────────┬────────────┐
+│                                                       │   Statut  │ Estimation │
+├───────────────────────────────────────────────────────┼───────────┼────────────┤
+|	Rappel et notifications 							| Complétée	|	   5	 |
+│   Import Export					                    │ Complétée │      8     │
+└───────────────────────────────────────────────────────┴───────────┴────────────┘
+
+Points forts :
+--------------
+    - Réalisation : Toutes les fonctionnalités prévues ont été implémentées.
+    - Ergonomie : Amélioration de l'utilisation du planning et du site en général.
+    - Style : Refonte du site dans un style plus homogène et facile pour les yeux.
+
+Points faibles:
+---------------
+    - Communication au sein de l'équipe encore imparfaite.
