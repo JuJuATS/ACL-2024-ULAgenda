@@ -210,7 +210,13 @@ body {
     font-weight: bold; /* Texte mis en valeur */
   }
   
+.fc {
+  font-size: 0.5em;
+}
 
+.fc-header-toolbar {
+  font-size: 2em;
+}
 
 .fc-timegrid-slot {
   height: 50px !important; /* Ajustez la hauteur selon vos besoins */
@@ -242,7 +248,6 @@ body {
 
 /* Style de base pour l'événement principal */
 .fc-event-main-frame {
-  
     border-radius: 10px; /* Coins arrondis pour un look moderne */
     padding: 10px; /* Espacement interne */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Ombre douce */
