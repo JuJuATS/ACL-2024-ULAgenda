@@ -458,7 +458,7 @@
                         backgroundcolor:color
                     }
                     try {
-                        const response = await fetch(`/rendezvous/${rdvId}`, {
+                        const response = await fetch(`/rendezvous/${rdvId}?agendaId=${agendaId}`, {
                             method: 'PUT',
                             headers: {
                                 'Content-Type': 'application/json'
