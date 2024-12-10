@@ -621,6 +621,8 @@ input:focus {
     align-items: center;
     justify-content: center;
     justify-items: center;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
 }
 
 .search-link {

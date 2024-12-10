@@ -25,9 +25,12 @@ function updateAgendaCounts() {
     }
 }
 
-
+document.addEventListener("scroll",(e)=>{
+    const popUp = document.querySelector(".pop-up-info");
+    popUp.style.top = `${window.scrollY + 100}px`;
+})
 function afficherPopUp(text, good) {
-    const popUp = document.querySelector(".pop-up-info")
+    const popUp = document.querySelector(".pop-up-info");
     popUp.innerHTML = ''
     popUp.innerHTML = good ? `
         <svg viewBox="0 0 512 512">
@@ -279,7 +282,7 @@ addAgendaButton.onclick = async () => {
     const agendaName = agendaNameInput.value;
 
     if (!agendaName) {
-        alert("Veuillez entrer un nom d'agenda.");
+        afficherPopUp("Veuillez entrer un nom d'agenda.",false)
         return;
     }
 
@@ -305,11 +308,12 @@ addAgendaButton.onclick = async () => {
             closeModal(createModal);
         } else {
             const errorData = await response.json();
-            alert(errorData.message + ' : ' + JSON.stringify(errorData.error));
+            closeModal(createModal)
+            afficherPopUp(errorData.message + ' : ' + JSON.stringify(errorData.error),false);
         }
     } catch (error) {
         console.error('Erreur:', error);
-        alert('Une erreur s\'est produite lors de la création de l\'agenda');
+        afficherPopUp('Une erreur s\'est produite lors de la création de l\'agenda',false);
     }
 };
 
@@ -346,11 +350,13 @@ confirmDeleteButton.onclick = async function() {
                 agendaToDelete = null;
             } else {
                 const errorData = await response.json();
-                alert('Erreur lors de la suppression de l\'agenda: ' + errorData.message);
+                closeModal(confirmDeleteModal);
+                afficherPopUp('Erreur lors de la suppression de l\'agenda: ' + errorData.message,false);
             }
         } catch (error) {
             console.error('Erreur:', error);
-            alert('Une erreur s\'est produite lors de la suppression de l\'agenda');
+            closeModal(confirmDeleteModal);
+            afficherPopUp('Une erreur s\'est produite lors de la suppression de l\'agenda',false);
         }
     } else {
         console.error("agendaToDelete is nill");
@@ -383,7 +389,7 @@ confirmRenameButton.onclick = async function() {
             const agendaNameTitle = agendaToRename.querySelector("#agendaName");
 
             if (!agendaId) {
-                alert("Impossible de retrieve l'agendaId");
+                afficherPopUp("Impossible de retrieve l'agendaId",false);
             }
 
             const response = await fetch(`http://localhost:3000/agendas/updateAgendaTitle`, {
@@ -404,13 +410,13 @@ confirmRenameButton.onclick = async function() {
                 inputAgendaName.value = "";
                 closeModal(confirmRenameModal);
             } else {
-
-                alert('Erreur lors de la sauvegarde. Veuillez réessayer.');
+                closeModal(confirmRenameModal);
+                afficherPopUp('Erreur lors de la sauvegarde. Veuillez réessayer.',false);
             }
 
         } catch (error) {  
             console.error('Error:', error);
-            alert('Erreur lors de la sauvegarde. Veuillez réessayer.');
+            afficherPopUp('Erreur lors de la sauvegarde. Veuillez réessayer.',false);
         }
     }
 }
@@ -610,7 +616,7 @@ document.addEventListener('click', async (event) => {
 
         } catch (error) {
             console.error('Erreur inattendue :', error);
-            alert('Une erreur inattendue est survenue.');
+            afficherPopUp('Une erreur inattendue est survenue.',false);
         }
     }
 });
