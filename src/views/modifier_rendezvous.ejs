@@ -290,6 +290,8 @@
         const ya = <%- JSON.stringify(rec.yearDay) %>;
         const recurrencesD = {"week": [<%= rec.weekDay %>] ,"month":[<%= rec.monthDay %>],"year":ya}
         const addBoutton = document.querySelector("#addButton")
+        console.log("<%= rendezvous.name %>" )
+        document.querySelector("#priority").value = "<%= rendezvous.priority %>" 
         let currentTab = null;
         addBoutton.addEventListener("click",addYearDay)
         function clearSelection() {
