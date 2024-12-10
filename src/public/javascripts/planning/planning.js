@@ -256,7 +256,8 @@ document.addEventListener('DOMContentLoaded', function () {
         credentials: 'include',
         body: JSON.stringify(rdv),
       }
-    fetch(`/rendezvous/${rdv.id}`,fetchOptions).then((data)=>{
+    console.log(rdv)
+    fetch(`/rendezvous/${rdv.id}?agendaId=${rdv.agendaId}`,fetchOptions).then((data)=>{
         if(popupActivated){
             popupActivated = false;
             togglePopUp()
@@ -424,6 +425,7 @@ document.addEventListener('DOMContentLoaded', function () {
             info.el.style.opacity = '1';
          
             const event = info.event;
+            console.log(event.extendedProps.agendaId)
             const newStart = event.start;
             const newEnd = event.end;
           
