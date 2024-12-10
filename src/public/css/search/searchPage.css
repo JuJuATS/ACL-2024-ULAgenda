@@ -60,7 +60,8 @@ header {
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    height: 87vh;
+   
+    overflow-y: hidden;
     z-index: 10 !important;
 }
 

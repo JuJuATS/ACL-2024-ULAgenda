@@ -593,7 +593,9 @@ form {
     height: 20px;
     color: #64748b;
 }
-
+.fc-v-event .fc-event-title-container{
+  width: 100%;
+}
 .label {
     display: flex;
     align-items: center;

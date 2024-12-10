@@ -1,6 +1,10 @@
 <nav>
-    <div>
-        <a href="/" class="logo">UL AGENDA</a>
+    <div>       
+        <% if (user) { %>
+            <a href="/planning" class="logo">UL AGENDA</a>
+        <% } else { %>
+            <a href="/" class="logo">UL AGENDA</a>
+        <% } %>
     </div>
 
     <div class="right">
@@ -15,7 +19,9 @@
                 <a href="/signin" class="connect-button">Connexion</a>
             <% } %>
         </div>
-        <a href="/planning" class="app-button">Planning</a>
-        <a href="/agendas" class="app-button">Mes Agendas</a>
+        <% if (user) { %>
+            <a href="/planning" class="app-button">Planning</a>
+            <a href="/agendas" class="app-button">Mes Agendas</a>
+        <% } else  %>
     </div>
 </nav>

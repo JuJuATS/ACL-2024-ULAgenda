@@ -5,6 +5,13 @@
     <link rel="stylesheet" href="./css/landing.css">
 </head>
 <body>
+    <% if (user) { %>
+        <script>
+          // Redirection vers la page de planning si l'utilisateur est authentifié
+          window.location.href = "/planning";
+        </script>
+    <% } %>
+
     <header>
         <%- include('./partials/header', {user: user}); %>
     </header>

@@ -96,7 +96,7 @@ body {
     max-height: 350px;
   }
 }
-svg {
+svg:not(.error,.succes) {
   position: absolute;
   width: 320px;
 }

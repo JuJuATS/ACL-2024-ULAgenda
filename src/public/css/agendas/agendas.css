@@ -787,4 +787,7 @@ input:focus {
     .shared-calendar .tab{
         margin-top: 23px;
     }
+    .layer1-shared .title-section #agendaName{
+        display: none !important;
+    }
 }
