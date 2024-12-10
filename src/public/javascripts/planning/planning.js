@@ -55,8 +55,8 @@ function showTooltip(eventRect, event, size) {
 
     tooltip.style = `
         position: absolute;
-        top: ${eventRect.top-120}px;
-        left: ${eventRect.left}px;
+        top: ${eventRect.top}px;
+        left: ${eventRect.left+size.width}px;
        
         max-width: 250px; /* Limite la taille pour éviter des textes trop longs */
         padding: 15px;
@@ -222,13 +222,13 @@ function togglePopUp(x, y) {
         b.disabled = !b.disabled;
     })
 
-    if (x && y) {
+   /* if (x && y) {
         if (x < 600) { // a droite
             document.querySelector("#popup-rdv").style.left = (x+400) * 100 / window.innerWidth + "%";
         } else {    // a gauche
             document.querySelector("#popup-rdv").style.left = (x-400) * 100 / window.innerWidth + "%";
         }
-    }
+    }*/
 
     document.querySelector("#popup-rdv").classList.toggle("display-pop-up")
 
@@ -356,14 +356,16 @@ document.addEventListener('DOMContentLoaded', function () {
         displayEventEnd: true,
 
         eventMouseEnter: (mouseInfo) => {
-            let eventRect = mouseInfo.el.getBoundingClientRect();
+            if(mouseInfo.event.id !== "null"){
+                let eventRect = mouseInfo.el.getBoundingClientRect();
+                let size = { width: mouseInfo.el.offsetWidth, height: mouseInfo.el.offsetHeight }
+                showTooltip(eventRect, mouseInfo.event, size);
+            }
             
-            let size = { width: mouseInfo.el.offsetWidth, height: mouseInfo.el.offsetHeight }
-            showTooltip(eventRect, mouseInfo.event, size);
         },
         eventMouseLeave: (mouseLeaveInfo) => {
             const popup = document.querySelector("#event-tooltip") 
-            popup.remove()
+            popup && popup.remove()
         },
         eventClick: (info) => {
             console.log(info)
@@ -540,6 +542,41 @@ document.addEventListener('DOMContentLoaded', function () {
       calendar.gotoDate(e.target.value)
      })
 });
+const agendaButton = document.getElementById('agendaButton');
+const agendaDropdown = document.getElementById('agendaDropdown');
+
+async function loadAgendas() {
+        
+    agendaDropdown.innerHTML = ""
+    allAgenda.forEach(agenda => {
+        const option = document.createElement('div');
+        option.className = 'agenda-option';
+        option.innerHTML = `
+            <span>${agenda.name}</span>
+            `;
+            
+        option.addEventListener('click', () => {
+            const buttonContent = agendaButton.querySelector('.agenda-name');
+            buttonContent.innerHTML = `
+                ${agenda.name}
+                `;
+
+            agendaDropdown.classList.remove('show');
+
+            rdv.agendaId = agenda._id;
+            });
+
+            agendaDropdown.appendChild(option);
+        });
+    }
+
+ async function showDropdown(e){
+    console.log("c'est ça qui est proc")
+    e.preventDefault()
+    agendaDropdown.classList.toggle('show');
+    await loadAgendas();
+ }
+
 
 // fonction d'initalisation d'un rdv selon la création ou modifiation d'un agenda 
 function drawPopUpRdv(rdv2, info, click, calendar) {
@@ -548,6 +585,8 @@ function drawPopUpRdv(rdv2, info, click, calendar) {
         let eventStart
         let eventEnd
         if (click) { 
+
+            agendaButton.addEventListener('click', showDropdown);
             eventStart = info.date || info.start;
             eventStart.setMinutes(0, 0, 0);
             eventEnd = info.end || new Date(eventStart.getTime() + 3600000);
@@ -589,6 +628,10 @@ function drawPopUpRdv(rdv2, info, click, calendar) {
             rdv.backgroundColor = newEvent.backgroundColor;
             
         } else {      
+            agendaButton.removeEventListener('click', showDropdown);
+            agendaButton.addEventListener('click', (e)=>{
+                e.preventDefault();
+            });
             rdv = {
                 name:info.event.title,
                 backgroundColor:info.event.backgroundColor,
@@ -831,42 +874,7 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
     });
 
 
-    const agendaButton = document.getElementById('agendaButton');
-    const agendaDropdown = document.getElementById('agendaDropdown');
-
-    async function loadAgendas() {
-        agendaDropdown.innerHTML = ""
-
-        allAgenda.forEach(agenda => {
-            const option = document.createElement('div');
-            option.className = 'agenda-option';
-            option.innerHTML = `
-              <span>${agenda.name}</span>
-            `;
-            
-            option.addEventListener('click', () => {
-                const buttonContent = agendaButton.querySelector('.agenda-name');
-                buttonContent.innerHTML = `
-                    ${agenda.name}
-                  `;
-
-                agendaDropdown.classList.remove('show');
-
-                rdv.agendaId = agenda._id;
-            });
-
-            agendaDropdown.appendChild(option);
-        });
-    }
-
-
-
-    agendaButton.addEventListener('click', async (e) => {
-        e.preventDefault()
-        agendaDropdown.classList.toggle('show');
-        await loadAgendas();
-    });
-
+    
     document.querySelector("#date").addEventListener('change', (e) => {
         let t = rdv.dateDebut
         let t2 = rdv.dateFin
