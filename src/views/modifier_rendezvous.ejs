@@ -434,6 +434,7 @@
             const duree = parseFloat(document.getElementById('duree').value); // Lire la durée en heures
             const description = document.getElementById('description').value;
             const rappel = document.getElementById("rappel").value;
+            const priorite = document.querySelector("#priority").value;
             const finRecurrence = document.getElementById('dateUntilRecurrence').value;
             const color = document.getElementById("color").value
             if (nom && date && heureDebut && duree){
@@ -452,7 +453,7 @@
                         recId: recId,
                         recurrences: recurrencesD,
                         finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
-                        priorite: priorite,
+                        priority: priorite,
                         rappel:rappel,
                         backgroundcolor:color
                     }
