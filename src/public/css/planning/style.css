@@ -214,6 +214,10 @@ body {
   font-size: 0.5em;
 }
 
+.fc-header-toolbar {
+  font-size: 2em;
+}
+
 .fc-timegrid-slot {
   height: 50px !important; /* Ajustez la hauteur selon vos besoins */
 }
