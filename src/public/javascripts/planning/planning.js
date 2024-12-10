@@ -708,9 +708,9 @@ const toggleDescription = ()=>{
 function updatePopUp(rdv, newEvent) {
 
     document.querySelector("#namerdv").value = rdv.name
-    if(rdv.description !== ""){
+    if(rdv.description){
+        textarea.value = rdv.description || ""
         toggleDescription()
-        textarea.value = rdv.description
     }
     agendaButton.querySelector('.agenda-name').innerText = `Sélectionner un agenda`;
     Array.from(document.querySelectorAll("#priorite option")).forEach(e=>e.selected = e.value === rdv.priorite)
