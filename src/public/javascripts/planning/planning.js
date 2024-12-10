@@ -141,8 +141,6 @@ const fetchEvent = async (el,calendar) => {
             agendas[el.dataset.id] = {event:[],visible:el.checked,permissions:"",weeks:[]}
         }
         if (!agendas[el.dataset.id] || !agendas[el.dataset.id]?.weeks.includes(start)) {
-          
-           console.log("je fetch")
             const fetchOptions = {
                 method: 'GET',
                 headers: {
@@ -176,10 +174,9 @@ const fetchEvent = async (el,calendar) => {
                 credentials: 'include',
                 body: JSON.stringify({weekStart:month.start,weekEnd:month.end}),
               }
-            console.log("je fetch")  
           const data = await fetch(`/api/getDate?agenda=${el.dataset.id}&weekStart=${month.start}&weekEnd=${month.end}`).then(res => res.json())
           agendasMonth[el.dataset.id] = { event: [...agendasMonth[el.dataset.id].event,...data.event], visible: el.checked,permissions:data.permission,month:[...agendasMonth[el.dataset.id].month,start]}
-          console.log(agendasMonth)
+
           calendar.refetchEvents();
         }
         else {
@@ -256,14 +253,14 @@ document.addEventListener('DOMContentLoaded', function () {
         credentials: 'include',
         body: JSON.stringify(rdv),
       }
-    fetch(`/rendezvous/${rdv.id}`,fetchOptions).then((data)=>{
+
+    fetch(`/rendezvous/${rdv.id}?agendaId=${rdv.agendaId}`,fetchOptions).then((data)=>{
         if(popupActivated){
             popupActivated = false;
             togglePopUp()
             document.querySelector(".description-textarea").value = ""
             document.querySelector("#namerdv").value = ""
         }
-        console.log("c'est modif")
     })
     //rdv.realEvent.setProp("backgroundColor",rdv.backgroundColor)  
 }
@@ -294,7 +291,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
             const checkBoxs = document.querySelectorAll(".checkAgenda");
                 checkBoxs.forEach((el)=> {
-                    console.log(el.checked)
                     if(el.checked){
                         fetchEvent(el,this)
                     }})
@@ -370,7 +366,6 @@ document.addEventListener('DOMContentLoaded', function () {
             popup && popup.remove()
         },
         eventClick: (info) => {
-            console.log(info)
             if (info.view.type === "timeGridWeek" && agendas[info.event._def.extendedProps.agendaId].permission!=="read"){
            
                 drawPopUpRdv(rdv, info, false, calendar)
@@ -414,7 +409,6 @@ document.addEventListener('DOMContentLoaded', function () {
             
             info.el.style.opacity = '0.5';
             if(popupActivated && info.event.id !=="null"){
-                console.log("ca supprime")
                 rdv.realEvent.remove()
                 popupActivated = false;
                 togglePopUp()
@@ -424,6 +418,7 @@ document.addEventListener('DOMContentLoaded', function () {
             info.el.style.opacity = '1';
          
             const event = info.event;
+           
             const newStart = event.start;
             const newEnd = event.end;
           
@@ -482,7 +477,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateRdvEvent(rdv)
             }
             else{
-               console.log(event)
                 const rdv = {
                     name:event.title,
                     backgroundColor:event.backgroundColor,
@@ -497,7 +491,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     recurrences:event.extendedProps.recurrences,
                     priorite:event.extendedProps.priorite,
                   }
-                console.log(rdv)
                   updateRdvEvent(rdv)
                   fetchModif(rdv)
             }
@@ -573,7 +566,6 @@ async function loadAgendas() {
     }
 
  async function showDropdown(e){
-    console.log("c'est ça qui est proc")
     e.preventDefault()
     agendaDropdown.classList.toggle('show');
     await loadAgendas();
@@ -654,7 +646,6 @@ function drawPopUpRdv(rdv2, info, click, calendar) {
         togglePopUp(info.jsEvent.clientX, info.jsEvent.clientY)
     } else {
         if(rdv.realEvent.id === "null"){
-            console.log("ca supprime")
             rdv.realEvent.remove()
         }
         popupActivated = false;
@@ -970,7 +961,6 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
                     body: JSON.stringify(rdv),
                 }
                 fetch(`/rendezvous`,fetchOptions).then(res=>res.json()).then(data=>{
-                    console.log("j'ai enregistré")
                     togglePopUp();
                     //check la checkbox associé
                     rdv.realEvent.setProp('title', data.rdv.name)
