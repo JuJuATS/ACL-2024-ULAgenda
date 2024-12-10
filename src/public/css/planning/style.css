@@ -21,9 +21,92 @@
     --shadow-lg: 0 8px 16px rgba(0, 0, 0, 0.5);
 }
 
-#event-tooltip{
-  /*display: none !important;*/
+.fc-scroller { 
+  margin-bottom: 0px !important;
+ }
+ 
+ 
+ 
+ 
+ /* SCROLLBAR - START - */
+ 
+ /* width */
+ .fc-scroller::-webkit-scrollbar {
+      width: 15px;
+  }
+ 
+  /* Track */
+ .fc-scroller::-webkit-scrollbar-track {
+      box-shadow: inset 0 0 5px grey; 
+      border-radius: 0px;
+  }
+ 
+ 
+ 
+ /* Handle */
+ .fc-scroller::-webkit-scrollbar-thumb {
+      background: linear-gradient(#ffffff, #103E62);; 
+  }
+ 
+ 
+ 
+ /* Handle on hover */
+ .fc-scroller::-webkit-scrollbar-thumb:hover {
+      background: #103E62; 
+  }
+ 
+ 
+ 
+ 
+ /* Firefox Integration */
+ 
+      .fc-scroller { 
+ margin-bottom: 0px !important;
 }
+
+
+
+
+/* SCROLLBAR - START - */
+
+/* width */
+.fc-scroller::-webkit-scrollbar {
+     scrollbar-width: thin;
+ }
+
+ /* Track */
+.fc-scroller::-webkit-scrollbar-track {
+     box-shadow: inset 0 0 5px grey; 
+     border-radius: 0px;
+ }
+
+
+
+/* Handle */
+.fc-scroller::-webkit-scrollbar-thumb {
+     background: linear-gradient(#ffffff, #103E62);; 
+ }
+
+
+
+/* Handle on hover */
+.fc-scroller::-webkit-scrollbar-thumb:hover {
+     background: #103E62; 
+ }
+
+
+
+
+/* Firefox Integration */
+
+.fc-scroller{
+     scrollbar-color: #34495e #1e293b;
+ }
+ 
+ /* SCROLLBAR - END - */
+  
+  
+  /* SCROLLBAR - END - */
 body {
     background-color: #212a3f;
       color: var(--text-light);
@@ -42,6 +125,7 @@ body {
       position: relative;
       border-top: 5px solid transparent;
       box-shadow: 0 -5px 10px rgba(0, 0, 0, 0.2); 
+      overflow-y: hidden;
       
   }
   
@@ -243,6 +327,9 @@ body {
     background: linear-gradient(145deg, #1e293b, #2c3e50);
     transition: width 0.7s ease-in-out;
     position: relative;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
 }
 .sideBar-open{
     width: 280px;
@@ -360,8 +447,7 @@ body {
   display: flex;
   flex-wrap: nowrap;
   justify-content: space-around;
-  position: absolute;
-  bottom: 0;
+
 }
 form {
     display:flex;
@@ -1013,20 +1099,19 @@ form {
 }
 
 .listAgenda {
-  list-style: none; /* Supprime les puces classiques */
-  padding: 15px 0 15px 20px; /* Ajoute de l'espace autour de la liste */
+  list-style: none;
+  padding: 15px 0 15px 20px;
   margin-top: -20px;
   background: linear-gradient(145deg, #1e293b, #2c3e50);
-
-  /* Coins arrondis pour modernité */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Ombre douce pour un effet de relief */
-  border: 1px solid #34495e; /* Bordure discrète */
-  overflow: hidden; /* Coupe tout contenu qui dépasse */
-  overflow-y: auto; /* Activer le défilement vertical si nécessaire */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border: 1px solid #34495e;
+  overflow: hidden;
+  overflow-y: auto;
   overflow-x: auto;
-  max-height: 1247px; 
-  scrollbar-color: #34495e #1e293b; /* Couleur de la barre et du fond */
-    scrollbar-width: thin; /* Barre de défilement fine */
+  max-height: 1247px;
+  scrollbar-color: #34495e #1e293b;
+  scrollbar-width: thin;
+  margin-bottom: 20px;
 }
 
 /* Style des éléments de la liste */
@@ -1102,9 +1187,6 @@ form {
   display: flex !important;
   gap: 10px !important; /* Espacement entre les boutons */
   background: linear-gradient(145deg, #2c3e50, #2c3e50);
-
-  margin-top: -20px !important;
-
 }
 
 
