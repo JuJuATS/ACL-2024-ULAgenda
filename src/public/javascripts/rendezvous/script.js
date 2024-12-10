@@ -175,6 +175,13 @@ async function saveRendezVous(rendezvous) {
             if (agendaList.children[0].id === 'first') agendaList.innerHTML = ''
             afficherPopUp(`Rendez-vous : ${json.rdv.name} ajoutés`, true)
             await updateRdvList(rdvsOpen)
+            document.getElementById('nom').value = "";
+            document.getElementById('date').value = "";
+            document.getElementById('heureDebut').value = "";
+            document.getElementById('duree').value = ""; // Lire la durée en heures
+            document.getElementById('description').value = "";
+            document.getElementById('rappel').value = "Moyenne";
+            
         }
       } catch (error) {
         console.error('Erreur:', error);

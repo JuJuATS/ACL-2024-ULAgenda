@@ -1111,7 +1111,7 @@ form {
   scrollbar-color: #34495e #1e293b;
   scrollbar-width: thin;
   margin-bottom: 20px;
-  height: -webkit-fill-available;
+  height: inherit;
 }
 
 /* Style des éléments de la liste */
