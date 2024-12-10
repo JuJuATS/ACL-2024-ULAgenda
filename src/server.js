@@ -21,8 +21,6 @@ const passport = require('./config/passport');
 const crypto = require('crypto');
 const argon2 = require('argon2');
 
-
-
 // -- IMPORT ROUTES --
 const routes = require('./routes');
 const agendaRoutes = require('./routes/agendas/agendas');
@@ -127,7 +125,6 @@ app.use('/search', routes.searchRouter);
 app.get('/', async (req, res) => {
   res.render('index', { user: req.user} );
 });
-
 
 app.get('/profil', async (req, res) => {
   res.render('profil', { user: req.user} );
