@@ -18,7 +18,7 @@ form.addEventListener('submit', async function(event) {
     const duree = parseFloat(document.getElementById('duree').value); // Lire la durée en heures
     const description = document.getElementById('description').value || "";
     const rappel = document.getElementById('rappel').value;
-    const color = document.querySelector(".colorBackground").style.backgroundColor;
+    const color = document.querySelector("#colorBackground").style.backgroundColor;
     const finRecurrence = document.getElementById('dateUntilRecurrence').value;
     if (nom && date && heureDebut && duree){
         const dateString = `${date}T${heureDebut}:00`; // ajoute les secondes, format ISO 8601

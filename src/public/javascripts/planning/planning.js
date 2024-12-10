@@ -432,7 +432,7 @@ document.addEventListener('DOMContentLoaded', function () {
               agendaId:event.extendedProps.agendaId,
               recurrences:{},
               rappel:info.event.extendedProps.rappel,
-              recId:info.event.extendedProps.recId
+              recId:null
             }
            
             const popup = document.querySelector("#event-tooltip") 
@@ -477,6 +477,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 updateRdvEvent(rdv)
             }
             else{
+                
                 const rdv = {
                     name:event.title,
                     backgroundColor:event.backgroundColor,
@@ -487,7 +488,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     rappel:event.extendedProps.rappel,
                     agendaId:event.extendedProps.agendaId,
                     description:event.extendedProps.description,
-                    recId:event.extendedProps.recId,
+                    recId:null,
                     recurrences:event.extendedProps.recurrences,
                     priorite:event.extendedProps.priorite,
                   }
@@ -636,7 +637,7 @@ function drawPopUpRdv(rdv2, info, click, calendar) {
                 rappel:info.event.extendedProps.rappel,
                 agendaId:info.event.extendedProps.agendaId,
                 description:info.event.extendedProps.description,
-                recId:info.event.extendedProps.recId,
+                recId:null,
                 recurrences:info.event.extendedProps.recurrences,
                 priorite:info.event.extendedProps.priorite,
               }
@@ -969,7 +970,6 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
                     rdv.realEvent.setEnd(data.rdv.dateFin)
                     rdv.realEvent.setProp('id',data.rdv.id)
                     rdv.realEvent.setExtendedProp("agendaId",data.rdv.agendaId._id)
-                    rdv.realEvent.setExtendedProp("recId",data.rdv.recurrences._id)
                    textarea.value = ""
                    document.querySelector("#namerdv").value = ""
                     

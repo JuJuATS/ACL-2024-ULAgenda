@@ -457,7 +457,7 @@
                         finRecurrence: finRecurrence ? new Date(finRecurrence) : null,
                         priority: priorite,
                         rappel:rappel,
-                        backgroundcolor:color
+                        backgroundColor:color
                     }
                     try {
                         const response = await fetch(`/rendezvous/${rdvId}?agendaId=${agendaId}`, {
