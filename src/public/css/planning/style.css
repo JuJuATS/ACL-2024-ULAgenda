@@ -305,11 +305,8 @@ body {
   
   .fc-button-group{
     margin: 0 auto 0 auto !important;
-
     padding: 5px 10px;
     border-radius: 8px;
-    z-index: 9999;
-   
   }
   .fc-today-button{
     margin-right: 20px !important;

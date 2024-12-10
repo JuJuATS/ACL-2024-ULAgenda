@@ -222,13 +222,13 @@ function togglePopUp(x, y) {
         b.disabled = !b.disabled;
     })
 
-    if (x && y) {
+   /* if (x && y) {
         if (x < 600) { // a droite
             document.querySelector("#popup-rdv").style.left = (x+400) * 100 / window.innerWidth + "%";
         } else {    // a gauche
             document.querySelector("#popup-rdv").style.left = (x-400) * 100 / window.innerWidth + "%";
         }
-    }
+    }*/
 
     document.querySelector("#popup-rdv").classList.toggle("display-pop-up")
 
@@ -356,14 +356,16 @@ document.addEventListener('DOMContentLoaded', function () {
         displayEventEnd: true,
 
         eventMouseEnter: (mouseInfo) => {
-            let eventRect = mouseInfo.el.getBoundingClientRect();
+            if(mouseInfo.event.id !== "null"){
+                let eventRect = mouseInfo.el.getBoundingClientRect();
+                let size = { width: mouseInfo.el.offsetWidth, height: mouseInfo.el.offsetHeight }
+                showTooltip(eventRect, mouseInfo.event, size);
+            }
             
-            let size = { width: mouseInfo.el.offsetWidth, height: mouseInfo.el.offsetHeight }
-            showTooltip(eventRect, mouseInfo.event, size);
         },
         eventMouseLeave: (mouseLeaveInfo) => {
             const popup = document.querySelector("#event-tooltip") 
-            popup.remove()
+            popup && popup.remove()
         },
         eventClick: (info) => {
             console.log(info)
