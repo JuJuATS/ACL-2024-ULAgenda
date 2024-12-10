@@ -260,6 +260,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if(popupActivated){
             popupActivated = false;
             togglePopUp()
+            document.querySelector(".description-textarea").value = ""
+            document.querySelector("#namerdv").value = ""
         }
         console.log("c'est modif")
     })
@@ -708,9 +710,9 @@ const toggleDescription = ()=>{
 function updatePopUp(rdv, newEvent) {
 
     document.querySelector("#namerdv").value = rdv.name
-    if(rdv.description !== ""){
+    if(rdv.description){
+        textarea.value = rdv.description || ""
         toggleDescription()
-        textarea.value = rdv.description
     }
     agendaButton.querySelector('.agenda-name').innerText = `Sélectionner un agenda`;
     Array.from(document.querySelectorAll("#priorite option")).forEach(e=>e.selected = e.value === rdv.priorite)
@@ -978,7 +980,9 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
                     rdv.realEvent.setProp('id',data.rdv.id)
                     rdv.realEvent.setExtendedProp("agendaId",data.rdv.agendaId._id)
                     rdv.realEvent.setExtendedProp("recId",data.rdv.recurrences._id)
-                    console.log(rdv.realEvent)
+                   textarea.value = ""
+                   document.querySelector("#namerdv").value = ""
+                    
                 })
             }
         }
