@@ -378,7 +378,7 @@ body {
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, actuellement
                                   pris en charge par Chrome, Edge, Opera et Firefox */
-    z-index: 1000; /* S'assurer que le bouton reste visible */
+    
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Ombre subtile pour un effet visuel */
     border-radius: 50%; /* Rendre le bouton circulaire */
 }
@@ -1102,7 +1102,7 @@ form {
 
 .listAgenda {
   list-style: none;
-  padding: 15px 0 15px 20px;
+  padding: 15px 15px 15px 20px;
   margin-top: -20px;
   background: linear-gradient(145deg, #1e293b, #2c3e50);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);

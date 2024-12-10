@@ -55,8 +55,8 @@ function showTooltip(eventRect, event, size) {
 
     tooltip.style = `
         position: absolute;
-        top: ${eventRect.top-120}px;
-        left: ${eventRect.left}px;
+        top: ${eventRect.top}px;
+        left: ${eventRect.left+size.width}px;
        
         max-width: 250px; /* Limite la taille pour éviter des textes trop longs */
         padding: 15px;
@@ -540,6 +540,41 @@ document.addEventListener('DOMContentLoaded', function () {
       calendar.gotoDate(e.target.value)
      })
 });
+const agendaButton = document.getElementById('agendaButton');
+const agendaDropdown = document.getElementById('agendaDropdown');
+
+async function loadAgendas() {
+        
+    agendaDropdown.innerHTML = ""
+    allAgenda.forEach(agenda => {
+        const option = document.createElement('div');
+        option.className = 'agenda-option';
+        option.innerHTML = `
+            <span>${agenda.name}</span>
+            `;
+            
+        option.addEventListener('click', () => {
+            const buttonContent = agendaButton.querySelector('.agenda-name');
+            buttonContent.innerHTML = `
+                ${agenda.name}
+                `;
+
+            agendaDropdown.classList.remove('show');
+
+            rdv.agendaId = agenda._id;
+            });
+
+            agendaDropdown.appendChild(option);
+        });
+    }
+
+ async function showDropdown(e){
+    console.log("c'est ça qui est proc")
+    e.preventDefault()
+    agendaDropdown.classList.toggle('show');
+    await loadAgendas();
+ }
+
 
 // fonction d'initalisation d'un rdv selon la création ou modifiation d'un agenda 
 function drawPopUpRdv(rdv2, info, click, calendar) {
@@ -548,6 +583,8 @@ function drawPopUpRdv(rdv2, info, click, calendar) {
         let eventStart
         let eventEnd
         if (click) { 
+
+            agendaButton.addEventListener('click', showDropdown);
             eventStart = info.date || info.start;
             eventStart.setMinutes(0, 0, 0);
             eventEnd = info.end || new Date(eventStart.getTime() + 3600000);
@@ -589,6 +626,10 @@ function drawPopUpRdv(rdv2, info, click, calendar) {
             rdv.backgroundColor = newEvent.backgroundColor;
             
         } else {      
+            agendaButton.removeEventListener('click', showDropdown);
+            agendaButton.addEventListener('click', (e)=>{
+                e.preventDefault();
+            });
             rdv = {
                 name:info.event.title,
                 backgroundColor:info.event.backgroundColor,
@@ -831,42 +872,7 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
     });
 
 
-    const agendaButton = document.getElementById('agendaButton');
-    const agendaDropdown = document.getElementById('agendaDropdown');
-
-    async function loadAgendas() {
-        agendaDropdown.innerHTML = ""
-
-        allAgenda.forEach(agenda => {
-            const option = document.createElement('div');
-            option.className = 'agenda-option';
-            option.innerHTML = `
-              <span>${agenda.name}</span>
-            `;
-            
-            option.addEventListener('click', () => {
-                const buttonContent = agendaButton.querySelector('.agenda-name');
-                buttonContent.innerHTML = `
-                    ${agenda.name}
-                  `;
-
-                agendaDropdown.classList.remove('show');
-
-                rdv.agendaId = agenda._id;
-            });
-
-            agendaDropdown.appendChild(option);
-        });
-    }
-
-
-
-    agendaButton.addEventListener('click', async (e) => {
-        e.preventDefault()
-        agendaDropdown.classList.toggle('show');
-        await loadAgendas();
-    });
-
+    
     document.querySelector("#date").addEventListener('change', (e) => {
         let t = rdv.dateDebut
         let t2 = rdv.dateFin
