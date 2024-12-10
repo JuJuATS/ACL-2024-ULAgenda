@@ -1,5 +1,6 @@
 const mangoose = require('mongoose');
 const userCleanupTask = require('../tasks/userCleanupTask'); // Permet de lancer le cron job pour supprimer les utilisateurs non vérifiés
+require('../tasks/cleanupExpiredSharesTask');
 
 const connectDB = async () => {
   if (process.env.NODE_ENV !== 'test') {
