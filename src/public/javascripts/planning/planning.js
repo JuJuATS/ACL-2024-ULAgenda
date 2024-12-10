@@ -260,6 +260,8 @@ document.addEventListener('DOMContentLoaded', function () {
         if(popupActivated){
             popupActivated = false;
             togglePopUp()
+            document.querySelector(".description-textarea").value = ""
+            document.querySelector("#namerdv").value = ""
         }
         console.log("c'est modif")
     })
@@ -980,7 +982,7 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
                     rdv.realEvent.setExtendedProp("recId",data.rdv.recurrences._id)
                    textarea.value = ""
                    document.querySelector("#namerdv").value = ""
-                    console.log(rdv.realEvent)
+                    
                 })
             }
         }
