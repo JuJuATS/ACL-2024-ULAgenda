@@ -1,6 +1,10 @@
 <nav>
-    <div>
-        <a href="/" class="logo">UL AGENDA</a>
+    <div>       
+        <% if (user) { %>
+            <a href="/planning" class="logo">UL AGENDA</a>
+        <% } else { %>
+            <a href="/" class="logo">UL AGENDA</a>
+        <% } %>
     </div>
 
     <div class="right">
