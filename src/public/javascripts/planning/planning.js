@@ -978,6 +978,8 @@ function initPopUpRdv(calendar,refetch,fetchModif) {
                     rdv.realEvent.setProp('id',data.rdv.id)
                     rdv.realEvent.setExtendedProp("agendaId",data.rdv.agendaId._id)
                     rdv.realEvent.setExtendedProp("recId",data.rdv.recurrences._id)
+                   textarea.value = ""
+                   document.querySelector("#namerdv").value = ""
                     console.log(rdv.realEvent)
                 })
             }
