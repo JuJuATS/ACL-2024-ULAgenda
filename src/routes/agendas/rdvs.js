@@ -15,6 +15,7 @@ router.get('/', authMiddleware, checkAgendaAccess, async (req, res) => {
     res.render('rendezvous', {
       user: req.user.id,
       agenda: req.agenda._id,
+      agendaObj : req.agenda,
       presets,
       accessLevel: req.accessLevel  // Passer le niveau d'accès à la vue
     });
