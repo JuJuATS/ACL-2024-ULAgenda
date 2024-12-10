@@ -101,9 +101,9 @@ router.post('/', authMiddleware, checkAgendaAccess, checkModifyRights, async (re
 });
 
 // Route pour modifier un rendez-vous
-router.put('/:idf', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
+router.put('/:id', authMiddleware, checkAgendaAccess, checkModifyRights, async (req, res) => {
   try {
-    const rdvId = req.params.idf;
+    const rdvId = req.params.id;
     const { name, description, dateDebut, dateFin, recId, recurrences, finRecurrence,backgroundColor,priority,rappel } = req.body;
 
     if (!name || !dateDebut || !dateFin) {
