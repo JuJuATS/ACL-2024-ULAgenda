@@ -12,7 +12,6 @@ router.get("/getRdv",isAuthentified,async(req,res)=>{
     if(stringAgenda === ""){
         res.send({event:[]})
     }
-    
 })
 
 module.exports = router
