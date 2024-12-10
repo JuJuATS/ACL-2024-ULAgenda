@@ -573,3 +573,44 @@ document.querySelectorAll('.calendar').forEach(openCloseOptions);
 
 
 
+document.addEventListener('click', async (event) => {
+   
+    const isShareButton =
+        event.target.classList.contains('agenda-but') &&
+        event.target.classList.contains('share-but');
+
+  
+    const isInSharedCalendar = event.target.closest('.shared-calendar');
+
+  
+    const accessBadge = isInSharedCalendar?.querySelector('.access-level-badge.read');
+
+    if (isShareButton && isInSharedCalendar && accessBadge) {
+        event.preventDefault(); 
+
+        const url = event.target.getAttribute('href');
+
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (response.status === 403) {
+                const result = await response.json();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth',  
+                });
+                afficherPopUp(result.message,false);
+                return;
+            }
+
+        } catch (error) {
+            console.error('Erreur inattendue :', error);
+            alert('Une erreur inattendue est survenue.');
+        }
+    }
+});
